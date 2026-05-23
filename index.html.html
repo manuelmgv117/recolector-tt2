@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recolección de Dinámica de Tecleo - TT2</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; color: #333; display: flex; flex-direction: column; align-items: center; padding: 40px; margin: 0; }
+        .container { background-color: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 600px; width: 100%; text-align: center; }
+        h1 { color: #2c3e50; font-size: 24px; }
+        p { font-size: 15px; color: #555; margin-bottom: 20px; line-height: 1.5; }
+        .input-group { margin-bottom: 20px; text-align: left; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; color: #2c3e50; }
+        input[type="text"], input[type="password"] { width: 100%; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        input[type="text"]:focus, input[type="password"]:focus { border-color: #3498db; outline: none; box-shadow: 0 0 5px rgba(52, 152, 219, 0.5); }
+        button { background-color: #3498db; color: white; border: none; padding: 12px 20px; font-size: 16px; border-radius: 4px; cursor: pointer; transition: background 0.3s; margin-top: 10px; font-weight: bold;}
+        button:hover { background-color: #2980b9; }
+        .stats { margin-top: 20px; padding: 15px; background-color: #e8f4f8; border-radius: 4px; text-align: left; }
+        .stats p { margin: 5px 0; }
+        .stats span { font-weight: bold; color: #2c3e50; font-size: 18px; }
+        .success-msg { color: #27ae60; font-weight: bold; margin-top: 10px; min-height: 20px; }
+        .error-msg { color: #c0392b; font-weight: bold; margin-top: 10px; min-height: 20px; }
+        .footer { margin-top: 30px; font-size: 12px; color: #aaa; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Autenticación Biométrica TT2</h1>
+        <p>Por favor, ingresa tu identificador y teclea la contraseña <strong>.tie5Roanl</strong> seguida de la tecla <strong>Enter</strong>. Hazlo a tu ritmo natural.</p>
+        
+        <div class="input-group">
+            <label for="subjectId">Nombre o Identificador (Ej. s052_Sinodal1):</label>
+            <input type="text" id="subjectId" placeholder="Ingresa tu ID..." required>
+        </div>
+
+        <div class="input-group">
+            <label for="passwordField">Contraseña (.tie5Roanl + Enter):</label>
+            <input type="text" id="passwordField" autocomplete="off" spellcheck="false" placeholder="Teclea la contraseña aquí...">
+        </div>
+
+        <div id="messageBox" class="success-msg"></div>
+
+        <div class="stats">
+            <p>Muestras recolectadas hoy: <span id="sampleCount">0</span></p>
+            <p style="font-size: 13px; color: #666;">Las 31 características se calculan automáticamente y se guardan en memoria.</p>
+            <button id="downloadBtn" style="width: 100%; background-color: #27ae60; margin-top: 15px;">Descargar CSV con Muestras</button>
+        </div>
+    </div>
+
+    <script>
+        const TARGET_PASSWORD = ".tie5Roanl";
+        let capturedEvents = [];
+        let samples = [];
+        let repCounter = 1;
+
+        const passwordField = document.getElementById('passwordField');
+        const subjectIdField = document.getElementById('subjectId');
+        const sampleCountDisplay = document.getElementById('sampleCount');
+        const messageBox = document.getElementById('messageBox');
+        const downloadBtn = document.getElementById('downloadBtn');
+
+        // Columnas exactas del dataset DSL-StrongPasswordData
+        const COLUMNS = [
+            'subject', 'sessionIndex', 'rep',
+            'H.period', 'DD.period.t', 'UD.period.t',
+            'H.t', 'DD.t.i', 'UD.t.i',
+            'H.i', 'DD.i.e', 'UD.i.e',
+            'H.e', 'DD.e.five', 'UD.e.five',
+            'H.five', 'DD.five.Shift.r', 'UD.five.Shift.r',
+            'H.Shift.r', 'DD.Shift.r.o', 'UD.Shift.r.o',
+            'H.o', 'DD.o.a', 'UD.o.a',
+            'H.a', 'DD.a.n', 'UD.a.n',
+            'H.n', 'DD.n.l', 'UD.n.l',
+            'H.l', 'DD.l.Return', 'UD.l.Return',
+            'H.Return'
+        ];
+
+        passwordField.addEventListener('keydown', (e) => {
+            if (capturedEvents.length === 0) {
+                messageBox.textContent = '';
+                passwordField.classList.remove('error-msg', 'success-msg');
+            }
+            
+            // Ignoramos Shift para que 'R' quede como un solo evento, tal como en el dataset
+            if (e.key === 'Shift') return;
+            
+            capturedEvents.push({
+                key: e.key,
+                type: 'keydown',
+                time: performance.now()
+            });
+        });
+
+        passwordField.addEventListener('keyup', (e) => {
+            if (e.key === 'Shift') return;
+
+            capturedEvents.push({
+                key: e.key,
+                type: 'keyup',
+                time: performance.now()
+            });
+
+            if (e.key === 'Enter') {
+                processSequence();
+            }
+        });
+
+        function showMessage(msg, isError = false) {
+            messageBox.textContent = msg;
+            messageBox.className = isError ? 'error-msg' : 'success-msg';
+        }
+
+        function processSequence() {
+            let keydowns = capturedEvents.filter(e => e.type === 'keydown');
+            let keyups = capturedEvents.filter(e => e.type === 'keyup');
+
+            let typedStr = keydowns.map(e => e.key).join('');
+            
+            // Validar si la contraseña es la correcta
+            if (typedStr !== TARGET_PASSWORD + 'Enter') {
+                showMessage("Secuencia incorrecta o hubo teclas de borrado. Intenta de nuevo.", true);
+                resetCapture(true);
+                return;
+            }
+
+            // Validar eventos pares
+            if (keydowns.length !== 11 || keyups.length !== 11) {
+                showMessage("Error en captura de tiempos. Intenta de nuevo.", true);
+                resetCapture(true);
+                return;
+            }
+
+            let features = {};
+            let subject = subjectIdField.value.trim() || 's_sinodal';
+
+            // Calcular características en segundos
+            for (let i = 0; i < 11; i++) {
+                let holdTime = (keyups[i].time - keydowns[i].time) / 1000.0;
+                features[`H_${i}`] = holdTime.toFixed(4);
+
+                if (i < 10) {
+                    let downDown = (keydowns[i+1].time - keydowns[i].time) / 1000.0;
+                    let upDown = (keydowns[i+1].time - keyups[i].time) / 1000.0;
+                    features[`DD_${i}`] = downDown.toFixed(4);
+                    features[`UD_${i}`] = upDown.toFixed(4);
+                }
+            }
+
+            // Formatear fila
+            let row = [
+                subject,
+                '1', 
+                repCounter++, 
+                features['H_0'], features['DD_0'], features['UD_0'],
+                features['H_1'], features['DD_1'], features['UD_1'],
+                features['H_2'], features['DD_2'], features['UD_2'],
+                features['H_3'], features['DD_3'], features['UD_3'],
+                features['H_4'], features['DD_4'], features['UD_4'],
+                features['H_5'], features['DD_5'], features['UD_5'],
+                features['H_6'], features['DD_6'], features['UD_6'],
+                features['H_7'], features['DD_7'], features['UD_7'],
+                features['H_8'], features['DD_8'], features['UD_8'],
+                features['H_9'], features['DD_9'], features['UD_9'],
+                features['H_10']
+            ];
+
+            samples.push(row);
+            sampleCountDisplay.textContent = samples.length;
+            showMessage("¡Muestra guardada correctamente! " + TARGET_PASSWORD);
+            resetCapture(false);
+        }
+
+        function resetCapture(isError) {
+            capturedEvents = [];
+            setTimeout(() => {
+                passwordField.value = '';
+                passwordField.focus();
+            }, 500);
+        }
+
+        downloadBtn.addEventListener('click', () => {
+            if (samples.length === 0) {
+                alert("Aún no hay muestras capturadas para descargar.");
+                return;
+            }
+
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += COLUMNS.join(",") + "\n";
+            samples.forEach(rowArray => {
+                csvContent += rowArray.join(",") + "\n";
+            });
+
+            var encodedUri = encodeURI(csvContent);
+            var link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Dinamica_Tecleo_${subjectIdField.value || 'Sinodal'}_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+    </script>
+</body>
+</html>
