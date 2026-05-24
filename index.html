@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang=\"es\">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,39 +12,44 @@
         .input-group { margin-bottom: 20px; text-align: left; }
         label { display: block; font-weight: bold; margin-bottom: 5px; color: #2c3e50; }
         input[type="text"], input[type="password"] { width: 100%; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        input[type="text"]:focus, input[type="password"]:focus { border-color: #3498db; outline: none; box-shadow: 0 0 5px rgba(52, 152, 219, 0.5); }
-        button { background-color: #3498db; color: white; border: none; padding: 12px 20px; font-size: 16px; border-radius: 4px; cursor: pointer; transition: background 0.3s; margin-top: 10px; font-weight: bold;}
+        input[type="password"] { font-family: monospace; letter-spacing: 4px; }
+        .password-target { font-size: 20px; font-weight: bold; color: #e74c3c; background-color: #fadbd8; padding: 10px; border-radius: 4px; display: inline-block; margin-bottom: 20px; letter-spacing: 2px; }
+        button { background-color: #3498db; color: white; border: none; padding: 12px 20px; font-size: 16px; border-radius: 4px; cursor: pointer; transition: background-color 0.3s; font-weight: bold; }
         button:hover { background-color: #2980b9; }
-        .stats { margin-top: 20px; padding: 15px; background-color: #e8f4f8; border-radius: 4px; text-align: left; }
-        .stats p { margin: 5px 0; }
-        .stats span { font-weight: bold; color: #2c3e50; font-size: 18px; }
-        .success-msg { color: #27ae60; font-weight: bold; margin-top: 10px; min-height: 20px; }
-        .error-msg { color: #c0392b; font-weight: bold; margin-top: 10px; min-height: 20px; }
-        .footer { margin-top: 30px; font-size: 12px; color: #aaa; }
+        .download-btn { background-color: #2ecc71; margin-top: 15px; }
+        .download-btn:hover { background-color: #27ae60; }
+        .status { margin-top: 20px; font-size: 15px; color: #7f8c8d; }
+        .counter { font-weight: bold; color: #2c3e50; }
+        #messageBox { margin-top: 15px; font-weight: bold; min-height: 20px; }
+        .error-msg { color: #c0392b; }
+        .success-msg { color: #27ae60; }
     </style>
 </head>
 <body>
+
     <div class="container">
-        <h1>Autenticación Biométrica TT2</h1>
-        <p>Por favor, ingresa tu identificador y teclea la contraseña <strong>.tie5Roanl</strong> seguida de la tecla <strong>Enter</strong>. Hazlo a tu ritmo natural.</p>
+        <h1>Recolección de Biometría Conductual</h1>
+        <p>Por favor, escribe la siguiente contraseña exactamente como se muestra. Intenta hacerlo de forma fluida y natural. Puedes usar el Shift (izquierdo/derecho) o Bloq Mayús de tu preferencia para la letra mayúscula.</p>
         
-        <div class="input-group">
-            <label for="subjectId">Nombre o Identificador (Ej. s052_Sinodal1):</label>
-            <input type="text" id="subjectId" placeholder="Ingresa tu ID..." required>
-        </div>
+        <div class="password-target">.tie5Roanl</div>
 
         <div class="input-group">
-            <label for="passwordField">Contraseña (.tie5Roanl + Enter):</label>
-            <input type="text" id="passwordField" autocomplete="off" spellcheck="false" placeholder="Teclea la contraseña aquí...">
+            <label for="subjectId">Identificador del Sinodal / Sujeto:</label>
+            <input type="text" id="subjectId" placeholder="Ej. s_sinodal1" value="s_sinodal">
         </div>
 
-        <div id="messageBox" class="success-msg"></div>
-
-        <div class="stats">
-            <p>Muestras recolectadas hoy: <span id="sampleCount">0</span></p>
-            <p style="font-size: 13px; color: #666;">Las 31 características se calculan automáticamente y se guardan en memoria.</p>
-            <button id="downloadBtn" style="width: 100%; background-color: #27ae60; margin-top: 15px;">Descargar CSV con Muestras</button>
+        <div class="input-group">
+            <label for="passwordField">Escribe la contraseña + [Enter]:</label>
+            <input type="password" id="passwordField" autocomplete="off" placeholder="Escribe aquí..." autofocus>
         </div>
+
+        <div id="messageBox"></div>
+
+        <div class="status">
+            Muestras guardadas en esta sesión: <span id="sampleCount" class="counter">0</span>
+        </div>
+
+        <button id="downloadBtn" class="download-btn">Descargar Dataset (.CSV)</button>
     </div>
 
     <script>
@@ -59,7 +64,7 @@
         const messageBox = document.getElementById('messageBox');
         const downloadBtn = document.getElementById('downloadBtn');
 
-        // Columnas exactas del dataset DSL-StrongPasswordData
+        // Columnas oficiales del dataset DSL-StrongPasswordData
         const COLUMNS = [
             'subject', 'sessionIndex', 'rep',
             'H.period', 'DD.period.t', 'UD.period.t',
@@ -78,24 +83,25 @@
         passwordField.addEventListener('keydown', (e) => {
             if (capturedEvents.length === 0) {
                 messageBox.textContent = '';
-                passwordField.classList.remove('error-msg', 'success-msg');
             }
             
-            // Ignoramos Shift para que 'R' quede como un solo evento, tal como en el dataset
-            if (e.key === 'Shift') return;
+            // Ignoramos el registro de la tecla Bloq Mayús en sí misma para no romper los índices físicos
+            if (e.key === 'CapsLock') return; 
             
             capturedEvents.push({
                 key: e.key,
+                code: e.code,
                 type: 'keydown',
                 time: performance.now()
             });
         });
 
         passwordField.addEventListener('keyup', (e) => {
-            if (e.key === 'Shift') return;
+            if (e.key === 'CapsLock') return;
 
             capturedEvents.push({
                 key: e.key,
+                code: e.code,
                 type: 'keyup',
                 time: performance.now()
             });
@@ -114,18 +120,9 @@
             let keydowns = capturedEvents.filter(e => e.type === 'keydown');
             let keyups = capturedEvents.filter(e => e.type === 'keyup');
 
-            let typedStr = keydowns.map(e => e.key).join('');
-            
-            // Validar si la contraseña es la correcta
-            if (typedStr !== TARGET_PASSWORD + 'Enter') {
+            // Validación estricta del texto plano introducido
+            if (passwordField.value !== TARGET_PASSWORD) {
                 showMessage("Secuencia incorrecta o hubo teclas de borrado. Intenta de nuevo.", true);
-                resetCapture(true);
-                return;
-            }
-
-            // Validar eventos pares
-            if (keydowns.length !== 11 || keyups.length !== 11) {
-                showMessage("Error en captura de tiempos. Intenta de nuevo.", true);
                 resetCapture(true);
                 return;
             }
@@ -133,35 +130,101 @@
             let features = {};
             let subject = subjectIdField.value.trim() || 's_sinodal';
 
-            // Calcular características en segundos
-            for (let i = 0; i < 11; i++) {
-                let holdTime = (keyups[i].time - keydowns[i].time) / 1000.0;
-                features[`H_${i}`] = holdTime.toFixed(4);
+            // Identificar si existió algún evento físico de Shift (izquierdo o derecho)
+            let shiftDown = keydowns.find(e => e.code === 'ShiftLeft' || e.code === 'ShiftRight');
+            let shiftUp = keyups.find(e => e.code === 'ShiftLeft' || e.code === 'ShiftRight');
 
-                if (i < 10) {
-                    let downDown = (keydowns[i+1].time - keydowns[i].time) / 1000.0;
-                    let upDown = (keydowns[i+1].time - keyups[i].time) / 1000.0;
-                    features[`DD_${i}`] = downDown.toFixed(4);
-                    features[`UD_${i}`] = upDown.toFixed(4);
-                }
+            // Helper para mapear los eventos por carácter de salida
+            const getKeyEvents = (keyName) => {
+                return {
+                    down: keydowns.find(e => e.key === keyName),
+                    up: keyups.find(e => e.key === keyName)
+                };
+            };
+
+            let p = getKeyEvents('.');
+            let t = getKeyEvents('t');
+            let i = getKeyEvents('i');
+            let e = getKeyEvents('e');
+            let f = getKeyEvents('5');
+            let r = getKeyEvents('R');
+            let o = getKeyEvents('o');
+            let a = getKeyEvents('a');
+            let n = getKeyEvents('n');
+            let l = getKeyEvents('l');
+            let ret = getKeyEvents('Enter');
+
+            // 1. CÁLCULO DE TIEMPOS DE LETRAS ESTÁNDAR (Convertido a segundos con 4 decimales)
+            features['H.period'] = ((p.up?.time - p.down?.time) / 1000.0).toFixed(4);
+            features['DD.period.t'] = ((t.down?.time - p.down?.time) / 1000.0).toFixed(4);
+            features['UD.period.t'] = ((t.down?.time - p.up?.time) / 1000.0).toFixed(4);
+
+            features['H.t'] = ((t.up?.time - t.down?.time) / 1000.0).toFixed(4);
+            features['DD.t.i'] = ((i.down?.time - t.down?.time) / 1000.0).toFixed(4);
+            features['UD.t.i'] = ((i.down?.time - t.up?.time) / 1000.0).toFixed(4);
+
+            features['H.i'] = ((i.up?.time - i.down?.time) / 1000.0).toFixed(4);
+            features['DD.i.e'] = ((e.down?.time - i.down?.time) / 1000.0).toFixed(4);
+            features['UD.i.e'] = ((e.down?.time - i.up?.time) / 1000.0).toFixed(4);
+
+            features['H.e'] = ((e.up?.time - e.down?.time) / 1000.0).toFixed(4);
+            features['DD.e.five'] = ((f.down?.time - e.down?.time) / 1000.0).toFixed(4);
+            features['UD.e.five'] = ((f.down?.time - e.up?.time) / 1000.0).toFixed(4);
+
+            features['H.five'] = ((f.up?.time - f.down?.time) / 1000.0).toFixed(4);
+
+            // 2. INGENIERÍA DE CARACTERÍSTICAS ADAPTATIVA (Manejo de Shift vs CapsLock)
+            if (shiftDown && shiftUp) {
+                // Caso A: El usuario capitalizó usando Shift (izquierdo o derecho)
+                features['DD.five.Shift.r'] = ((shiftDown.time - f.down.time) / 1000.0).toFixed(4);
+                features['UD.five.Shift.r'] = ((shiftDown.time - f.up.time) / 1000.0).toFixed(4);
+                features['H.Shift.r'] = ((shiftUp.time - shiftDown.time) / 1000.0).toFixed(4);
+                features['DD.Shift.r.o'] = ((r.down?.time - shiftDown.time) / 1000.0).toFixed(4);
+                features['UD.Shift.r.o'] = ((r.down?.time - shiftUp.time) / 1000.0).toFixed(4);
+            } else {
+                // Caso B: El usuario usó Bloq Mayús. Se rellena con 0.0000 para no alterar las dimensiones,
+                // calculando la transición directa desde el '5' hacia la 'R'.
+                features['DD.five.Shift.r'] = (0.0).toFixed(4);
+                features['UD.five.Shift.r'] = (0.0).toFixed(4);
+                features['H.Shift.r'] = (0.0).toFixed(4);
+                features['DD.Shift.r.o'] = ((r.down?.time - f.down?.time) / 1000.0).toFixed(4);
+                features['UD.Shift.r.o'] = ((r.down?.time - f.up?.time) / 1000.0).toFixed(4);
             }
 
-            // Formatear fila
+            // Tiempos del resto de la cadena
+            features['H.o'] = ((o.up?.time - o.down?.time) / 1000.0).toFixed(4);
+            features['DD.o.a'] = ((a.down?.time - o.down?.time) / 1000.0).toFixed(4);
+            features['UD.o.a'] = ((a.down?.time - o.up?.time) / 1000.0).toFixed(4);
+
+            features['H.a'] = ((a.up?.time - a.down?.time) / 1000.0).toFixed(4);
+            features['DD.a.n'] = ((n.down?.time - a.down?.time) / 1000.0).toFixed(4);
+            features['UD.a.n'] = ((n.down?.time - a.up?.time) / 1000.0).toFixed(4);
+
+            features['H.n'] = ((n.up?.time - n.down?.time) / 1000.0).toFixed(4);
+            features['DD.n.l'] = ((l.down?.time - n.down?.time) / 1000.0).toFixed(4);
+            features['UD.n.l'] = ((l.down?.time - n.up?.time) / 1000.0).toFixed(4);
+
+            features['H.l'] = ((l.up?.time - l.down?.time) / 1000.0).toFixed(4);
+            features['DD.l.Return'] = ((ret.down?.time - l.down?.time) / 1000.0).toFixed(4);
+            features['UD.l.Return'] = ((ret.down?.time - l.up?.time) / 1000.0).toFixed(4);
+            features['H.Return'] = ((ret.up?.time - ret.down?.time) / 1000.0).toFixed(4);
+
+            // 3. ENCAPSULAMIENTO DEL VECTOR DE 34 COLUMNAS
             let row = [
                 subject,
-                '1', 
+                '1', // sessionIndex fijo
                 repCounter++, 
-                features['H_0'], features['DD_0'], features['UD_0'],
-                features['H_1'], features['DD_1'], features['UD_1'],
-                features['H_2'], features['DD_2'], features['UD_2'],
-                features['H_3'], features['DD_3'], features['UD_3'],
-                features['H_4'], features['DD_4'], features['UD_4'],
-                features['H_5'], features['DD_5'], features['UD_5'],
-                features['H_6'], features['DD_6'], features['UD_6'],
-                features['H_7'], features['DD_7'], features['UD_7'],
-                features['H_8'], features['DD_8'], features['UD_8'],
-                features['H_9'], features['DD_9'], features['UD_9'],
-                features['H_10']
+                features['H.period'], features['DD.period.t'], features['UD.period.t'],
+                features['H.t'], features['DD.t.i'], features['UD.t.i'],
+                features['H.i'], features['DD.i.e'], features['UD.i.e'],
+                features['H.e'], features['DD.e.five'], features['UD.e.five'],
+                features['H.five'], features['DD.five.Shift.r'], features['UD.five.Shift.r'],
+                features['H.Shift.r'], features['DD.Shift.r.o'], features['UD.Shift.r.o'],
+                features['H.o'], features['DD.o.a'], features['UD.o.a'],
+                features['H.a'], features['DD.a.n'], features['UD.a.n'],
+                features['H.n'], features['DD.n.l'], features['UD.n.l'],
+                features['H.l'], features['DD.l.Return'], features['UD.l.Return'],
+                features['H.Return']
             ];
 
             samples.push(row);
