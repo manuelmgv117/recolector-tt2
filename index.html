@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang=\"es\">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -29,13 +29,13 @@
 
     <div class="container">
         <h1>Recolección de Biometría Conductual</h1>
-        <p>Por favor, escribe la siguiente contraseña exactamente como se muestra. Intenta hacerlo de forma fluida y natural. Puedes usar el Shift (izquierdo/derecho) o Bloq Mayús de tu preferencia para la letra mayúscula.</p>
+        <p>Por favor, escribe tu nombre o identificador abajo y luego ingresa la contraseña exactamente como se muestra. Intenta hacerlo de forma fluida y natural. Puedes usar la tecla Shift (izquierdo o derecho) o el Bloq Mayús de tu preferencia para la letra mayúscula.</p>
         
         <div class="password-target">.tie5Roanl</div>
 
         <div class="input-group">
-            <label for="subjectId">Identificador del usuario (Su nombre):</label>
-            <input type="text" id="subjectId" placeholder="Ej. s_sinodal1" value="s_sinodal">
+            <label for="subjectId">Identificador de usuario (por favor, ingresa tu nombre completo o iniciales):</label>
+            <input type="text" id="subjectId" placeholder="Ej. Juan Pérez" value="s_sinodal">
         </div>
 
         <div class="input-group">
@@ -85,7 +85,6 @@
                 messageBox.textContent = '';
             }
             
-            // Ignoramos el registro de la tecla Bloq Mayús en sí misma para no romper los índices físicos
             if (e.key === 'CapsLock') return; 
             
             capturedEvents.push({
@@ -120,7 +119,6 @@
             let keydowns = capturedEvents.filter(e => e.type === 'keydown');
             let keyups = capturedEvents.filter(e => e.type === 'keyup');
 
-            // Validación estricta del texto plano introducido
             if (passwordField.value !== TARGET_PASSWORD) {
                 showMessage("Secuencia incorrecta o hubo teclas de borrado. Intenta de nuevo.", true);
                 resetCapture(true);
@@ -130,11 +128,9 @@
             let features = {};
             let subject = subjectIdField.value.trim() || 's_sinodal';
 
-            // Identificar si existió algún evento físico de Shift (izquierdo o derecho)
             let shiftDown = keydowns.find(e => e.code === 'ShiftLeft' || e.code === 'ShiftRight');
             let shiftUp = keyups.find(e => e.code === 'ShiftLeft' || e.code === 'ShiftRight');
 
-            // Helper para mapear los eventos por carácter de salida
             const getKeyEvents = (keyName) => {
                 return {
                     down: keydowns.find(e => e.key === keyName),
@@ -154,7 +150,6 @@
             let l = getKeyEvents('l');
             let ret = getKeyEvents('Enter');
 
-            // 1. CÁLCULO DE TIEMPOS DE LETRAS ESTÁNDAR (Convertido a segundos con 4 decimales)
             features['H.period'] = ((p.up?.time - p.down?.time) / 1000.0).toFixed(4);
             features['DD.period.t'] = ((t.down?.time - p.down?.time) / 1000.0).toFixed(4);
             features['UD.period.t'] = ((t.down?.time - p.up?.time) / 1000.0).toFixed(4);
@@ -173,17 +168,13 @@
 
             features['H.five'] = ((f.up?.time - f.down?.time) / 1000.0).toFixed(4);
 
-            // 2. INGENIERÍA DE CARACTERÍSTICAS ADAPTATIVA (Manejo de Shift vs CapsLock)
             if (shiftDown && shiftUp) {
-                // Caso A: El usuario capitalizó usando Shift (izquierdo o derecho)
                 features['DD.five.Shift.r'] = ((shiftDown.time - f.down.time) / 1000.0).toFixed(4);
                 features['UD.five.Shift.r'] = ((shiftDown.time - f.up.time) / 1000.0).toFixed(4);
                 features['H.Shift.r'] = ((shiftUp.time - shiftDown.time) / 1000.0).toFixed(4);
                 features['DD.Shift.r.o'] = ((r.down?.time - shiftDown.time) / 1000.0).toFixed(4);
                 features['UD.Shift.r.o'] = ((r.down?.time - shiftUp.time) / 1000.0).toFixed(4);
             } else {
-                // Caso B: El usuario usó Bloq Mayús. Se rellena con 0.0000 para no alterar las dimensiones,
-                // calculando la transición directa desde el '5' hacia la 'R'.
                 features['DD.five.Shift.r'] = (0.0).toFixed(4);
                 features['UD.five.Shift.r'] = (0.0).toFixed(4);
                 features['H.Shift.r'] = (0.0).toFixed(4);
@@ -191,7 +182,6 @@
                 features['UD.Shift.r.o'] = ((r.down?.time - f.up?.time) / 1000.0).toFixed(4);
             }
 
-            // Tiempos del resto de la cadena
             features['H.o'] = ((o.up?.time - o.down?.time) / 1000.0).toFixed(4);
             features['DD.o.a'] = ((a.down?.time - o.down?.time) / 1000.0).toFixed(4);
             features['UD.o.a'] = ((a.down?.time - o.up?.time) / 1000.0).toFixed(4);
@@ -209,10 +199,9 @@
             features['UD.l.Return'] = ((ret.down?.time - l.up?.time) / 1000.0).toFixed(4);
             features['H.Return'] = ((ret.up?.time - ret.down?.time) / 1000.0).toFixed(4);
 
-            // 3. ENCAPSULAMIENTO DEL VECTOR DE 34 COLUMNAS
             let row = [
                 subject,
-                '1', // sessionIndex fijo
+                '1', 
                 repCounter++, 
                 features['H.period'], features['DD.period.t'], features['UD.period.t'],
                 features['H.t'], features['DD.t.i'], features['UD.t.i'],
