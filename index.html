@@ -29,12 +29,12 @@
 
     <div class="container">
         <h1>Recolección de Biometría Conductual</h1>
-        <p>Por favor, escribe tu nombre o identificador abajo y luego ingresa la contraseña exactamente como se muestra. Intenta hacerlo de forma fluida y natural. Puedes usar la tecla Shift (izquierdo o derecho) o el Bloq Mayús de tu preferencia para la letra mayúscula.</p>
+        <p>Por favor, escribe tu nombre o identificador abajo y luego ingresa la contraseña exactamente como se muestra. Intenta hacerlo de forma fluida y natural. <b>Es obligatorio usar Shift Derecho para la letra 'R'</b> para cumplir con el formato DSL.</p>
         
         <div class="password-target">.tie5Roanl</div>
 
         <div class="input-group">
-            <label for="subjectId">Identificador de usuario (por favor, ingresa tu nombre completo o iniciales):</label>
+            <label for="subjectId">Identificador de usuario:</label>
             <input type="text" id="subjectId" placeholder="Ej. Juan Pérez" value="s_sinodal">
         </div>
 
@@ -64,44 +64,44 @@
         const messageBox = document.getElementById('messageBox');
         const downloadBtn = document.getElementById('downloadBtn');
 
-        // Columnas oficiales del dataset DSL-StrongPasswordData
         const COLUMNS = [
             'subject', 'sessionIndex', 'rep',
-            'H.period', 'DD.period.t', 'UD.period.t',
-            'H.t', 'DD.t.i', 'UD.t.i',
-            'H.i', 'DD.i.e', 'UD.i.e',
-            'H.e', 'DD.e.five', 'UD.e.five',
-            'H.five', 'DD.five.Shift.r', 'UD.five.Shift.r',
-            'H.Shift.r', 'DD.Shift.r.o', 'UD.Shift.r.o',
-            'H.o', 'DD.o.a', 'UD.o.a',
-            'H.a', 'DD.a.n', 'UD.a.n',
-            'H.n', 'DD.n.l', 'UD.n.l',
-            'H.l', 'DD.l.Return', 'UD.l.Return',
-            'H.Return'
+            'H.period', 'DD.period.t', 'UD.period.t', 'H.t', 'DD.t.i', 'UD.t.i',
+            'H.i', 'DD.i.e', 'UD.i.e', 'H.e', 'DD.e.five', 'UD.e.five',
+            'H.five', 'DD.five.Shift.r', 'UD.five.Shift.r', 'H.Shift.r', 'DD.Shift.r.o', 'UD.Shift.r.o',
+            'H.o', 'DD.o.a', 'UD.o.a', 'H.a', 'DD.a.n', 'UD.a.n',
+            'H.n', 'DD.n.l', 'UD.n.l', 'H.l', 'DD.l.Return', 'UD.l.Return', 'H.Return'
         ];
 
+        // Manejo de repeticiones nativas del teclado
+        let activeKeys = new Set();
+
         passwordField.addEventListener('keydown', (e) => {
+            if (e.repeat) return; 
+            if (e.key === 'CapsLock') return; 
+            
             if (capturedEvents.length === 0) {
                 messageBox.textContent = '';
             }
             
-            if (e.key === 'CapsLock') return; 
-            
+            activeKeys.add(e.code);
+
             capturedEvents.push({
                 key: e.key,
                 code: e.code,
-                type: 'keydown',
+                type: 'down',
                 time: performance.now()
             });
         });
 
         passwordField.addEventListener('keyup', (e) => {
             if (e.key === 'CapsLock') return;
+            activeKeys.delete(e.code);
 
             capturedEvents.push({
                 key: e.key,
                 code: e.code,
-                type: 'keyup',
+                type: 'up',
                 time: performance.now()
             });
 
@@ -116,114 +116,111 @@
         }
 
         function processSequence() {
-            let keydowns = capturedEvents.filter(e => e.type === 'keydown');
-            let keyups = capturedEvents.filter(e => e.type === 'keyup');
-
             if (passwordField.value !== TARGET_PASSWORD) {
-                showMessage("Secuencia incorrecta o hubo teclas de borrado. Intenta de nuevo.", true);
-                resetCapture(true);
+                showMessage("Secuencia incorrecta o hubo errores. Intenta de nuevo.", true);
+                resetCapture();
                 return;
             }
 
-            let features = {};
+            let tempDown = {};
+            let processedEvents = [];
             let subject = subjectIdField.value.trim() || 's_sinodal';
 
-            let shiftDown = keydowns.find(e => e.code === 'ShiftLeft' || e.code === 'ShiftRight');
-            let shiftUp = keyups.find(e => e.code === 'ShiftLeft' || e.code === 'ShiftRight');
-
-            const getKeyEvents = (keyName) => {
-                return {
-                    down: keydowns.find(e => e.key === keyName),
-                    up: keyups.find(e => e.key === keyName)
-                };
+            // Mapeo idéntico al de Python para normalizar nombres de columnas
+            const nameMap = {
+                '.': 'period',
+                '5': 'five',
+                'Enter': 'Return',
+                'Shift': 'Shift.r'
             };
 
-            let p = getKeyEvents('.');
-            let t = getKeyEvents('t');
-            let i = getKeyEvents('i');
-            let e = getKeyEvents('e');
-            let f = getKeyEvents('5');
-            let r = getKeyEvents('R');
-            let o = getKeyEvents('o');
-            let a = getKeyEvents('a');
-            let n = getKeyEvents('n');
-            let l = getKeyEvents('l');
-            let ret = getKeyEvents('Enter');
+            // 1. Procesar y normalizar eventos de la misma forma que en el Backend
+            for (let e of capturedEvents) {
+                let keyChar = e.key;
+                let eventType = e.type;
+                let timestamp = e.time / 1000.0; // Milisegundos a Segundos
+                let keyName = '';
 
-            features['H.period'] = ((p.up?.time - p.down?.time) / 1000.0).toFixed(4);
-            features['DD.period.t'] = ((t.down?.time - p.down?.time) / 1000.0).toFixed(4);
-            features['UD.period.t'] = ((t.down?.time - p.up?.time) / 1000.0).toFixed(4);
+                if (e.code === 'ShiftRight') {
+                    keyName = 'Shift.r';
+                } else if (e.code === 'Enter') {
+                    keyName = 'Return';
+                } else if (e.code === 'KeyR') {
+                    // CRUCIAL: El dataset de la DSL ignora la 'R' física y salta del Shift a la 'o'
+                    continue; 
+                } else if (nameMap[keyChar]) {
+                    keyName = nameMap[keyChar];
+                } else {
+                    keyName = keyChar;
+                }
 
-            features['H.t'] = ((t.up?.time - t.down?.time) / 1000.0).toFixed(4);
-            features['DD.t.i'] = ((i.down?.time - t.down?.time) / 1000.0).toFixed(4);
-            features['UD.t.i'] = ((i.down?.time - t.up?.time) / 1000.0).toFixed(4);
-
-            features['H.i'] = ((i.up?.time - i.down?.time) / 1000.0).toFixed(4);
-            features['DD.i.e'] = ((e.down?.time - i.down?.time) / 1000.0).toFixed(4);
-            features['UD.i.e'] = ((e.down?.time - i.up?.time) / 1000.0).toFixed(4);
-
-            features['H.e'] = ((e.up?.time - e.down?.time) / 1000.0).toFixed(4);
-            features['DD.e.five'] = ((f.down?.time - e.down?.time) / 1000.0).toFixed(4);
-            features['UD.e.five'] = ((f.down?.time - e.up?.time) / 1000.0).toFixed(4);
-
-            features['H.five'] = ((f.up?.time - f.down?.time) / 1000.0).toFixed(4);
-
-            if (shiftDown && shiftUp) {
-                features['DD.five.Shift.r'] = ((shiftDown.time - f.down.time) / 1000.0).toFixed(4);
-                features['UD.five.Shift.r'] = ((shiftDown.time - f.up.time) / 1000.0).toFixed(4);
-                features['H.Shift.r'] = ((shiftUp.time - shiftDown.time) / 1000.0).toFixed(4);
-                features['DD.Shift.r.o'] = ((r.down?.time - shiftDown.time) / 1000.0).toFixed(4);
-                features['UD.Shift.r.o'] = ((r.down?.time - shiftUp.time) / 1000.0).toFixed(4);
-            } else {
-                features['DD.five.Shift.r'] = (0.0).toFixed(4);
-                features['UD.five.Shift.r'] = (0.0).toFixed(4);
-                features['H.Shift.r'] = (0.0).toFixed(4);
-                features['DD.Shift.r.o'] = ((r.down?.time - f.down?.time) / 1000.0).toFixed(4);
-                features['UD.Shift.r.o'] = ((r.down?.time - f.up?.time) / 1000.0).toFixed(4);
+                if (eventType === 'down') {
+                    tempDown[keyName] = timestamp;
+                } else if (eventType === 'up') {
+                    if (tempDown[keyName] !== undefined) {
+                        let downTime = tempDown[keyName];
+                        delete tempDown[keyName];
+                        processedEvents.push({
+                            key: keyName,
+                            down: downTime,
+                            up: timestamp
+                        });
+                    }
+                }
             }
 
-            features['H.o'] = ((o.up?.time - o.down?.time) / 1000.0).toFixed(4);
-            features['DD.o.a'] = ((a.down?.time - o.down?.time) / 1000.0).toFixed(4);
-            features['UD.o.a'] = ((a.down?.time - o.up?.time) / 1000.0).toFixed(4);
+            // Ordenar por tiempo de bajada ('down') idéntico a Python
+            processedEvents.sort((a, b) => a.down - b.down);
 
-            features['H.a'] = ((a.up?.time - a.down?.time) / 1000.0).toFixed(4);
-            features['DD.a.n'] = ((n.down?.time - a.down?.time) / 1000.0).toFixed(4);
-            features['UD.a.n'] = ((n.down?.time - a.up?.time) / 1000.0).toFixed(4);
+            // Validar que se hayan capturado todas las teclas necesarias de la contraseña (11 teclas en total tras remover la R)
+            if (processedEvents.length < 11) {
+                showMessage("Error en la captura de tiempos (¿Soltaste el Shift muy rápido?). Intenta de nuevo.", true);
+                resetCapture();
+                return;
+            }
 
-            features['H.n'] = ((n.up?.time - n.down?.time) / 1000.0).toFixed(4);
-            features['DD.n.l'] = ((l.down?.time - n.down?.time) / 1000.0).toFixed(4);
-            features['UD.n.l'] = ((l.down?.time - n.up?.time) / 1000.0).toFixed(4);
+            // 2. Calcular los vectores de características Dinámicas (H, DD, UD)
+            let features = {
+                'subject': subject,
+                'sessionIndex': 1,
+                'rep': repCounter
+            };
 
-            features['H.l'] = ((l.up?.time - l.down?.time) / 1000.0).toFixed(4);
-            features['DD.l.Return'] = ((ret.down?.time - l.down?.time) / 1000.0).toFixed(4);
-            features['UD.l.Return'] = ((ret.down?.time - l.up?.time) / 1000.0).toFixed(4);
-            features['H.Return'] = ((ret.up?.time - ret.down?.time) / 1000.0).toFixed(4);
+            for (let i = 0; i < processedEvents.length; i++) {
+                let curr = processedEvents[i];
+                let key = curr.key;
 
-            let row = [
-                subject,
-                '1', 
-                repCounter++, 
-                features['H.period'], features['DD.period.t'], features['UD.period.t'],
-                features['H.t'], features['DD.t.i'], features['UD.t.i'],
-                features['H.i'], features['DD.i.e'], features['UD.i.e'],
-                features['H.e'], features['DD.e.five'], features['UD.e.five'],
-                features['H.five'], features['DD.five.Shift.r'], features['UD.five.Shift.r'],
-                features['H.Shift.r'], features['DD.Shift.r.o'], features['UD.Shift.r.o'],
-                features['H.o'], features['DD.o.a'], features['UD.o.a'],
-                features['H.a'], features['DD.a.n'], features['UD.a.n'],
-                features['H.n'], features['DD.n.l'], features['UD.n.l'],
-                features['H.l'], features['DD.l.Return'], features['UD.l.Return'],
-                features['H.Return']
-            ];
+                // Calcular Hold Time (H)
+                features[`H.${key}`] = (curr.up - curr.down).toFixed(4);
+
+                if (i > 0) {
+                    let prev = processedEvents[i - 1];
+                    let prevKey = prev.key;
+
+                    // Calcular Down-Down (DD) y Up-Down (UD)
+                    features[`DD.${prevKey}.${key}`] = (curr.down - prev.down).toFixed(4);
+                    features[`UD.${prevKey}.${key}`] = (curr.down - prev.up).toFixed(4);
+                }
+            }
+
+            // 3. Mapear en orden estricto de las columnas DSL
+            let row = COLUMNS.map(col => {
+                if (col === 'subject') return features.subject;
+                if (col === 'sessionIndex') return features.sessionIndex;
+                if (col === 'rep') return features.rep;
+                return features[col] || (0.0).toFixed(4); // Relleno por si acaso
+            });
 
             samples.push(row);
+            repCounter++;
             sampleCountDisplay.textContent = samples.length;
-            showMessage("¡Muestra guardada correctamente! " + TARGET_PASSWORD);
-            resetCapture(false);
+            showMessage("¡Muestra guardada correctamente!");
+            resetCapture();
         }
 
-        function resetCapture(isError) {
+        function resetCapture() {
             capturedEvents = [];
+            activeKeys.clear();
             setTimeout(() => {
                 passwordField.value = '';
                 passwordField.focus();
@@ -245,7 +242,7 @@
             var encodedUri = encodeURI(csvContent);
             var link = document.createElement("a");
             link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `Dinamica_Tecleo_${subjectIdField.value || 'Sinodal'}_${new Date().toISOString().split('T')[0]}.csv`);
+            link.setAttribute("download", `Dinamica_Tecleo_${subjectIdField.value.trim() || 'Sinodal'}_${new Date().toISOString().split('T')[0]}.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
