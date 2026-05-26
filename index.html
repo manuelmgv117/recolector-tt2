@@ -7,40 +7,50 @@
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; color: #333; display: flex; flex-direction: column; align-items: center; padding: 40px; margin: 0; }
         .container { background-color: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 600px; width: 100%; text-align: center; }
-        h1 { color: #2c3e50; font-size: 24px; }
-        p { font-size: 15px; color: #555; margin-bottom: 20px; line-height: 1.5; }
+        h1 { color: #2c3e50; font-size: 24px; margin-bottom: 10px; }
+        .instructions { font-size: 14px; color: #555; margin-bottom: 20px; text-align: left; line-height: 1.6; background: #ebf5fb; padding: 15px; border-left: 5px solid #3498db; border-radius: 4px; }
         .input-group { margin-bottom: 20px; text-align: left; }
-        label { display: block; font-weight: bold; margin-bottom: 5px; color: #2c3e50; }
-        input[type="text"], input[type="password"] { width: 100%; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        input[type="password"] { font-family: monospace; letter-spacing: 4px; }
-        .password-target { font-size: 20px; font-weight: bold; color: #e74c3c; background-color: #fadbd8; padding: 10px; border-radius: 4px; display: inline-block; margin-bottom: 20px; letter-spacing: 2px; }
-        button { background-color: #3498db; color: white; border: none; padding: 12px 20px; font-size: 16px; border-radius: 4px; cursor: pointer; transition: background-color 0.3s; font-weight: bold; }
+        label { display: block; font-weight: bold; margin-bottom: 8px; color: #2c3e50; }
+        .required-alert { color: #c0392b; font-size: 12px; font-weight: normal; margin-left: 5px; }
+        input[type="text"], input[type="password"] { width: 100%; padding: 12px; font-size: 16px; border: 2px solid #bdc3c7; border-radius: 6px; box-sizing: border-box; transition: all 0.3s; }
+        input[type="text"]:focus, input[type="password"]:focus { border-color: #3498db; outline: none; box-shadow: 0 0 8px rgba(52,152,219,0.3); }
+        input:disabled { background-color: #e8f0fe; cursor: not-allowed; }
+        .password-target { font-size: 24px; font-weight: bold; color: #e74c3c; background-color: #fadbd8; padding: 12px; border-radius: 6px; display: inline-block; margin-bottom: 20px; letter-spacing: 3px; font-family: monospace; }
+        button { background-color: #3498db; color: white; border: none; padding: 12px 20px; font-size: 16px; border-radius: 4px; cursor: pointer; transition: background-color 0.3s; font-weight: bold; width: 100%; }
         button:hover { background-color: #2980b9; }
         .download-btn { background-color: #2ecc71; margin-top: 15px; }
         .download-btn:hover { background-color: #27ae60; }
         .status { margin-top: 20px; font-size: 15px; color: #7f8c8d; }
-        .counter { font-weight: bold; color: #2c3e50; }
-        #messageBox { margin-top: 15px; font-weight: bold; min-height: 20px; }
-        .error-msg { color: #c0392b; }
-        .success-msg { color: #27ae60; }
+        .counter { font-weight: bold; color: #2c3e50; font-size: 18px; }
+        #messageBox { margin-top: 15px; font-weight: bold; min-height: 24px; font-size: 14px; padding: 8px; border-radius: 4px; }
+        .error-msg { color: #c0392b; background-color: #f9ead6; border: 1px solid #f5b041; }
+        .success-msg { color: #27ae60; background-color: #d4efdf; }
     </style>
 </head>
 <body>
 
     <div class="container">
         <h1>Recolección de Biometría Conductual</h1>
-        <p>Por favor, escribe tu nombre o identificador abajo y luego ingresa la contraseña exactamente como se muestra. Intenta hacerlo de forma fluida y natural. <b>Es obligatorio usar Shift Derecho para la letra 'R'</b> para cumplir con el formato DSL.</p>
+        
+        <div class="instructions">
+            <b>Instrucciones obligatorias:</b>
+            <ol style="margin: 5px 0 0 20px; padding: 0;">
+                <li>Primero, ingresa obligatoriamente tu <b>nombre o identificador</b> en la casilla superior.</li>
+                <li>Escribe la contraseña de forma fluida. <b>Usa obligatoriamente el Shift Derecho</b> para la letra "R".</li>
+                <li>Si te equivocas, presionas borrar o usas combinaciones extrañas, la casilla se limpiará automáticamente para no corromper el dataset.</li>
+            </ol>
+        </div>
         
         <div class="password-target">.tie5Roanl</div>
 
         <div class="input-group">
-            <label for="subjectId">Identificador de usuario:</label>
-            <input type="text" id="subjectId" placeholder="Ej. Juan Pérez" value="s_sinodal">
+            <label for="subjectId">1. Identificador / Nombre del Usuario: <span class="required-alert">(Requerido antes de escribir)</span></label>
+            <input type="text" id="subjectId" placeholder="Ej. Juan Pérez o s_sinodal" autocomplete="off">
         </div>
 
         <div class="input-group">
-            <label for="passwordField">Escribe la contraseña + [Enter]:</label>
-            <input type="password" id="passwordField" autocomplete="off" placeholder="Escribe aquí..." autofocus>
+            <label for="passwordField">2. Escribe la contraseña + [Enter]:</label>
+            <input type="password" id="passwordField" autocomplete="off" placeholder="Primero ingresa tu nombre arriba..." disabled>
         </div>
 
         <div id="messageBox"></div>
@@ -57,6 +67,7 @@
         let capturedEvents = [];
         let samples = [];
         let repCounter = 1;
+        let activeKeys = new Set();
 
         const passwordField = document.getElementById('passwordField');
         const subjectIdField = document.getElementById('subjectId');
@@ -73,15 +84,52 @@
             'H.n', 'DD.n.l', 'UD.n.l', 'H.l', 'DD.l.Return', 'UD.l.Return', 'H.Return'
         ];
 
-        // Manejo de repeticiones nativas del teclado
-        let activeKeys = new Set();
+        // --- VALIDACIÓN 1: Desbloquear contraseña solo si hay un nombre válido ---
+        subjectIdField.addEventListener('input', () => {
+            if (subjectIdField.value.trim().length > 2) {
+                passwordField.disabled = false;
+                passwordField.placeholder = "Escribe aquí...";
+            } else {
+                passwordField.disabled = true;
+                passwordField.placeholder = "Primero ingresa tu nombre arriba...";
+            }
+        });
 
+        // --- VALIDACIONES ANTIRROTURA EN EL INPUT DE CONTRASEÑA ---
         passwordField.addEventListener('keydown', (e) => {
+            // Evitar eventos fantasmas por mantener presionada una tecla
             if (e.repeat) return; 
-            if (e.key === 'CapsLock') return; 
-            
+
+            // VALIDACIÓN 2: Si intenta borrar (Backspace/Delete) o navegar (Flechas) -> Abortar inmediatamente
+            if (['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(e.key)) {
+                e.preventDefault();
+                invalidateSequence("Se detectó corrección o retroceso. Escribe la palabra completa de corrido.");
+                return;
+            }
+
+            // VALIDACIÓN 3: Bloquear Bloq Mayús (CapsLock) de raíz
+            if (e.key === 'CapsLock') {
+                e.preventDefault();
+                invalidateSequence("Desactiva el Bloq Mayús. Usa el Shift Derecho para la 'R'.");
+                return;
+            }
+
+            // VALIDACIÓN 4: Evitar combinaciones de comandos comunes (Ctrl+C, Ctrl+V, etc.)
+            if (e.ctrlKey || e.metaKey || e.altKey) {
+                e.preventDefault();
+                invalidateSequence("Comando no permitido durante la captura.");
+                return;
+            }
+
+            // VALIDACIÓN 5: Forzar explícitamente el uso de Shift Derecho
+            if (e.key === 'Shift' && e.code !== 'ShiftRight') {
+                e.preventDefault();
+                invalidateSequence("¡Error! Debes usar únicamente el SHIFT DERECHO para la mayúscula.");
+                return;
+            }
+
             if (capturedEvents.length === 0) {
-                messageBox.textContent = '';
+                clearMessage();
             }
             
             activeKeys.add(e.code);
@@ -98,47 +146,58 @@
             if (e.key === 'CapsLock') return;
             activeKeys.delete(e.code);
 
-            capturedEvents.push({
-                key: e.key,
-                code: e.code,
-                type: 'up',
-                time: performance.now()
-            });
+            // Registrar el evento de subida solo si el de bajada fue permitido
+            if (capturedEvents.length > 0) {
+                capturedEvents.push({
+                    key: e.key,
+                    code: e.code,
+                    type: 'up',
+                    time: performance.now()
+                });
+            }
 
             if (e.key === 'Enter') {
                 processSequence();
             }
         });
 
+        // VALIDACIÓN 6: Bloquear clicks derechos y pegados de texto dentro del campo
+        passwordField.addEventListener('paste', (e) => e.preventDefault());
+        passwordField.addEventListener('contextmenu', (e) => e.preventDefault());
+
         function showMessage(msg, isError = false) {
             messageBox.textContent = msg;
             messageBox.className = isError ? 'error-msg' : 'success-msg';
         }
 
+        function clearMessage() {
+            messageBox.textContent = '';
+            messageBox.className = '';
+        }
+
+        function invalidateSequence(reason) {
+            showMessage(reason, true);
+            resetCapture();
+        }
+
         function processSequence() {
+            // VALIDACIÓN 7: Verificar texto exacto introducido
             if (passwordField.value !== TARGET_PASSWORD) {
-                showMessage("Secuencia incorrecta o hubo errores. Intenta de nuevo.", true);
-                resetCapture();
+                invalidateSequence("Contraseña incorrecta o incompleta. Intenta de nuevo de forma fluida.");
                 return;
             }
 
             let tempDown = {};
             let processedEvents = [];
-            let subject = subjectIdField.value.trim() || 's_sinodal';
+            let subject = subjectIdField.value.trim();
 
-            // Mapeo idéntico al de Python para normalizar nombres de columnas
-            const nameMap = {
-                '.': 'period',
-                '5': 'five',
-                'Enter': 'Return',
-                'Shift': 'Shift.r'
-            };
+            const nameMap = { '.': 'period', '5': 'five', 'Enter': 'Return', 'Shift': 'Shift.r' };
 
-            // 1. Procesar y normalizar eventos de la misma forma que en el Backend
+            // Procesamiento de eventos vectoriales
             for (let e of capturedEvents) {
                 let keyChar = e.key;
                 let eventType = e.type;
-                let timestamp = e.time / 1000.0; // Milisegundos a Segundos
+                let timestamp = e.time / 1000.0;
                 let keyName = '';
 
                 if (e.code === 'ShiftRight') {
@@ -146,8 +205,7 @@
                 } else if (e.code === 'Enter') {
                     keyName = 'Return';
                 } else if (e.code === 'KeyR') {
-                    // CRUCIAL: El dataset de la DSL ignora la 'R' física y salta del Shift a la 'o'
-                    continue; 
+                    continue; // Se omite del cálculo para coincidir estrictamente con el dataset DSL original
                 } else if (nameMap[keyChar]) {
                     keyName = nameMap[keyChar];
                 } else {
@@ -160,71 +218,58 @@
                     if (tempDown[keyName] !== undefined) {
                         let downTime = tempDown[keyName];
                         delete tempDown[keyName];
-                        processedEvents.push({
-                            key: keyName,
-                            down: downTime,
-                            up: timestamp
-                        });
+                        processedEvents.push({ key: keyName, down: downTime, up: timestamp });
                     }
                 }
             }
 
-            // Ordenar por tiempo de bajada ('down') idéntico a Python
             processedEvents.sort((a, b) => a.down - b.down);
 
-            // Validar que se hayan capturado todas las teclas necesarias de la contraseña (11 teclas en total tras remover la R)
+            // VALIDACIÓN 8: Estructura matemática íntegra del vector
             if (processedEvents.length < 11) {
-                showMessage("Error en la captura de tiempos (¿Soltaste el Shift muy rápido?). Intenta de nuevo.", true);
-                resetCapture();
+                invalidateSequence("Error crítico en la cadencia (¿Soltaste una tecla demasiado rápido?). Repite la prueba.");
                 return;
             }
 
-            // 2. Calcular los vectores de características Dinámicas (H, DD, UD)
-            let features = {
-                'subject': subject,
-                'sessionIndex': 1,
-                'rep': repCounter
-            };
+            // Construcción del diccionario de características dinámicas
+            let features = { 'subject': subject, 'sessionIndex': 1, 'rep': repCounter };
 
             for (let i = 0; i < processedEvents.length; i++) {
                 let curr = processedEvents[i];
                 let key = curr.key;
 
-                // Calcular Hold Time (H)
                 features[`H.${key}`] = (curr.up - curr.down).toFixed(4);
 
                 if (i > 0) {
                     let prev = processedEvents[i - 1];
                     let prevKey = prev.key;
-
-                    // Calcular Down-Down (DD) y Up-Down (UD)
                     features[`DD.${prevKey}.${key}`] = (curr.down - prev.down).toFixed(4);
                     features[`UD.${prevKey}.${key}`] = (curr.down - prev.up).toFixed(4);
                 }
             }
 
-            // 3. Mapear en orden estricto de las columnas DSL
             let row = COLUMNS.map(col => {
                 if (col === 'subject') return features.subject;
                 if (col === 'sessionIndex') return features.sessionIndex;
                 if (col === 'rep') return features.rep;
-                return features[col] || (0.0).toFixed(4); // Relleno por si acaso
+                return features[col] || (0.0).toFixed(4);
             });
 
             samples.push(row);
             repCounter++;
             sampleCountDisplay.textContent = samples.length;
-            showMessage("¡Muestra guardada correctamente!");
+            showMessage("¡Muestra guardada correctamente con Shift Derecho!");
             resetCapture();
         }
 
         function resetCapture() {
             capturedEvents = [];
             activeKeys.clear();
+            passwordField.value = '';
+            // Forzar retraso para mitigar rebotes físicos de teclado
             setTimeout(() => {
-                passwordField.value = '';
                 passwordField.focus();
-            }, 500);
+            }, 200);
         }
 
         downloadBtn.addEventListener('click', () => {
@@ -242,7 +287,7 @@
             var encodedUri = encodeURI(csvContent);
             var link = document.createElement("a");
             link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `Dinamica_Tecleo_${subjectIdField.value.trim() || 'Sinodal'}_${new Date().toISOString().split('T')[0]}.csv`);
+            link.setAttribute("download", `Dinamica_Tecleo_${subjectIdField.value.trim().replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
