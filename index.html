@@ -12,9 +12,18 @@
         .input-group { margin-bottom: 20px; text-align: left; }
         label { display: block; font-weight: bold; margin-bottom: 8px; color: #2c3e50; }
         .required-alert { color: #c0392b; font-size: 12px; font-weight: normal; margin-left: 5px; }
-        input[type="text"], input[type="password"] { width: 100%; padding: 12px; font-size: 16px; border: 2px solid #bdc3c7; border-radius: 6px; box-sizing: border-box; transition: all 0.3s; }
-        input[type="text"]:focus, input[type="password"]:focus { border-color: #3498db; outline: none; box-shadow: 0 0 8px rgba(52,152,219,0.3); }
-        input:disabled { background-color: #e8f0fe; cursor: not-allowed; }
+        input[type="text"], input[type="password"], select { width: 100%; padding: 12px; font-size: 16px; border: 2px solid #bdc3c7; border-radius: 6px; box-sizing: border-box; transition: all 0.3s; background-color: #fff; }
+        input[type="text"]:focus, input[type="password"]:focus, select:focus { border-color: #3498db; outline: none; box-shadow: 0 0 8px rgba(52,152,219,0.3); }
+        input:disabled, select:disabled { background-color: #e8f0fe; cursor: not-allowed; }
+        #newSubjectInput { display: none; margin-top: 10px; }
+        .users-panel { margin-top: 25px; text-align: left; background: #f8f9fa; border-radius: 6px; padding: 15px; border: 1px solid #e0e0e0; }
+        .users-panel h3 { margin: 0 0 10px 0; font-size: 15px; color: #2c3e50; display: flex; justify-content: space-between; align-items: center; }
+        .users-panel .refresh-btn { background: none; border: 1px solid #3498db; color: #3498db; width: auto; padding: 4px 10px; font-size: 12px; border-radius: 4px; font-weight: normal; }
+        .users-panel .refresh-btn:hover { background: #3498db; color: white; }
+        #usersList { list-style: none; margin: 0; padding: 0; max-height: 150px; overflow-y: auto; }
+        #usersList li { padding: 6px 8px; font-size: 13px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; }
+        #usersList li:last-child { border-bottom: none; }
+        #usersList .empty-msg { color: #999; font-style: italic; }
         .password-target { font-size: 24px; font-weight: bold; color: #e74c3c; background-color: #fadbd8; padding: 12px; border-radius: 6px; display: inline-block; margin-bottom: 20px; letter-spacing: 3px; font-family: monospace; }
         button { background-color: #3498db; color: white; border: none; padding: 12px 20px; font-size: 16px; border-radius: 4px; cursor: pointer; transition: background-color 0.3s; font-weight: bold; width: 100%; }
         button:hover { background-color: #2980b9; }
@@ -25,6 +34,9 @@
         #messageBox { margin-top: 15px; font-weight: bold; min-height: 24px; font-size: 14px; padding: 8px; border-radius: 4px; }
         .error-msg { color: #c0392b; background-color: #f9ead6; border: 1px solid #f5b041; }
         .success-msg { color: #27ae60; background-color: #d4efdf; }
+        .cloud-status { font-size: 12px; margin-top: 6px; color: #7f8c8d; }
+        .cloud-ok { color: #27ae60; }
+        .cloud-fail { color: #c0392b; }
     </style>
 </head>
 <body>
@@ -44,8 +56,11 @@
         <div class="password-target">.tie5Roanl</div>
 
         <div class="input-group">
-            <label for="subjectId">1. Identificador / Nombre del Usuario: <span class="required-alert">(Requerido antes de escribir)</span></label>
-            <input type="text" id="subjectId" placeholder="Ej. Juan Pérez o s_sinodal" autocomplete="off">
+            <label for="subjectSelect">1. Identificador / Nombre del Usuario: <span class="required-alert">(Requerido antes de escribir)</span></label>
+            <select id="subjectSelect" disabled>
+                <option value="">Cargando usuarios...</option>
+            </select>
+            <input type="text" id="newSubjectInput" placeholder="Escribe el nombre del nuevo usuario" autocomplete="off">
         </div>
 
         <div class="input-group">
@@ -54,15 +69,29 @@
         </div>
 
         <div id="messageBox"></div>
+        <div id="cloudStatus" class="cloud-status"></div>
 
         <div class="status">
             Muestras guardadas en esta sesión: <span id="sampleCount" class="counter">0</span>
         </div>
 
         <button id="downloadBtn" class="download-btn">Descargar Dataset (.CSV)</button>
+
+        <div class="users-panel">
+            <h3>
+                Usuarios registrados en la hoja
+                <button id="refreshUsersBtn" class="refresh-btn" type="button">🔄 Actualizar</button>
+            </h3>
+            <ul id="usersList"><li class="empty-msg">Cargando...</li></ul>
+        </div>
     </div>
 
     <script>
+        // --- CONFIGURACIÓN DE ENVÍO A GOOGLE SHEETS ---
+        // Pega aquí la URL de implementación de tu Apps Script (termina en /exec).
+        // Instrucciones completas al final de la respuesta que te generó este archivo.
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzO3hn613CIXuASRSALlLZDjHvl0nxuQoyWxhMR843Z6K4G2l49pAZCOc5SFosRlGmO/exec";
+
         const TARGET_PASSWORD = ".tie5Roanl";
         let capturedEvents = [];
         let samples = [];
@@ -70,10 +99,15 @@
         let activeKeys = new Set();
 
         const passwordField = document.getElementById('passwordField');
-        const subjectIdField = document.getElementById('subjectId');
+        const subjectSelect = document.getElementById('subjectSelect');
+        const newSubjectInput = document.getElementById('newSubjectInput');
+        const NEW_USER_VALUE = '__new__';
         const sampleCountDisplay = document.getElementById('sampleCount');
         const messageBox = document.getElementById('messageBox');
         const downloadBtn = document.getElementById('downloadBtn');
+        const cloudStatus = document.getElementById('cloudStatus');
+        const usersList = document.getElementById('usersList');
+        const refreshUsersBtn = document.getElementById('refreshUsersBtn');
 
         const COLUMNS = [
             'subject', 'sessionIndex', 'rep',
@@ -84,16 +118,126 @@
             'H.n', 'DD.n.l', 'UD.n.l', 'H.l', 'DD.l.Return', 'UD.l.Return', 'H.Return'
         ];
 
-        // --- VALIDACIÓN 1: Desbloquear contraseña solo si hay un nombre válido ---
-        subjectIdField.addEventListener('input', () => {
-            if (subjectIdField.value.trim().length > 2) {
+        // --- VALIDACIÓN 1: Desbloquear contraseña solo si hay un usuario seleccionado o escrito ---
+        function getCurrentSubject() {
+            if (newSubjectInput.style.display === 'block') {
+                return newSubjectInput.value.trim();
+            }
+            if (subjectSelect.value === NEW_USER_VALUE) {
+                return newSubjectInput.value.trim();
+            }
+            return subjectSelect.value;
+        }
+
+        function updatePasswordAvailability() {
+            if (getCurrentSubject().length > 2) {
                 passwordField.disabled = false;
                 passwordField.placeholder = "Escribe aquí...";
             } else {
                 passwordField.disabled = true;
-                passwordField.placeholder = "Primero ingresa tu nombre arriba...";
+                passwordField.placeholder = "Primero selecciona o ingresa tu nombre arriba...";
             }
+        }
+
+        subjectSelect.addEventListener('change', () => {
+            if (subjectSelect.value === NEW_USER_VALUE) {
+                newSubjectInput.style.display = 'block';
+                newSubjectInput.value = '';
+                newSubjectInput.focus();
+            } else {
+                newSubjectInput.style.display = 'none';
+            }
+            updatePasswordAvailability();
         });
+
+        newSubjectInput.addEventListener('input', updatePasswordAvailability);
+
+        function addSubjectToDropdownIfMissing(name) {
+            const exists = Array.from(subjectSelect.options).some(o => o.value === name);
+            if (!exists) {
+                const opt = document.createElement('option');
+                opt.value = name;
+                opt.textContent = name;
+                subjectSelect.insertBefore(opt, subjectSelect.lastElementChild);
+
+                const li = document.createElement('li');
+                li.textContent = name;
+                if (usersList.querySelector('.empty-msg')) usersList.innerHTML = '';
+                usersList.appendChild(li);
+            }
+        }
+
+        function renderUsersList(subjects) {
+            usersList.innerHTML = '';
+            if (!subjects || subjects.length === 0) {
+                usersList.innerHTML = '<li class="empty-msg">Aún no hay usuarios registrados.</li>';
+                return;
+            }
+            subjects.forEach(name => {
+                const li = document.createElement('li');
+                li.textContent = name;
+                usersList.appendChild(li);
+            });
+        }
+
+        function populateSubjectSelect(subjects) {
+            subjectSelect.innerHTML = '';
+            const placeholder = document.createElement('option');
+            placeholder.value = '';
+            placeholder.textContent = '-- Selecciona un usuario --';
+            subjectSelect.appendChild(placeholder);
+
+            subjects.forEach(name => {
+                const opt = document.createElement('option');
+                opt.value = name;
+                opt.textContent = name;
+                subjectSelect.appendChild(opt);
+            });
+
+            const newOpt = document.createElement('option');
+            newOpt.value = NEW_USER_VALUE;
+            newOpt.textContent = '+ Nuevo usuario...';
+            subjectSelect.appendChild(newOpt);
+
+            subjectSelect.disabled = false;
+            renderUsersList(subjects);
+        }
+
+        // Modo de respaldo: si no se puede cargar la lista (sin URL configurada o error de red),
+        // se oculta el desplegable y se usa un campo de texto libre, igual que antes.
+        function enableManualSubjectMode(warning) {
+            subjectSelect.style.display = 'none';
+            newSubjectInput.style.display = 'block';
+            newSubjectInput.placeholder = "Ej. Juan Pérez o s_sinodal";
+            usersList.innerHTML = '<li class="empty-msg">No disponible (sin conexión a la hoja).</li>';
+            if (warning) {
+                cloudStatus.textContent = warning;
+                cloudStatus.className = 'cloud-status cloud-fail';
+            }
+        }
+
+        refreshUsersBtn.addEventListener('click', () => {
+            usersList.innerHTML = '<li class="empty-msg">Actualizando...</li>';
+            loadSubjects();
+        });
+
+        async function loadSubjects() {
+            if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.startsWith("PEGA_AQUI")) {
+                enableManualSubjectMode("Conecta tu Apps Script (ver instrucciones) para ver la lista de usuarios.");
+                return;
+            }
+            try {
+                const resp = await fetch(APPS_SCRIPT_URL + "?action=subjects", { method: 'GET' });
+                const data = await resp.json();
+                if (data.status !== 'ok') throw new Error(data.message || 'Respuesta inesperada del servidor');
+                populateSubjectSelect(data.subjects || []);
+            } catch (err) {
+                console.error("No se pudo cargar la lista de usuarios:", err);
+                enableManualSubjectMode("No se pudo cargar la lista de usuarios. Escribe tu nombre manualmente.");
+            }
+        }
+
+        loadSubjects();
 
         // --- VALIDACIONES ANTIRROTURA EN EL INPUT DE CONTRASEÑA ---
         passwordField.addEventListener('keydown', (e) => {
@@ -189,7 +333,7 @@
 
             let tempDown = {};
             let processedEvents = [];
-            let subject = subjectIdField.value.trim();
+            let subject = getCurrentSubject();
 
             const nameMap = { '.': 'period', '5': 'five', 'Enter': 'Return', 'Shift': 'Shift.r' };
 
@@ -259,7 +403,43 @@
             repCounter++;
             sampleCountDisplay.textContent = samples.length;
             showMessage("¡Muestra guardada correctamente con Shift Derecho!");
+            sendToSheet(row);
+
+            if (subjectSelect.style.display !== 'none' && subjectSelect.value === NEW_USER_VALUE) {
+                addSubjectToDropdownIfMissing(subject);
+                subjectSelect.value = subject;
+                newSubjectInput.style.display = 'none';
+            }
+
             resetCapture();
+        }
+
+        // --- Envío en segundo plano a la Google Sheet vía Apps Script ---
+        async function sendToSheet(row) {
+            if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.startsWith("PEGA_AQUI")) {
+                cloudStatus.textContent = "Envío a la nube no configurado (solo se guarda localmente).";
+                cloudStatus.className = "cloud-status";
+                return;
+            }
+            cloudStatus.textContent = "Enviando a Google Sheets...";
+            cloudStatus.className = "cloud-status";
+            try {
+                // 'text/plain' evita el preflight CORS; 'no-cors' evita que el navegador
+                // bloquee la respuesta opaca del Apps Script. No podemos leer el resultado,
+                // así que se asume éxito si fetch no lanza una excepción de red.
+                await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ subject: row[0], row: row })
+                });
+                cloudStatus.textContent = "☁️ Muestra sincronizada con Google Sheets.";
+                cloudStatus.className = "cloud-status cloud-ok";
+            } catch (err) {
+                cloudStatus.textContent = "⚠️ No se pudo enviar a la nube (sin conexión). Se guardó localmente; descarga el CSV al terminar.";
+                cloudStatus.className = "cloud-status cloud-fail";
+                console.error("Error enviando a Google Sheets:", err);
+            }
         }
 
         function resetCapture() {
@@ -287,7 +467,7 @@
             var encodedUri = encodeURI(csvContent);
             var link = document.createElement("a");
             link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `Dinamica_Tecleo_${subjectIdField.value.trim().replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.csv`);
+            link.setAttribute("download", `Dinamica_Tecleo_${getCurrentSubject().replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
