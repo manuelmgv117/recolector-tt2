@@ -37,60 +37,166 @@
         .cloud-status { font-size: 12px; margin-top: 6px; color: #7f8c8d; }
         .cloud-ok { color: #27ae60; }
         .cloud-fail { color: #c0392b; }
+        .tabs { display: flex; gap: 5px; margin-bottom: 20px; border-bottom: 2px solid #ecf0f1; }
+        .tab-btn { flex: 1; background: none; color: #7f8c8d; border: none; padding: 12px; font-size: 15px; cursor: pointer; border-radius: 0; font-weight: 500; }
+        .tab-btn.active { color: #2c3e50; border-bottom: 3px solid #3498db; margin-bottom: -2px; background: #ecf0f1; }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+        .model-status { background: #eafaf1; border-left: 5px solid #27ae60; border-radius: 4px; padding: 12px; margin-bottom: 15px; text-align: left; font-size: 13px; }
+        .model-status.no-model { background: #fef5e7; border-left-color: #f39c12; }
+        .model-status.error { background: #fadbd8; border-left-color: #c0392b; }
+        .model-status .label { font-weight: bold; color: #2c3e50; }
+        .attempt-progress { display: flex; gap: 5px; justify-content: center; margin: 15px 0; }
+        .attempt-dot { width: 24px; height: 24px; border-radius: 50%; border: 2px solid #bdc3c7; background: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; color: #7f8c8d; }
+        .attempt-dot.hit { background: #2ecc71; border-color: #27ae60; color: white; }
+        .attempt-dot.miss { background: #e74c3c; border-color: #c0392b; color: white; }
+        .verdict-box { padding: 20px; border-radius: 6px; margin-top: 15px; font-size: 18px; font-weight: bold; text-align: center; }
+        .verdict-accept { background: #d4efdf; color: #196f3d; border: 2px solid #27ae60; }
+        .verdict-reject { background: #fadbd8; color: #922b21; border: 2px solid #c0392b; }
+        .settings-row { display: flex; gap: 10px; align-items: center; margin-top: 10px; }
+        .settings-row label { flex: 1; margin: 0; font-weight: normal; font-size: 13px; }
+        .settings-row input[type="number"] { width: 80px; padding: 6px; font-size: 14px; }
+        .btn-secondary { background: #95a5a6; margin-top: 10px; }
+        .btn-secondary:hover { background: #7f8c8d; }
+        details { margin-top: 15px; text-align: left; font-size: 13px; }
+        details summary { cursor: pointer; color: #3498db; padding: 6px 0; }
     </style>
+    <script src="fuzzyart.js"></script>
 </head>
 <body>
 
     <div class="container">
-        <h1>Recolección de Biometría Conductual</h1>
-        
-        <div class="instructions">
-            <b>Instrucciones obligatorias:</b>
-            <ol style="margin: 5px 0 0 20px; padding: 0;">
-                <li>Primero, ingresa obligatoriamente tu <b>nombre o identificador</b> en la casilla superior.</li>
-                <li>Escribe la contraseña de forma fluida. <b>Usa obligatoriamente el Shift Derecho</b> para la letra "R".</li>
-                <li>Si te equivocas, presionas borrar o usas combinaciones extrañas, la casilla se limpiará automáticamente para no corromper el dataset.</li>
-            </ol>
-        </div>
-        
-        <div class="password-target">.tie5Roanl</div>
+        <h1>Biometría Conductual — TT2</h1>
 
-        <div class="input-group">
-            <label for="subjectSelect">1. Identificador / Nombre del Usuario: <span class="required-alert">(Requerido antes de escribir)</span></label>
-            <select id="subjectSelect" disabled>
-                <option value="">Cargando usuarios...</option>
-            </select>
-            <input type="text" id="newSubjectInput" placeholder="Escribe el nombre del nuevo usuario" autocomplete="off">
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="capture">📝 Capturar muestras</button>
+            <button class="tab-btn" data-tab="auth">🔐 Autenticar usuario</button>
         </div>
 
-        <div class="input-group">
-            <label for="passwordField">2. Escribe la contraseña + [Enter]:</label>
-            <input type="password" id="passwordField" autocomplete="off" placeholder="Primero ingresa tu nombre arriba..." disabled>
+        <!-- ===================== TAB: CAPTURA ===================== -->
+        <div class="tab-panel active" id="tab-capture">
+            <div class="instructions">
+                <b>Instrucciones obligatorias:</b>
+                <ol style="margin: 5px 0 0 20px; padding: 0;">
+                    <li>Primero, ingresa obligatoriamente tu <b>nombre o identificador</b> en la casilla superior.</li>
+                    <li>Escribe la contraseña de forma fluida. <b>Usa obligatoriamente el Shift Derecho</b> para la letra "R".</li>
+                    <li>Si te equivocas, presionas borrar o usas combinaciones extrañas, la casilla se limpiará automáticamente para no corromper el dataset.</li>
+                    <li>Cada muestra válida se envía a Google Sheets <b>y se agrega automáticamente a tu modelo Fuzzy ART</b>.</li>
+                </ol>
+            </div>
+
+            <div class="password-target">.tie5Roanl</div>
+
+            <div class="input-group">
+                <label for="subjectSelect">1. Identificador / Nombre del Usuario: <span class="required-alert">(Requerido antes de escribir)</span></label>
+                <select id="subjectSelect" disabled>
+                    <option value="">Cargando usuarios...</option>
+                </select>
+                <input type="text" id="newSubjectInput" placeholder="Escribe el nombre del nuevo usuario" autocomplete="off">
+            </div>
+
+            <div class="input-group">
+                <label for="passwordField">2. Escribe la contraseña + [Enter]:</label>
+                <input type="password" id="passwordField" autocomplete="off" placeholder="Primero ingresa tu nombre arriba..." disabled>
+            </div>
+
+            <div id="messageBox"></div>
+            <div id="cloudStatus" class="cloud-status"></div>
+            <div id="modelUpdateStatus" class="cloud-status"></div>
+
+            <div class="status">
+                Muestras guardadas en esta sesión: <span id="sampleCount" class="counter">0</span>
+            </div>
+
+            <button id="downloadBtn" class="download-btn">Descargar Dataset (.CSV)</button>
+
+            <div class="users-panel">
+                <h3>
+                    Usuarios registrados en la hoja
+                    <button id="refreshUsersBtn" class="refresh-btn" type="button">🔄 Actualizar</button>
+                </h3>
+                <ul id="usersList"><li class="empty-msg">Cargando...</li></ul>
+            </div>
         </div>
 
-        <div id="messageBox"></div>
-        <div id="cloudStatus" class="cloud-status"></div>
+        <!-- ===================== TAB: AUTENTICACIÓN ===================== -->
+        <div class="tab-panel" id="tab-auth">
+            <div class="instructions">
+                <b>Autenticación por dinámica de tecleo:</b>
+                <ol style="margin: 5px 0 0 20px; padding: 0;">
+                    <li>Elige el usuario que dice ser quien intenta acceder.</li>
+                    <li>Se cargará su modelo Fuzzy ART entrenado.</li>
+                    <li>Escribe la contraseña varias veces (ventana de votación).</li>
+                    <li>El sistema decide: <b>AUTÉNTICO</b> o <b>IMPOSTOR</b>.</li>
+                </ol>
+            </div>
 
-        <div class="status">
-            Muestras guardadas en esta sesión: <span id="sampleCount" class="counter">0</span>
-        </div>
+            <div class="password-target">.tie5Roanl</div>
 
-        <button id="downloadBtn" class="download-btn">Descargar Dataset (.CSV)</button>
+            <div class="input-group">
+                <label for="authSubjectSelect">1. ¿Quién dice ser?</label>
+                <select id="authSubjectSelect" disabled>
+                    <option value="">Cargando usuarios...</option>
+                </select>
+            </div>
 
-        <div class="users-panel">
-            <h3>
-                Usuarios registrados en la hoja
-                <button id="refreshUsersBtn" class="refresh-btn" type="button">🔄 Actualizar</button>
-            </h3>
-            <ul id="usersList"><li class="empty-msg">Cargando...</li></ul>
+            <div id="authModelStatus" class="model-status no-model">
+                Selecciona un usuario para cargar su modelo.
+            </div>
+
+            <div class="input-group">
+                <label for="authPasswordField">2. Escribe la contraseña + [Enter] (intento <span id="attemptNum">1</span> de <span id="attemptTotal">7</span>):</label>
+                <input type="password" id="authPasswordField" autocomplete="off" placeholder="Selecciona un usuario primero..." disabled>
+            </div>
+
+            <div class="attempt-progress" id="attemptProgress"></div>
+
+            <div id="authMessageBox"></div>
+            <div id="verdictBox"></div>
+
+            <button id="resetAuthBtn" class="btn-secondary">Reiniciar sesión de autenticación</button>
+
+            <details>
+                <summary>⚙️ Reentrenamiento manual del modelo</summary>
+                <p style="color: #7f8c8d; font-size: 12px;">
+                    Reentrena el modelo desde cero con un subconjunto de las muestras almacenadas en el Sheet.
+                    Útil si cambiaste hiperparámetros o si quieres olvidar patrones antiguos.
+                </p>
+                <div class="settings-row">
+                    <label for="retrainNSamples">Usar últimas N muestras (0 = todas):</label>
+                    <input type="number" id="retrainNSamples" value="0" min="0" step="1">
+                </div>
+                <div class="settings-row">
+                    <label for="retrainRho">Vigilancia rho (0..1):</label>
+                    <input type="number" id="retrainRho" value="0.897" min="0" max="1" step="0.001">
+                </div>
+                <div class="settings-row">
+                    <label for="retrainThreshold">Aciertos requeridos:</label>
+                    <input type="number" id="retrainThreshold" value="4" min="1" step="1">
+                </div>
+                <div class="settings-row">
+                    <label for="retrainWindow">Total de intentos:</label>
+                    <input type="number" id="retrainWindow" value="7" min="1" step="1">
+                </div>
+                <button id="retrainBtn" class="btn-secondary" type="button">🔁 Reentrenar desde cero</button>
+                <div id="retrainStatus" class="cloud-status"></div>
+            </details>
         </div>
     </div>
 
     <script>
         // --- CONFIGURACIÓN DE ENVÍO A GOOGLE SHEETS ---
         // Pega aquí la URL de implementación de tu Apps Script (termina en /exec).
-        // Instrucciones completas al final de la respuesta que te generó este archivo.
         const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzO3hn613CIXuASRSALlLZDjHvl0nxuQoyWxhMR843Z6K4G2l49pAZCOc5SFosRlGmO/exec";
+
+        // --- CONFIGURACIÓN DEL MODELO FUZZY ART ---
+        // Muestras mínimas para hacer el primer entrenamiento del modelo de un usuario.
+        // Con menos que esto, Fuzzy ART no tiene suficiente variedad para separar
+        // prototipos legítimos de ruido; solo se acumulan hasta llegar al umbral.
+        const MIN_SAMPLES_FIRST_TRAIN = 15;
+        // Hiperparámetros por defecto (los ajustaste en Colab; ajusta si cambian):
+        const DEFAULT_HYPERPARAMS = { rho: 0.897, alpha: 0.0001, beta: 0.5 };
+        const DEFAULT_VOTING = { window_size: 7, threshold: 4 };
 
         const TARGET_PASSWORD = ".tie5Roanl";
         let capturedEvents = [];
@@ -108,6 +214,30 @@
         const cloudStatus = document.getElementById('cloudStatus');
         const usersList = document.getElementById('usersList');
         const refreshUsersBtn = document.getElementById('refreshUsersBtn');
+        const modelUpdateStatus = document.getElementById('modelUpdateStatus');
+
+        // --- Autenticación (tab 2) ---
+        const authSubjectSelect = document.getElementById('authSubjectSelect');
+        const authModelStatus   = document.getElementById('authModelStatus');
+        const authPasswordField = document.getElementById('authPasswordField');
+        const authMessageBox    = document.getElementById('authMessageBox');
+        const attemptProgress   = document.getElementById('attemptProgress');
+        const attemptNumSpan    = document.getElementById('attemptNum');
+        const attemptTotalSpan  = document.getElementById('attemptTotal');
+        const verdictBox        = document.getElementById('verdictBox');
+        const resetAuthBtn      = document.getElementById('resetAuthBtn');
+        const retrainBtn        = document.getElementById('retrainBtn');
+        const retrainStatus     = document.getElementById('retrainStatus');
+        const retrainNSamples   = document.getElementById('retrainNSamples');
+        const retrainRho        = document.getElementById('retrainRho');
+        const retrainThreshold  = document.getElementById('retrainThreshold');
+        const retrainWindow     = document.getElementById('retrainWindow');
+
+        // Estado: modelos cacheados en memoria (evita re-fetch en cada muestra)
+        // Estructura: { subject: UserModel | { pending: [samples[]] } }
+        const modelsCache = {};
+        // Autenticación en curso: intentos y sus predicciones
+        let authState = null; // { subject, model, attemptIdx, hits[] }
 
         const COLUMNS = [
             'subject', 'sessionIndex', 'rep',
@@ -201,6 +331,7 @@
 
             subjectSelect.disabled = false;
             renderUsersList(subjects);
+            populateAuthSubjectSelect(subjects);
         }
 
         // Modo de respaldo: si no se puede cargar la lista (sin URL configurada o error de red),
@@ -210,6 +341,8 @@
             newSubjectInput.style.display = 'block';
             newSubjectInput.placeholder = "Ej. Juan Pérez o s_sinodal";
             usersList.innerHTML = '<li class="empty-msg">No disponible (sin conexión a la hoja).</li>';
+            authSubjectSelect.innerHTML = '<option value="">Sin conexión al servidor</option>';
+            setAuthModelStatus('La autenticación requiere el Apps Script configurado y desplegado.', 'error');
             if (warning) {
                 cloudStatus.textContent = warning;
                 cloudStatus.className = 'cloud-status cloud-fail';
@@ -405,10 +538,22 @@
             showMessage("¡Muestra guardada correctamente con Shift Derecho!");
             sendToSheet(row);
 
+            // Entrenamiento automático: extrae el vector de features y lo pasa al modelo del sujeto.
+            // Corre en segundo plano; los errores no bloquean la próxima captura.
+            const featureVec = rowToFeatureVector(row);
+            trainOnNewSample(subject, featureVec);
+
             if (subjectSelect.style.display !== 'none' && subjectSelect.value === NEW_USER_VALUE) {
                 addSubjectToDropdownIfMissing(subject);
                 subjectSelect.value = subject;
                 newSubjectInput.style.display = 'none';
+                // También reflejar el nuevo usuario en el desplegable de autenticación
+                if (!Array.from(authSubjectSelect.options).some(o => o.value === subject)) {
+                    const opt = document.createElement('option');
+                    opt.value = subject;
+                    opt.textContent = subject;
+                    authSubjectSelect.appendChild(opt);
+                }
             }
 
             resetCapture();
@@ -441,6 +586,454 @@
                 console.error("Error enviando a Google Sheets:", err);
             }
         }
+
+        // =============================================================================
+        // TABS
+        // =============================================================================
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+            });
+        });
+
+        // =============================================================================
+        // CAPA DE MODELOS: cargar, guardar, entrenar
+        // =============================================================================
+
+        // Extrae el vector de 31 features numéricas de la fila COLUMNS (que trae
+        // subject/sessionIndex/rep al principio como strings/enteros).
+        function rowToFeatureVector(row) {
+            const vec = new Array(COLUMNS.length - 3);
+            for (let i = 3; i < COLUMNS.length; i++) {
+                vec[i - 3] = parseFloat(row[i]);
+            }
+            return vec;
+        }
+
+        function setModelUpdateStatus(text, cls) {
+            modelUpdateStatus.textContent = text;
+            modelUpdateStatus.className = 'cloud-status ' + (cls || '');
+        }
+
+        // Descarga el JSON del modelo del sujeto desde Apps Script (o null si no existe).
+        async function fetchStoredModel(subject) {
+            const url = APPS_SCRIPT_URL + '?action=model&subject=' + encodeURIComponent(subject);
+            const resp = await fetch(url, { method: 'GET' });
+            const data = await resp.json();
+            if (data.status !== 'ok') throw new Error(data.message || 'Error al cargar modelo');
+            return data.model; // puede ser null
+        }
+
+        // Descarga todas las muestras (features) del sujeto desde el Sheet.
+        async function fetchSubjectSamples(subject) {
+            const url = APPS_SCRIPT_URL + '?action=samples&subject=' + encodeURIComponent(subject);
+            const resp = await fetch(url, { method: 'GET' });
+            const data = await resp.json();
+            if (data.status !== 'ok') throw new Error(data.message || 'Error al cargar muestras');
+            // Filtra filas donde algún valor no sea número finito
+            return data.samples.filter(row =>
+                row.length === 31 && row.every(v => typeof v === 'number' && isFinite(v))
+            );
+        }
+
+        // POST del modelo a Drive (via Apps Script).
+        async function saveModelToDrive(subject, modelObj) {
+            if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.startsWith("PEGA_AQUI")) return;
+            await fetch(APPS_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ type: 'model', subject: subject, model: modelObj })
+            });
+        }
+
+        // Punto único de entrada tras una muestra válida: actualiza el modelo del sujeto.
+        // Flujo:
+        //   - Si ya hay UserModel en caché -> incremental update + guarda.
+        //   - Si no, intenta cargar de Drive -> si existe, incremental + guarda.
+        //   - Si no existe modelo aún:
+        //       -> acumula la muestra en un buffer `pending`
+        //       -> cuando el buffer alcanza MIN_SAMPLES_FIRST_TRAIN, entrena por primera vez.
+        async function trainOnNewSample(subject, featureVec) {
+            if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.startsWith("PEGA_AQUI")) {
+                setModelUpdateStatus("Modelo local no disponible sin URL de Apps Script.", 'cloud-fail');
+                return;
+            }
+            try {
+                let entry = modelsCache[subject];
+
+                // Primera vez que vemos a este sujeto en esta sesión: intentar cargar de Drive
+                if (!entry) {
+                    setModelUpdateStatus("🔎 Buscando modelo guardado en Drive...", '');
+                    const stored = await fetchStoredModel(subject);
+                    if (stored) {
+                        const model = UserModel.fromJSON(stored);
+                        modelsCache[subject] = model;
+                        entry = model;
+                    } else {
+                        // No hay modelo aún: iniciar buffer de pendientes.
+                        modelsCache[subject] = { pending: [] };
+                        entry = modelsCache[subject];
+                    }
+                }
+
+                // Caso A: ya hay modelo entrenado -> update incremental
+                if (entry instanceof UserModel) {
+                    entry.incrementalUpdate(featureVec);
+                    await saveModelToDrive(subject, entry.toJSON());
+                    setModelUpdateStatus(
+                        `🧠 Modelo actualizado (${entry.n_samples_trained} muestras, ${entry.art.num_categories} categorías).`,
+                        'cloud-ok'
+                    );
+                    return;
+                }
+
+                // Caso B: aún en fase de acumulación
+                entry.pending.push(featureVec);
+                const remaining = MIN_SAMPLES_FIRST_TRAIN - entry.pending.length;
+
+                if (remaining > 0) {
+                    setModelUpdateStatus(
+                        `🧠 Acumulando muestras para entrenar (faltan ${remaining} de ${MIN_SAMPLES_FIRST_TRAIN}).`,
+                        ''
+                    );
+                    return;
+                }
+
+                // Se alcanzó el umbral: entrenar por primera vez
+                setModelUpdateStatus("🧠 Entrenando modelo por primera vez...", '');
+                const model = new UserModel(subject, { ...DEFAULT_HYPERPARAMS, ...DEFAULT_VOTING });
+                model.initialTrain(entry.pending);
+                modelsCache[subject] = model;
+                await saveModelToDrive(subject, model.toJSON());
+                setModelUpdateStatus(
+                    `🎉 Modelo entrenado y guardado (${model.n_samples_trained} muestras, ${model.art.num_categories} categorías).`,
+                    'cloud-ok'
+                );
+            } catch (err) {
+                console.error("Error en trainOnNewSample:", err);
+                setModelUpdateStatus("⚠️ No se pudo actualizar el modelo: " + err.message, 'cloud-fail');
+            }
+        }
+
+        // =============================================================================
+        // AUTENTICACIÓN (tab 2)
+        // =============================================================================
+
+        function renderAuthProgress(hitsArr, total) {
+            attemptProgress.innerHTML = '';
+            for (let i = 0; i < total; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'attempt-dot';
+                if (i < hitsArr.length) {
+                    dot.classList.add(hitsArr[i] === 1 ? 'hit' : 'miss');
+                    dot.textContent = hitsArr[i] === 1 ? '✓' : '✗';
+                } else {
+                    dot.textContent = i + 1;
+                }
+                attemptProgress.appendChild(dot);
+            }
+        }
+
+        function setAuthMessage(text, isError) {
+            authMessageBox.textContent = text;
+            authMessageBox.className = isError ? 'error-msg' : (text ? 'success-msg' : '');
+        }
+
+        function setAuthModelStatus(html, cls) {
+            authModelStatus.innerHTML = html;
+            authModelStatus.className = 'model-status ' + (cls || '');
+        }
+
+        function populateAuthSubjectSelect(subjects) {
+            authSubjectSelect.innerHTML = '';
+            const placeholder = document.createElement('option');
+            placeholder.value = '';
+            placeholder.textContent = '-- Selecciona un usuario --';
+            authSubjectSelect.appendChild(placeholder);
+            subjects.forEach(name => {
+                const opt = document.createElement('option');
+                opt.value = name;
+                opt.textContent = name;
+                authSubjectSelect.appendChild(opt);
+            });
+            authSubjectSelect.disabled = false;
+        }
+
+        async function onAuthSubjectChange() {
+            const subject = authSubjectSelect.value;
+            verdictBox.innerHTML = '';
+            verdictBox.className = '';
+            authState = null;
+
+            if (!subject) {
+                setAuthModelStatus('Selecciona un usuario para cargar su modelo.', 'no-model');
+                authPasswordField.disabled = true;
+                authPasswordField.placeholder = "Selecciona un usuario primero...";
+                renderAuthProgress([], DEFAULT_VOTING.window_size);
+                attemptTotalSpan.textContent = DEFAULT_VOTING.window_size;
+                attemptNumSpan.textContent = 1;
+                return;
+            }
+
+            setAuthModelStatus('🔎 Cargando modelo desde Drive...', 'no-model');
+            try {
+                const stored = await fetchStoredModel(subject);
+                if (!stored) {
+                    setAuthModelStatus(
+                        `<span class="label">No hay modelo entrenado para <b>${subject}</b>.</span><br>` +
+                        `Captura al menos ${MIN_SAMPLES_FIRST_TRAIN} muestras en la pestaña anterior para generarlo.`,
+                        'no-model'
+                    );
+                    authPasswordField.disabled = true;
+                    return;
+                }
+                const model = UserModel.fromJSON(stored);
+                modelsCache[subject] = model;
+                authState = { subject, model, hits: [] };
+
+                setAuthModelStatus(
+                    `<span class="label">✅ Modelo cargado para ${subject}</span><br>` +
+                    `Entrenado con <b>${model.n_samples_trained}</b> muestras &nbsp;·&nbsp; ` +
+                    `<b>${model.art.num_categories}</b> prototipos &nbsp;·&nbsp; ` +
+                    `Política: <b>${model.voting.threshold} de ${model.voting.window_size}</b>`,
+                    ''
+                );
+                attemptTotalSpan.textContent = model.voting.window_size;
+                attemptNumSpan.textContent = 1;
+                renderAuthProgress([], model.voting.window_size);
+                authPasswordField.disabled = false;
+                authPasswordField.placeholder = "Escribe la contraseña + Enter...";
+                authPasswordField.focus();
+            } catch (err) {
+                setAuthModelStatus('❌ Error al cargar el modelo: ' + err.message, 'error');
+            }
+        }
+
+        function processAuthAttempt(featureVec) {
+            if (!authState) return;
+            const { model } = authState;
+            // predict devuelve [0/1] para un array de muestras — le pasamos una sola
+            const normalized = model.scaler.transform([featureVec]);
+            const pred = model.art.predict(normalized)[0];
+            authState.hits.push(pred);
+            renderAuthProgress(authState.hits, model.voting.window_size);
+            attemptNumSpan.textContent = Math.min(authState.hits.length + 1, model.voting.window_size);
+
+            if (authState.hits.length >= model.voting.window_size) {
+                const verdict = singleSessionVerdict(authState.hits, model.voting.threshold);
+                showVerdict(verdict);
+                authPasswordField.disabled = true;
+            }
+        }
+
+        function showVerdict({ hits, total, accepted }) {
+            if (accepted) {
+                verdictBox.className = 'verdict-box verdict-accept';
+                verdictBox.innerHTML = `✅ AUTÉNTICO<br><span style="font-size:14px;font-weight:normal;">Aciertos: ${hits} de ${total}</span>`;
+            } else {
+                verdictBox.className = 'verdict-box verdict-reject';
+                verdictBox.innerHTML = `❌ IMPOSTOR (o error de tecleo)<br><span style="font-size:14px;font-weight:normal;">Aciertos: ${hits} de ${total} — se requerían ${authState.model.voting.threshold}</span>`;
+            }
+        }
+
+        resetAuthBtn.addEventListener('click', () => {
+            if (authState) authState.hits = [];
+            verdictBox.innerHTML = '';
+            verdictBox.className = '';
+            authPasswordField.value = '';
+            authCapturedEvents = [];
+            if (authState) {
+                renderAuthProgress([], authState.model.voting.window_size);
+                attemptNumSpan.textContent = 1;
+                authPasswordField.disabled = false;
+                authPasswordField.focus();
+            }
+        });
+
+        authSubjectSelect.addEventListener('change', onAuthSubjectChange);
+
+        // =============================================================================
+        // CAPTURA DENTRO DEL TAB DE AUTENTICACIÓN
+        // Reutiliza toda la lógica de validación de tecleo, pero al final NO envía
+        // a Sheets ni entrena — sino que corre la predicción.
+        // =============================================================================
+        let authCapturedEvents = [];
+        const authActiveKeys = new Set();
+
+        authPasswordField.addEventListener('keydown', (e) => {
+            if (e.repeat) return;
+            if (['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(e.key)) {
+                e.preventDefault();
+                authCapturedEvents = []; authActiveKeys.clear(); authPasswordField.value = '';
+                setAuthMessage("Se detectó corrección o retroceso. Escribe la palabra completa de corrido.", true);
+                return;
+            }
+            if (e.key === 'CapsLock') {
+                e.preventDefault();
+                authCapturedEvents = []; authActiveKeys.clear(); authPasswordField.value = '';
+                setAuthMessage("Desactiva el Bloq Mayús. Usa el Shift Derecho para la 'R'.", true);
+                return;
+            }
+            if (e.ctrlKey || e.metaKey || e.altKey) {
+                e.preventDefault();
+                authCapturedEvents = []; authActiveKeys.clear(); authPasswordField.value = '';
+                setAuthMessage("Comando no permitido durante la captura.", true);
+                return;
+            }
+            if (e.key === 'Shift' && e.code !== 'ShiftRight') {
+                e.preventDefault();
+                authCapturedEvents = []; authActiveKeys.clear(); authPasswordField.value = '';
+                setAuthMessage("¡Error! Debes usar únicamente el SHIFT DERECHO para la 'R'.", true);
+                return;
+            }
+            if (authCapturedEvents.length === 0) setAuthMessage('', false);
+            authActiveKeys.add(e.code);
+            authCapturedEvents.push({ key: e.key, code: e.code, type: 'down', time: performance.now() });
+        });
+
+        authPasswordField.addEventListener('keyup', (e) => {
+            if (e.key === 'CapsLock') return;
+            authActiveKeys.delete(e.code);
+            if (authCapturedEvents.length > 0) {
+                authCapturedEvents.push({ key: e.key, code: e.code, type: 'up', time: performance.now() });
+            }
+            if (e.key === 'Enter') processAuthSequence();
+        });
+
+        authPasswordField.addEventListener('paste', (e) => e.preventDefault());
+        authPasswordField.addEventListener('contextmenu', (e) => e.preventDefault());
+
+        function processAuthSequence() {
+            if (authPasswordField.value !== TARGET_PASSWORD) {
+                setAuthMessage("Contraseña incorrecta o incompleta. Intenta de nuevo de forma fluida.", true);
+                authCapturedEvents = []; authActiveKeys.clear(); authPasswordField.value = '';
+                setTimeout(() => authPasswordField.focus(), 200);
+                return;
+            }
+            const featureVec = extractFeatureVectorFromEvents(authCapturedEvents);
+            if (!featureVec) {
+                setAuthMessage("Error crítico en la cadencia. Repite el intento.", true);
+                authCapturedEvents = []; authActiveKeys.clear(); authPasswordField.value = '';
+                setTimeout(() => authPasswordField.focus(), 200);
+                return;
+            }
+            setAuthMessage("Intento registrado.", false);
+            processAuthAttempt(featureVec);
+            authCapturedEvents = []; authActiveKeys.clear(); authPasswordField.value = '';
+            setTimeout(() => authPasswordField.focus(), 200);
+        }
+
+        // Extrae el vector de 31 features (misma lógica que processSequence pero devuelve el vector).
+        function extractFeatureVectorFromEvents(events) {
+            let tempDown = {};
+            let processedEvents = [];
+            const nameMap = { '.': 'period', '5': 'five', 'Enter': 'Return', 'Shift': 'Shift.r' };
+            for (let e of events) {
+                let keyChar = e.key;
+                let eventType = e.type;
+                let timestamp = e.time / 1000.0;
+                let keyName = '';
+                if (e.code === 'ShiftRight') keyName = 'Shift.r';
+                else if (e.code === 'Enter') keyName = 'Return';
+                else if (e.code === 'KeyR') continue;
+                else if (nameMap[keyChar]) keyName = nameMap[keyChar];
+                else keyName = keyChar;
+
+                if (eventType === 'down') {
+                    tempDown[keyName] = timestamp;
+                } else if (eventType === 'up') {
+                    if (tempDown[keyName] !== undefined) {
+                        let downTime = tempDown[keyName];
+                        delete tempDown[keyName];
+                        processedEvents.push({ key: keyName, down: downTime, up: timestamp });
+                    }
+                }
+            }
+            processedEvents.sort((a, b) => a.down - b.down);
+            if (processedEvents.length < 11) return null;
+
+            let features = {};
+            for (let i = 0; i < processedEvents.length; i++) {
+                const curr = processedEvents[i];
+                features[`H.${curr.key}`] = curr.up - curr.down;
+                if (i > 0) {
+                    const prev = processedEvents[i - 1];
+                    features[`DD.${prev.key}.${curr.key}`] = curr.down - prev.down;
+                    features[`UD.${prev.key}.${curr.key}`] = curr.down - prev.up;
+                }
+            }
+            const vec = new Array(COLUMNS.length - 3);
+            for (let i = 3; i < COLUMNS.length; i++) {
+                const val = features[COLUMNS[i]];
+                vec[i - 3] = (typeof val === 'number' && isFinite(val)) ? val : 0;
+            }
+            return vec;
+        }
+
+        // =============================================================================
+        // REENTRENAMIENTO MANUAL DESDE CERO
+        // =============================================================================
+        retrainBtn.addEventListener('click', async () => {
+            const subject = authSubjectSelect.value;
+            if (!subject) {
+                retrainStatus.textContent = "Selecciona primero un usuario en el desplegable de arriba.";
+                retrainStatus.className = 'cloud-status cloud-fail';
+                return;
+            }
+            const nSamples = parseInt(retrainNSamples.value, 10) || 0;
+            const rho      = parseFloat(retrainRho.value);
+            const threshold = parseInt(retrainThreshold.value, 10);
+            const windowSize = parseInt(retrainWindow.value, 10);
+
+            if (isNaN(rho) || rho <= 0 || rho > 1) {
+                retrainStatus.textContent = "Rho debe estar entre 0 y 1.";
+                retrainStatus.className = 'cloud-status cloud-fail';
+                return;
+            }
+            if (threshold > windowSize) {
+                retrainStatus.textContent = "Los aciertos requeridos no pueden ser mayores que el total de intentos.";
+                retrainStatus.className = 'cloud-status cloud-fail';
+                return;
+            }
+
+            retrainBtn.disabled = true;
+            retrainStatus.textContent = "🔎 Descargando muestras...";
+            retrainStatus.className = 'cloud-status';
+
+            try {
+                const allSamples = await fetchSubjectSamples(subject);
+                if (allSamples.length < MIN_SAMPLES_FIRST_TRAIN) {
+                    throw new Error(`Solo hay ${allSamples.length} muestras; se necesitan al menos ${MIN_SAMPLES_FIRST_TRAIN}.`);
+                }
+                const chosen = nSamples > 0
+                    ? allSamples.slice(-nSamples) // últimas N
+                    : allSamples;
+
+                retrainStatus.textContent = `🧠 Entrenando con ${chosen.length} muestras...`;
+                const model = new UserModel(subject, {
+                    rho, alpha: DEFAULT_HYPERPARAMS.alpha, beta: DEFAULT_HYPERPARAMS.beta,
+                    window_size: windowSize, threshold: threshold,
+                });
+                model.initialTrain(chosen);
+                await saveModelToDrive(subject, model.toJSON());
+                modelsCache[subject] = model;
+
+                retrainStatus.textContent = `✅ Modelo reentrenado con ${chosen.length} muestras (${model.art.num_categories} categorías) y guardado en Drive.`;
+                retrainStatus.className = 'cloud-status cloud-ok';
+
+                // Refrescar la vista de estado del modelo
+                await onAuthSubjectChange();
+            } catch (err) {
+                retrainStatus.textContent = "❌ " + err.message;
+                retrainStatus.className = 'cloud-status cloud-fail';
+            } finally {
+                retrainBtn.disabled = false;
+            }
+        });
 
         function resetCapture() {
             capturedEvents = [];
