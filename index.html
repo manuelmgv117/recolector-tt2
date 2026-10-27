@@ -178,7 +178,7 @@
             };
             const LETRAS_OCULTAS = ['e', 'm', 'z'];
             const TOTAL_INTENTOS = 7;
-            const APROBADOS_POSIBLES = [5, 6, 7];
+            const APROBADOS_POSIBLES = [6];
 
             let autorizado = false;     // true solo después de su letra oculta + Enter
             let marcaOculta = null;     // letra oculta tecleada que espera su Enter
@@ -204,7 +204,7 @@
                 return arr;
             }
 
-            // Decide de antemano qué intentos del bloque de 7 se aprueban (5, 6 o 7)
+            // Decide de antemano qué intentos del bloque de 7 se aprueban (6 de 7)
             function planearSesion() {
                 const aprobados = APROBADOS_POSIBLES[Math.floor(Math.random() * APROBADOS_POSIBLES.length)];
                 const resultado = Array(TOTAL_INTENTOS).fill(true);
