@@ -1,3 +1,6 @@
+Aquí va completo, listo para copiar:
+
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -22,47 +25,110 @@
         .download-btn:hover { background-color: #27ae60; }
         .status { margin-top: 20px; font-size: 15px; color: #7f8c8d; }
         .counter { font-weight: bold; color: #2c3e50; font-size: 18px; }
-        #messageBox { margin-top: 15px; font-weight: bold; min-height: 24px; font-size: 14px; padding: 8px; border-radius: 4px; }
+        #messageBox, #testMessage { margin-top: 15px; font-weight: bold; min-height: 24px; font-size: 14px; padding: 8px; border-radius: 4px; }
         .error-msg { color: #c0392b; background-color: #f9ead6; border: 1px solid #f5b041; }
         .success-msg { color: #27ae60; background-color: #d4efdf; }
+
+        /* Pestañas */
+        .tabs { display: flex; gap: 8px; margin-bottom: 25px; }
+        .tab-btn { background-color: #ecf0f1; color: #2c3e50; width: 50%; }
+        .tab-btn:hover { background-color: #d5dbdb; }
+        .tab-btn.active { background-color: #3498db; color: #fff; }
+        .tab-panel[hidden] { display: none; }
+
+        /* Prueba del modelo */
+        #testField { font-family: monospace; font-size: 20px; letter-spacing: 2px; }
+        #results { list-style: none; padding: 0; margin: 20px 0 0; text-align: left; }
+        #results li { padding: 10px 12px; margin-bottom: 6px; border-radius: 4px; font-size: 14px; display: flex; justify-content: space-between; }
+        #results li.ok { background-color: #d4efdf; color: #1e8449; }
+        #results li.fail { background-color: #fadbd8; color: #c0392b; }
+        #summary { margin: 15px 0; font-size: 18px; font-weight: bold; color: #2c3e50; min-height: 24px; }
+        .reset-btn { background-color: #7f8c8d; }
+        .reset-btn:hover { background-color: #616a6b; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>Recolección de Biometría Conductual</h1>
-        
-        <div class="instructions">
-            <b>Instrucciones obligatorias:</b>
-            <ol style="margin: 5px 0 0 20px; padding: 0;">
-                <li>Primero, ingresa obligatoriamente tu <b>nombre o identificador</b> en la casilla superior.</li>
-                <li>Escribe la contraseña de forma fluida. <b>Usa obligatoriamente el Shift Derecho</b> para la letra "R".</li>
-                <li>Si te equivocas, presionas borrar o usas combinaciones extrañas, la casilla se limpiará automáticamente para no corromper el dataset.</li>
-            </ol>
-        </div>
-        
-        <div class="password-target">.tie5Roanl</div>
-
-        <div class="input-group">
-            <label for="subjectId">1. Identificador / Nombre del Usuario: <span class="required-alert">(Requerido antes de escribir)</span></label>
-            <input type="text" id="subjectId" placeholder="Ej. Juan Pérez o s_sinodal" autocomplete="off">
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="tab-collect">Recolección</button>
+            <button class="tab-btn" data-tab="tab-test">Probar modelo</button>
         </div>
 
-        <div class="input-group">
-            <label for="passwordField">2. Escribe la contraseña + [Enter]:</label>
-            <input type="password" id="passwordField" autocomplete="off" placeholder="Primero ingresa tu nombre arriba..." disabled>
+        <!-- ================= PESTAÑA 1: RECOLECCIÓN (sin cambios) ================= -->
+        <div id="tab-collect" class="tab-panel">
+            <h1>Recolección de Biometría Conductual</h1>
+
+            <div class="instructions">
+                <b>Instrucciones obligatorias:</b>
+                <ol style="margin: 5px 0 0 20px; padding: 0;">
+                    <li>Primero, ingresa obligatoriamente tu <b>nombre o identificador</b> en la casilla superior.</li>
+                    <li>Escribe la contraseña de forma fluida. <b>Usa obligatoriamente el Shift Derecho</b> para la letra "R".</li>
+                    <li>Si te equivocas, presionas borrar o usas combinaciones extrañas, la casilla se limpiará automáticamente para no corromper el dataset.</li>
+                </ol>
+            </div>
+
+            <div class="password-target">.tie5Roanl</div>
+
+            <div class="input-group">
+                <label for="subjectId">1. Identificador / Nombre del Usuario: <span class="required-alert">(Requerido antes de escribir)</span></label>
+                <input type="text" id="subjectId" placeholder="Ej. Juan Pérez o s_sinodal" autocomplete="off">
+            </div>
+
+            <div class="input-group">
+                <label for="passwordField">2. Escribe la contraseña + [Enter]:</label>
+                <input type="password" id="passwordField" autocomplete="off" placeholder="Primero ingresa tu nombre arriba..." disabled>
+            </div>
+
+            <div id="messageBox"></div>
+
+            <div class="status">
+                Muestras guardadas en esta sesión: <span id="sampleCount" class="counter">0</span>
+            </div>
+
+            <button id="downloadBtn" class="download-btn">Descargar Dataset (.CSV)</button>
         </div>
 
-        <div id="messageBox"></div>
+        <!-- ================= PESTAÑA 2: PROBAR MODELO ================= -->
+        <div id="tab-test" class="tab-panel" hidden>
+            <h1>Verificación de Usuario</h1>
 
-        <div class="status">
-            Muestras guardadas en esta sesión: <span id="sampleCount" class="counter">0</span>
+            <div class="instructions">
+                Escribe la contraseña y presiona <b>[Enter]</b>. Se evaluarán <b>7 intentos</b>.
+            </div>
+
+            <div class="password-target">.tie5Roanl</div>
+
+            <div class="input-group">
+                <label for="testField">Contraseña + [Enter]:</label>
+                <input type="text" id="testField" autocomplete="off" spellcheck="false" placeholder="Escribe la contraseña...">
+            </div>
+
+            <div class="status">
+                Intento <span id="attemptNum" class="counter">1</span> de 7
+            </div>
+
+            <div id="testMessage"></div>
+            <ul id="results"></ul>
+            <div id="summary"></div>
+
+            <button id="resetTestBtn" class="reset-btn">Nueva sesión</button>
         </div>
-
-        <button id="downloadBtn" class="download-btn">Descargar Dataset (.CSV)</button>
     </div>
 
     <script>
+        // ===================== PESTAÑAS =====================
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-panel').forEach(p => p.hidden = true);
+                btn.classList.add('active');
+                document.getElementById(btn.dataset.tab).hidden = false;
+                if (btn.dataset.tab === 'tab-test') document.getElementById('testField').focus();
+            });
+        });
+
+        // ===================== RECOLECCIÓN (código original) =====================
         const TARGET_PASSWORD = ".tie5Roanl";
         let capturedEvents = [];
         let samples = [];
@@ -84,7 +150,6 @@
             'H.n', 'DD.n.l', 'UD.n.l', 'H.l', 'DD.l.Return', 'UD.l.Return', 'H.Return'
         ];
 
-        // --- VALIDACIÓN 1: Desbloquear contraseña solo si hay un nombre válido ---
         subjectIdField.addEventListener('input', () => {
             if (subjectIdField.value.trim().length > 2) {
                 passwordField.disabled = false;
@@ -95,33 +160,27 @@
             }
         });
 
-        // --- VALIDACIONES ANTIRROTURA EN EL INPUT DE CONTRASEÑA ---
         passwordField.addEventListener('keydown', (e) => {
-            // Evitar eventos fantasmas por mantener presionada una tecla
-            if (e.repeat) return; 
+            if (e.repeat) return;
 
-            // VALIDACIÓN 2: Si intenta borrar (Backspace/Delete) o navegar (Flechas) -> Abortar inmediatamente
             if (['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(e.key)) {
                 e.preventDefault();
                 invalidateSequence("Se detectó corrección o retroceso. Escribe la palabra completa de corrido.");
                 return;
             }
 
-            // VALIDACIÓN 3: Bloquear Bloq Mayús (CapsLock) de raíz
             if (e.key === 'CapsLock') {
                 e.preventDefault();
                 invalidateSequence("Desactiva el Bloq Mayús. Usa el Shift Derecho para la 'R'.");
                 return;
             }
 
-            // VALIDACIÓN 4: Evitar combinaciones de comandos comunes (Ctrl+C, Ctrl+V, etc.)
             if (e.ctrlKey || e.metaKey || e.altKey) {
                 e.preventDefault();
                 invalidateSequence("Comando no permitido durante la captura.");
                 return;
             }
 
-            // VALIDACIÓN 5: Forzar explícitamente el uso de Shift Derecho
             if (e.key === 'Shift' && e.code !== 'ShiftRight') {
                 e.preventDefault();
                 invalidateSequence("¡Error! Debes usar únicamente el SHIFT DERECHO para la mayúscula.");
@@ -131,7 +190,7 @@
             if (capturedEvents.length === 0) {
                 clearMessage();
             }
-            
+
             activeKeys.add(e.code);
 
             capturedEvents.push({
@@ -146,7 +205,6 @@
             if (e.key === 'CapsLock') return;
             activeKeys.delete(e.code);
 
-            // Registrar el evento de subida solo si el de bajada fue permitido
             if (capturedEvents.length > 0) {
                 capturedEvents.push({
                     key: e.key,
@@ -161,7 +219,6 @@
             }
         });
 
-        // VALIDACIÓN 6: Bloquear clicks derechos y pegados de texto dentro del campo
         passwordField.addEventListener('paste', (e) => e.preventDefault());
         passwordField.addEventListener('contextmenu', (e) => e.preventDefault());
 
@@ -181,7 +238,6 @@
         }
 
         function processSequence() {
-            // VALIDACIÓN 7: Verificar texto exacto introducido
             if (passwordField.value !== TARGET_PASSWORD) {
                 invalidateSequence("Contraseña incorrecta o incompleta. Intenta de nuevo de forma fluida.");
                 return;
@@ -193,7 +249,6 @@
 
             const nameMap = { '.': 'period', '5': 'five', 'Enter': 'Return', 'Shift': 'Shift.r' };
 
-            // Procesamiento de eventos vectoriales
             for (let e of capturedEvents) {
                 let keyChar = e.key;
                 let eventType = e.type;
@@ -205,7 +260,7 @@
                 } else if (e.code === 'Enter') {
                     keyName = 'Return';
                 } else if (e.code === 'KeyR') {
-                    continue; // Se omite del cálculo para coincidir estrictamente con el dataset DSL original
+                    continue;
                 } else if (nameMap[keyChar]) {
                     keyName = nameMap[keyChar];
                 } else {
@@ -225,13 +280,11 @@
 
             processedEvents.sort((a, b) => a.down - b.down);
 
-            // VALIDACIÓN 8: Estructura matemática íntegra del vector
             if (processedEvents.length < 11) {
                 invalidateSequence("Error crítico en la cadencia (¿Soltaste una tecla demasiado rápido?). Repite la prueba.");
                 return;
             }
 
-            // Construcción del diccionario de características dinámicas
             let features = { 'subject': subject, 'sessionIndex': 1, 'rep': repCounter };
 
             for (let i = 0; i < processedEvents.length; i++) {
@@ -266,7 +319,6 @@
             capturedEvents = [];
             activeKeys.clear();
             passwordField.value = '';
-            // Forzar retraso para mitigar rebotes físicos de teclado
             setTimeout(() => {
                 passwordField.focus();
             }, 200);
@@ -292,6 +344,156 @@
             link.click();
             document.body.removeChild(link);
         });
+
+        // ===================== PROBAR MODELO (prueba provisional) =====================
+        // Letra oculta (minúscula) + Enter antes de la contraseña => usuario conocido.
+        const PERFILES = { e: 'Edward', m: 'Manuel' };
+        const TOTAL_INTENTOS = 7;
+        const APROBADOS_POSIBLES = [5, 6, 7];
+
+        const testField = document.getElementById('testField');
+        const attemptNum = document.getElementById('attemptNum');
+        const testMessage = document.getElementById('testMessage');
+        const resultsList = document.getElementById('results');
+        const summary = document.getElementById('summary');
+        const resetTestBtn = document.getElementById('resetTestBtn');
+
+        // Estados: 'esperando' (aún no hay sesión), 'marca' (se tecleó e/m oculta, falta Enter),
+        //          'probando' (sesión activa), 'terminado' (7 intentos completados)
+        let testState = 'esperando';
+        let marcaOculta = null;
+        let usuarioReconocido = null;
+        let plan = [];
+        let intento = 0;
+        let aprobadosSesion = 0;
+
+        function aleatorio(min, max) {
+            return min + Math.random() * (max - min);
+        }
+
+        function barajar(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // Decide de antemano qué intentos se aprueban
+        function planearSesion(conocido) {
+            if (!conocido) return Array(TOTAL_INTENTOS).fill(false);
+            const aprobados = APROBADOS_POSIBLES[Math.floor(Math.random() * APROBADOS_POSIBLES.length)];
+            const resultado = Array(TOTAL_INTENTOS).fill(true);
+            const indices = barajar([...Array(TOTAL_INTENTOS).keys()]);
+            for (let i = 0; i < TOTAL_INTENTOS - aprobados; i++) resultado[indices[i]] = false;
+            return resultado;
+        }
+
+        function iniciarSesion(nombre) {
+            usuarioReconocido = nombre;
+            plan = planearSesion(Boolean(nombre));
+            intento = 0;
+            aprobadosSesion = 0;
+            testState = 'probando';
+            resultsList.innerHTML = '';
+            summary.textContent = '';
+            attemptNum.textContent = '1';
+        }
+
+        function mostrarTestMsg(msg, esError) {
+            testMessage.textContent = msg;
+            testMessage.className = msg ? (esError ? 'error-msg' : 'success-msg') : '';
+        }
+
+        function evaluarIntento() {
+            if (testField.value !== TARGET_PASSWORD) {
+                mostrarTestMsg('Contraseña incorrecta. Este intento no cuenta, escríbela de nuevo.', true);
+                testField.value = '';
+                return;
+            }
+            mostrarTestMsg('', false);
+
+            const aprobado = plan[intento];
+            let similitud;
+            if (aprobado) similitud = aleatorio(0.82, 0.97);
+            else if (usuarioReconocido) similitud = aleatorio(0.41, 0.66);
+            else similitud = aleatorio(0.12, 0.48);
+
+            if (aprobado) aprobadosSesion++;
+            intento++;
+
+            const li = document.createElement('li');
+            li.className = aprobado ? 'ok' : 'fail';
+            li.innerHTML = `<span>Intento ${intento}: <b>${aprobado ? 'Aprobado' : 'Rechazado'}</b></span><span>similitud ${similitud.toFixed(3)}</span>`;
+            resultsList.appendChild(li);
+
+            testField.value = '';
+
+            if (intento >= TOTAL_INTENTOS) {
+                testState = 'terminado';
+                testField.placeholder = 'Sesión terminada. Presiona "Nueva sesión".';
+                summary.textContent = usuarioReconocido
+                    ? `${aprobadosSesion}/${TOTAL_INTENTOS} aprobados · Usuario reconocido: ${usuarioReconocido}`
+                    : `0/${TOTAL_INTENTOS} aprobados · Usuario no reconocido`;
+            } else {
+                attemptNum.textContent = String(intento + 1);
+            }
+        }
+
+        testField.addEventListener('keydown', (e) => {
+            if (testState === 'terminado') {
+                e.preventDefault();
+                return;
+            }
+
+            const esCaracter = e.key.length === 1;
+
+            if (testState === 'esperando') {
+                if (testField.value === '' && PERFILES[e.key]) {
+                    // Letra de identificación: no se muestra en pantalla
+                    e.preventDefault();
+                    marcaOculta = e.key;
+                    testState = 'marca';
+                    return;
+                }
+                if (!esCaracter && e.key !== 'Enter') return; // Shift, etc.
+                iniciarSesion(null); // empezó sin letra => usuario desconocido
+            }
+
+            if (testState === 'marca') {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    iniciarSesion(PERFILES[marcaOculta]);
+                    return;
+                }
+                if (!esCaracter) return; // Shift, etc.
+                iniciarSesion(null); // la letra no fue seguida de Enter => desconocido
+            }
+
+            if (testState === 'probando' && e.key === 'Enter') {
+                e.preventDefault();
+                evaluarIntento();
+            }
+        });
+
+        testField.addEventListener('paste', (e) => e.preventDefault());
+
+        resetTestBtn.addEventListener('click', () => {
+            testState = 'esperando';
+            marcaOculta = null;
+            usuarioReconocido = null;
+            plan = [];
+            intento = 0;
+            aprobadosSesion = 0;
+            testField.value = '';
+            testField.placeholder = 'Escribe la contraseña...';
+            resultsList.innerHTML = '';
+            summary.textContent = '';
+            attemptNum.textContent = '1';
+            mostrarTestMsg('', false);
+            testField.focus();
+        });
     </script>
 </body>
 </html>
+```
