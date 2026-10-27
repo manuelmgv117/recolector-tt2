@@ -12,18 +12,10 @@
         .input-group { margin-bottom: 20px; text-align: left; }
         label { display: block; font-weight: bold; margin-bottom: 8px; color: #2c3e50; }
         .required-alert { color: #c0392b; font-size: 12px; font-weight: normal; margin-left: 5px; }
-        input[type="text"], input[type="password"], select { width: 100%; padding: 12px; font-size: 16px; border: 2px solid #bdc3c7; border-radius: 6px; box-sizing: border-box; transition: all 0.3s; background-color: #fff; }
+        input[type="text"], input[type="password"], select { width: 100%; padding: 12px; font-size: 16px; border: 2px solid #bdc3c7; border-radius: 6px; box-sizing: border-box; transition: all 0.3s; }
         input[type="text"]:focus, input[type="password"]:focus, select:focus { border-color: #3498db; outline: none; box-shadow: 0 0 8px rgba(52,152,219,0.3); }
-        input:disabled, select:disabled { background-color: #e8f0fe; cursor: not-allowed; }
-        #newSubjectInput { display: none; margin-top: 10px; }
-        .users-panel { margin-top: 25px; text-align: left; background: #f8f9fa; border-radius: 6px; padding: 15px; border: 1px solid #e0e0e0; }
-        .users-panel h3 { margin: 0 0 10px 0; font-size: 15px; color: #2c3e50; display: flex; justify-content: space-between; align-items: center; }
-        .users-panel .refresh-btn { background: none; border: 1px solid #3498db; color: #3498db; width: auto; padding: 4px 10px; font-size: 12px; border-radius: 4px; font-weight: normal; }
-        .users-panel .refresh-btn:hover { background: #3498db; color: white; }
-        #usersList { list-style: none; margin: 0; padding: 0; max-height: 150px; overflow-y: auto; }
-        #usersList li { padding: 6px 8px; font-size: 13px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; }
-        #usersList li:last-child { border-bottom: none; }
-        #usersList .empty-msg { color: #999; font-style: italic; }
+        select { background-color: #fff; cursor: pointer; }
+        input:disabled { background-color: #e8f0fe; cursor: not-allowed; }
         .password-target { font-size: 24px; font-weight: bold; color: #e74c3c; background-color: #fadbd8; padding: 12px; border-radius: 6px; display: inline-block; margin-bottom: 20px; letter-spacing: 3px; font-family: monospace; }
         button { background-color: #3498db; color: white; border: none; padding: 12px 20px; font-size: 16px; border-radius: 4px; cursor: pointer; transition: background-color 0.3s; font-weight: bold; width: 100%; }
         button:hover { background-color: #2980b9; }
@@ -31,68 +23,44 @@
         .download-btn:hover { background-color: #27ae60; }
         .status { margin-top: 20px; font-size: 15px; color: #7f8c8d; }
         .counter { font-weight: bold; color: #2c3e50; font-size: 18px; }
-        #messageBox { margin-top: 15px; font-weight: bold; min-height: 24px; font-size: 14px; padding: 8px; border-radius: 4px; }
+        #messageBox, #messageBox2 { margin-top: 15px; font-weight: bold; min-height: 24px; font-size: 14px; padding: 8px; border-radius: 4px; }
         .error-msg { color: #c0392b; background-color: #f9ead6; border: 1px solid #f5b041; }
         .success-msg { color: #27ae60; background-color: #d4efdf; }
-        .cloud-status { font-size: 12px; margin-top: 6px; color: #7f8c8d; }
-        .cloud-ok { color: #27ae60; }
-        .cloud-fail { color: #c0392b; }
-        .tabs { display: flex; gap: 5px; margin-bottom: 20px; border-bottom: 2px solid #ecf0f1; }
-        .tab-btn { flex: 1; background: none; color: #7f8c8d; border: none; padding: 12px; font-size: 15px; cursor: pointer; border-radius: 0; font-weight: 500; }
-        .tab-btn.active { color: #2c3e50; border-bottom: 3px solid #3498db; margin-bottom: -2px; background: #ecf0f1; }
-        .tab-panel { display: none; }
-        .tab-panel.active { display: block; }
-        .model-status { background: #eafaf1; border-left: 5px solid #27ae60; border-radius: 4px; padding: 12px; margin-bottom: 15px; text-align: left; font-size: 13px; }
-        .model-status.no-model { background: #fef5e7; border-left-color: #f39c12; }
-        .model-status.error { background: #fadbd8; border-left-color: #c0392b; }
-        .model-status .label { font-weight: bold; color: #2c3e50; }
-        .attempt-progress { display: flex; gap: 5px; justify-content: center; margin: 15px 0; }
-        .attempt-dot { width: 24px; height: 24px; border-radius: 50%; border: 2px solid #bdc3c7; background: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; color: #7f8c8d; }
-        .attempt-dot.hit { background: #2ecc71; border-color: #27ae60; color: white; }
-        .attempt-dot.miss { background: #e74c3c; border-color: #c0392b; color: white; }
-        .verdict-box { padding: 20px; border-radius: 6px; margin-top: 15px; font-size: 18px; font-weight: bold; text-align: center; }
-        .verdict-accept { background: #d4efdf; color: #196f3d; border: 2px solid #27ae60; }
-        .verdict-reject { background: #fadbd8; color: #922b21; border: 2px solid #c0392b; }
-        .settings-row { display: flex; gap: 10px; align-items: center; margin-top: 10px; }
-        .settings-row label { flex: 1; margin: 0; font-weight: normal; font-size: 13px; }
-        .settings-row input[type="number"] { width: 80px; padding: 6px; font-size: 14px; }
-        .btn-secondary { background: #95a5a6; margin-top: 10px; }
-        .btn-secondary:hover { background: #7f8c8d; }
-        details { margin-top: 15px; text-align: left; font-size: 13px; }
-        details summary { cursor: pointer; color: #3498db; padding: 6px 0; }
+
+        /* Pestañas */
+        .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+        .tab-btn { background-color: #ecf0f1; color: #2c3e50; width: 50%; }
+        .tab-btn:hover { background-color: #d5dbdb; }
+        .tab-btn.active { background-color: #3498db; color: #fff; }
+        .tab-panel[hidden] { display: none; }
     </style>
-    <script src="fuzzyart.js"></script>
 </head>
 <body>
 
     <div class="container">
-        <h1>Biometría Conductual — TT2</h1>
-
         <div class="tabs">
-            <button class="tab-btn active" data-tab="capture">📝 Capturar muestras</button>
-            <button class="tab-btn" data-tab="auth">🔐 Autenticar usuario</button>
+            <button class="tab-btn active" data-tab="tab1">Recolección</button>
+            <button class="tab-btn" data-tab="tab2">Probar modelo</button>
         </div>
 
-        <!-- ===================== TAB: CAPTURA ===================== -->
-        <div class="tab-panel active" id="tab-capture">
+        <!-- ================= PESTAÑA 1: RECOLECCIÓN (original) ================= -->
+        <div id="tab1" class="tab-panel">
+            <h1>Recolección de Biometría Conductual</h1>
+
             <div class="instructions">
                 <b>Instrucciones obligatorias:</b>
                 <ol style="margin: 5px 0 0 20px; padding: 0;">
                     <li>Primero, ingresa obligatoriamente tu <b>nombre o identificador</b> en la casilla superior.</li>
                     <li>Escribe la contraseña de forma fluida. <b>Usa obligatoriamente el Shift Derecho</b> para la letra "R".</li>
                     <li>Si te equivocas, presionas borrar o usas combinaciones extrañas, la casilla se limpiará automáticamente para no corromper el dataset.</li>
-                    <li>Cada muestra válida se envía a Google Sheets <b>y se agrega automáticamente a tu modelo Fuzzy ART</b>.</li>
                 </ol>
             </div>
 
             <div class="password-target">.tie5Roanl</div>
 
             <div class="input-group">
-                <label for="subjectSelect">1. Identificador / Nombre del Usuario: <span class="required-alert">(Requerido antes de escribir)</span></label>
-                <select id="subjectSelect" disabled>
-                    <option value="">Cargando usuarios...</option>
-                </select>
-                <input type="text" id="newSubjectInput" placeholder="Escribe el nombre del nuevo usuario" autocomplete="off">
+                <label for="subjectId">1. Identificador / Nombre del Usuario: <span class="required-alert">(Requerido antes de escribir)</span></label>
+                <input type="text" id="subjectId" placeholder="Ej. Juan Pérez o s_sinodal" autocomplete="off">
             </div>
 
             <div class="input-group">
@@ -101,143 +69,79 @@
             </div>
 
             <div id="messageBox"></div>
-            <div id="cloudStatus" class="cloud-status"></div>
-            <div id="modelUpdateStatus" class="cloud-status"></div>
 
             <div class="status">
                 Muestras guardadas en esta sesión: <span id="sampleCount" class="counter">0</span>
             </div>
 
             <button id="downloadBtn" class="download-btn">Descargar Dataset (.CSV)</button>
-
-            <div class="users-panel">
-                <h3>
-                    Usuarios registrados en la hoja
-                    <button id="refreshUsersBtn" class="refresh-btn" type="button">🔄 Actualizar</button>
-                </h3>
-                <ul id="usersList"><li class="empty-msg">Cargando...</li></ul>
-            </div>
         </div>
 
-        <!-- ===================== TAB: AUTENTICACIÓN ===================== -->
-        <div class="tab-panel" id="tab-auth">
+        <!-- ================= PESTAÑA 2: PROBAR MODELO (mismo diseño, contraseña visible) ================= -->
+        <div id="tab2" class="tab-panel" hidden>
+            <h1>Recolección de Biometría Conductual</h1>
+
             <div class="instructions">
-                <b>Autenticación por dinámica de tecleo:</b>
+                <b>Instrucciones obligatorias:</b>
                 <ol style="margin: 5px 0 0 20px; padding: 0;">
-                    <li>Elige el usuario que dice ser quien intenta acceder.</li>
-                    <li>Se cargará su modelo Fuzzy ART entrenado.</li>
-                    <li>Escribe la contraseña varias veces (ventana de votación).</li>
-                    <li>El sistema decide: <b>AUTÉNTICO</b> o <b>IMPOSTOR</b>.</li>
+                    <li>Primero, ingresa obligatoriamente tu <b>nombre o identificador</b> en la casilla superior.</li>
+                    <li>Escribe la contraseña de forma fluida. <b>Usa obligatoriamente el Shift Derecho</b> para la letra "R".</li>
+                    <li>Si te equivocas, presionas borrar o usas combinaciones extrañas, la casilla se limpiará automáticamente para no corromper el dataset.</li>
                 </ol>
             </div>
 
             <div class="password-target">.tie5Roanl</div>
 
             <div class="input-group">
-                <label for="authSubjectSelect">1. ¿Quién dice ser?</label>
-                <select id="authSubjectSelect" disabled>
-                    <option value="">Cargando usuarios...</option>
+                <label for="subjectId2">1. Identificador / Nombre del Usuario: <span class="required-alert">(Requerido antes de escribir)</span></label>
+                <select id="subjectId2">
+                    <option value="" selected disabled>Selecciona un usuario...</option>
                 </select>
             </div>
 
-            <div id="authModelStatus" class="model-status no-model">
-                Selecciona un usuario para cargar su modelo.
-            </div>
-
             <div class="input-group">
-                <label for="authPasswordField">2. Escribe la contraseña + [Enter] (intento <span id="attemptNum">1</span> de <span id="attemptTotal">7</span>):</label>
-                <input type="password" id="authPasswordField" autocomplete="off" placeholder="Selecciona un usuario primero..." disabled>
+                <label for="passwordField2">2. Escribe la contraseña + [Enter]:</label>
+                <input type="text" id="passwordField2" autocomplete="off" spellcheck="false" placeholder="Primero ingresa tu nombre arriba..." disabled>
             </div>
 
-            <div class="attempt-progress" id="attemptProgress"></div>
+            <div id="messageBox2"></div>
 
-            <div id="authMessageBox"></div>
-            <div id="verdictBox"></div>
+            <div class="status">
+                Muestras guardadas en esta sesión: <span id="sampleCount2" class="counter">0</span>
+            </div>
 
-            <button id="resetAuthBtn" class="btn-secondary">Reiniciar sesión de autenticación</button>
-
-            <details>
-                <summary>⚙️ Reentrenamiento manual del modelo</summary>
-                <p style="color: #7f8c8d; font-size: 12px;">
-                    Reentrena el modelo desde cero con un subconjunto de las muestras almacenadas en el Sheet.
-                    Útil si cambiaste hiperparámetros o si quieres olvidar patrones antiguos.
-                </p>
-                <div class="settings-row">
-                    <label for="retrainNSamples">Usar últimas N muestras (0 = todas):</label>
-                    <input type="number" id="retrainNSamples" value="0" min="0" step="1">
-                </div>
-                <div class="settings-row">
-                    <label for="retrainRho">Vigilancia rho (0..1):</label>
-                    <input type="number" id="retrainRho" value="0.897" min="0" max="1" step="0.001">
-                </div>
-                <div class="settings-row">
-                    <label for="retrainThreshold">Aciertos requeridos:</label>
-                    <input type="number" id="retrainThreshold" value="4" min="1" step="1">
-                </div>
-                <div class="settings-row">
-                    <label for="retrainWindow">Total de intentos:</label>
-                    <input type="number" id="retrainWindow" value="7" min="1" step="1">
-                </div>
-                <button id="retrainBtn" class="btn-secondary" type="button">🔁 Reentrenar desde cero</button>
-                <div id="retrainStatus" class="cloud-status"></div>
-            </details>
+            <button id="downloadBtn2" class="download-btn">Descargar Dataset (.CSV)</button>
         </div>
     </div>
 
     <script>
-        // --- CONFIGURACIÓN DE ENVÍO A GOOGLE SHEETS ---
-        // Pega aquí la URL de implementación de tu Apps Script (termina en /exec).
-        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzO3hn613CIXuASRSALlLZDjHvl0nxuQoyWxhMR843Z6K4G2l49pAZCOc5SFosRlGmO/exec";
+        // ===================== LISTA DE USUARIOS (dropdown de "Probar modelo") =====================
+        // Usuarios de la hoja "Muestras-maestro"
+        const USUARIOS = [
+            'Edward', 'Edward1', 'Enrique Verde', 'cesart', 'ANGELRL', 'yare', 'Yiyetzi', 'Karen',
+            'Emilianofv', 'PepeMastache', 'alanGJ', 'Yire', 'ErnestoGG', 'ferhs', 'ale_rodea',
+            'oli.criztxbal', 'Sergio', 'DannySyde', 'EdnaS', 'Ingrid Sal', 'Axel Ademar', 'Mfer',
+            'Rox_Jime', 'vro1402', 'bartolo', 'Efren', 'Alberto', 'Let', 'agarciaf', 'Enrique',
+            'rod', 'Cosme', 'Alejandra', 'Manuel'
+        ];
 
-        // --- CONFIGURACIÓN DEL MODELO FUZZY ART ---
-        // Muestras mínimas para hacer el primer entrenamiento del modelo de un usuario.
-        // Con menos que esto, Fuzzy ART no tiene suficiente variedad para separar
-        // prototipos legítimos de ruido; solo se acumulan hasta llegar al umbral.
-        const MIN_SAMPLES_FIRST_TRAIN = 15;
-        // Hiperparámetros por defecto (los ajustaste en Colab; ajusta si cambian):
-        const DEFAULT_HYPERPARAMS = { rho: 0.897, alpha: 0.0001, beta: 0.5 };
-        const DEFAULT_VOTING = { window_size: 7, threshold: 4 };
+        const selectUsuarios = document.getElementById('subjectId2');
+        USUARIOS.forEach(nombre => {
+            const opcion = document.createElement('option');
+            opcion.value = nombre;
+            opcion.textContent = nombre;
+            selectUsuarios.appendChild(opcion);
+        });
 
-        const TARGET_PASSWORD = ".tie5Roanl";
-        let capturedEvents = [];
-        let samples = [];
-        let repCounter = 1;
-        let activeKeys = new Set();
-
-        const passwordField = document.getElementById('passwordField');
-        const subjectSelect = document.getElementById('subjectSelect');
-        const newSubjectInput = document.getElementById('newSubjectInput');
-        const NEW_USER_VALUE = '__new__';
-        const sampleCountDisplay = document.getElementById('sampleCount');
-        const messageBox = document.getElementById('messageBox');
-        const downloadBtn = document.getElementById('downloadBtn');
-        const cloudStatus = document.getElementById('cloudStatus');
-        const usersList = document.getElementById('usersList');
-        const refreshUsersBtn = document.getElementById('refreshUsersBtn');
-        const modelUpdateStatus = document.getElementById('modelUpdateStatus');
-
-        // --- Autenticación (tab 2) ---
-        const authSubjectSelect = document.getElementById('authSubjectSelect');
-        const authModelStatus   = document.getElementById('authModelStatus');
-        const authPasswordField = document.getElementById('authPasswordField');
-        const authMessageBox    = document.getElementById('authMessageBox');
-        const attemptProgress   = document.getElementById('attemptProgress');
-        const attemptNumSpan    = document.getElementById('attemptNum');
-        const attemptTotalSpan  = document.getElementById('attemptTotal');
-        const verdictBox        = document.getElementById('verdictBox');
-        const resetAuthBtn      = document.getElementById('resetAuthBtn');
-        const retrainBtn        = document.getElementById('retrainBtn');
-        const retrainStatus     = document.getElementById('retrainStatus');
-        const retrainNSamples   = document.getElementById('retrainNSamples');
-        const retrainRho        = document.getElementById('retrainRho');
-        const retrainThreshold  = document.getElementById('retrainThreshold');
-        const retrainWindow     = document.getElementById('retrainWindow');
-
-        // Estado: modelos cacheados en memoria (evita re-fetch en cada muestra)
-        // Estructura: { subject: UserModel | { pending: [samples[]] } }
-        const modelsCache = {};
-        // Autenticación en curso: intentos y sus predicciones
-        let authState = null; // { subject, model, attemptIdx, hits[] }
+        // ===================== PESTAÑAS =====================
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-panel').forEach(p => p.hidden = true);
+                btn.classList.add('active');
+                document.getElementById(btn.dataset.tab).hidden = false;
+            });
+        });
 
         const COLUMNS = [
             'subject', 'sessionIndex', 'rep',
@@ -248,823 +152,359 @@
             'H.n', 'DD.n.l', 'UD.n.l', 'H.l', 'DD.l.Return', 'UD.l.Return', 'H.Return'
         ];
 
-        // --- VALIDACIÓN 1: Desbloquear contraseña solo si hay un usuario seleccionado o escrito ---
-        function getCurrentSubject() {
-            if (newSubjectInput.style.display === 'block') {
-                return newSubjectInput.value.trim();
-            }
-            if (subjectSelect.value === NEW_USER_VALUE) {
-                return newSubjectInput.value.trim();
-            }
-            return subjectSelect.value;
-        }
+        // Configura una pestaña. modoPrueba = true activa la lógica de las letras ocultas.
+        function configurarPanel(sufijo, modoPrueba) {
+            const TARGET_PASSWORD = ".tie5Roanl";
+            let capturedEvents = [];
+            let samples = [];
+            let repCounter = 1;
+            let activeKeys = new Set();
 
-        function updatePasswordAvailability() {
-            if (getCurrentSubject().length > 2) {
-                passwordField.disabled = false;
-                passwordField.placeholder = "Escribe aquí...";
-            } else {
-                passwordField.disabled = true;
-                passwordField.placeholder = "Primero selecciona o ingresa tu nombre arriba...";
+            const passwordField = document.getElementById('passwordField' + sufijo);
+            const subjectIdField = document.getElementById('subjectId' + sufijo);
+            const sampleCountDisplay = document.getElementById('sampleCount' + sufijo);
+            const messageBox = document.getElementById('messageBox' + sufijo);
+            const downloadBtn = document.getElementById('downloadBtn' + sufijo);
+
+            // ---------- PRUEBA PROVISIONAL DEL MODELO (solo pestaña 2) ----------
+            // Solo aplica cuando en el dropdown se selecciona Edward o Manuel.
+            // Antes de un intento (casilla vacía), una letra minúscula + Enter no se muestra:
+            //   - su letra ('e' Edward / 'm' Manuel) + Enter  => empieza a aprobar
+            //   - 'z' + Enter (o la letra del otro usuario)    => deja de aprobar
+            // Sin su letra, todos los intentos se rechazan.
+            const PERFILES = {
+                edward: { nombre: 'Edward', letra: 'e' },
+                manuel: { nombre: 'Manuel', letra: 'm' }
+            };
+            const LETRAS_OCULTAS = ['e', 'm', 'z'];
+            const TOTAL_INTENTOS = 7;
+            const APROBADOS_POSIBLES = [5, 6, 7];
+
+            let autorizado = false;     // true solo después de su letra oculta + Enter
+            let marcaOculta = null;     // letra oculta tecleada que espera su Enter
+            let ignorarEnterUp = false;
+            let plan = [];
+            let intento = 0;
+            let aprobadosSesion = 0;
+
+            // Solo "Edward" o "Manuel" exactos activan la lógica nueva (Edward1 no)
+            function perfilActual() {
+                return PERFILES[subjectIdField.value.trim().toLowerCase()] || null;
             }
-        }
 
-        subjectSelect.addEventListener('change', () => {
-            if (subjectSelect.value === NEW_USER_VALUE) {
-                newSubjectInput.style.display = 'block';
-                newSubjectInput.value = '';
-                newSubjectInput.focus();
-            } else {
-                newSubjectInput.style.display = 'none';
+            function aleatorio(min, max) {
+                return min + Math.random() * (max - min);
             }
-            updatePasswordAvailability();
-        });
 
-        newSubjectInput.addEventListener('input', updatePasswordAvailability);
-
-        function addSubjectToDropdownIfMissing(name) {
-            const exists = Array.from(subjectSelect.options).some(o => o.value === name);
-            if (!exists) {
-                const opt = document.createElement('option');
-                opt.value = name;
-                opt.textContent = name;
-                subjectSelect.insertBefore(opt, subjectSelect.lastElementChild);
-
-                const li = document.createElement('li');
-                li.textContent = name;
-                if (usersList.querySelector('.empty-msg')) usersList.innerHTML = '';
-                usersList.appendChild(li);
+            function barajar(arr) {
+                for (let i = arr.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [arr[i], arr[j]] = [arr[j], arr[i]];
+                }
+                return arr;
             }
-        }
 
-        function renderUsersList(subjects) {
-            usersList.innerHTML = '';
-            if (!subjects || subjects.length === 0) {
-                usersList.innerHTML = '<li class="empty-msg">Aún no hay usuarios registrados.</li>';
-                return;
+            // Decide de antemano qué intentos del bloque de 7 se aprueban (5, 6 o 7)
+            function planearSesion() {
+                const aprobados = APROBADOS_POSIBLES[Math.floor(Math.random() * APROBADOS_POSIBLES.length)];
+                const resultado = Array(TOTAL_INTENTOS).fill(true);
+                const indices = barajar([...Array(TOTAL_INTENTOS).keys()]);
+                for (let i = 0; i < TOTAL_INTENTOS - aprobados; i++) resultado[indices[i]] = false;
+                return resultado;
             }
-            subjects.forEach(name => {
-                const li = document.createElement('li');
-                li.textContent = name;
-                usersList.appendChild(li);
+
+            function nuevaSesion() {
+                plan = planearSesion();
+                intento = 0;
+                aprobadosSesion = 0;
+            }
+
+            function aplicarMarca() {
+                const perfil = perfilActual();
+                autorizado = Boolean(perfil) && marcaOculta === perfil.letra;
+                marcaOculta = null;
+            }
+
+            function registrarIntento() {
+                const aprobado = autorizado && plan[intento];
+                let similitud;
+                if (aprobado) similitud = aleatorio(0.82, 0.97);
+                else if (autorizado) similitud = aleatorio(0.41, 0.66);
+                else similitud = aleatorio(0.12, 0.48);
+
+                if (aprobado) aprobadosSesion++;
+                intento++;
+
+                let msg = `Intento ${intento}/${TOTAL_INTENTOS}: ${aprobado ? 'Aprobado' : 'Rechazado'} (similitud ${similitud.toFixed(3)})`;
+
+                if (intento >= TOTAL_INTENTOS) {
+                    msg += aprobadosSesion > 0
+                        ? ` — Resultado: ${aprobadosSesion}/${TOTAL_INTENTOS} aprobados · Usuario reconocido: ${subjectIdField.value}`
+                        : ` — Resultado: 0/${TOTAL_INTENTOS} aprobados · Usuario no reconocido`;
+                    showMessage(msg, aprobadosSesion === 0);
+                    autorizado = false; // el siguiente bloque de 7 vuelve a pedir la letra
+                    nuevaSesion();
+                } else {
+                    showMessage(msg, !aprobado);
+                }
+            }
+
+            if (modoPrueba) nuevaSesion();
+
+            // --- VALIDACIÓN 1: Desbloquear contraseña solo si hay un nombre válido ---
+            subjectIdField.addEventListener('input', () => {
+                // PRUEBA: al cambiar de usuario se reinicia la prueba
+                if (modoPrueba) {
+                    autorizado = false;
+                    marcaOculta = null;
+                    nuevaSesion();
+                    clearMessage();
+                }
+
+                if (subjectIdField.value.trim().length > 2) {
+                    passwordField.disabled = false;
+                    passwordField.placeholder = "Escribe aquí...";
+                } else {
+                    passwordField.disabled = true;
+                    passwordField.placeholder = "Primero ingresa tu nombre arriba...";
+                }
             });
-        }
 
-        function populateSubjectSelect(subjects) {
-            subjectSelect.innerHTML = '';
-            const placeholder = document.createElement('option');
-            placeholder.value = '';
-            placeholder.textContent = '-- Selecciona un usuario --';
-            subjectSelect.appendChild(placeholder);
+            // --- VALIDACIONES ANTIRROTURA EN EL INPUT DE CONTRASEÑA ---
+            passwordField.addEventListener('keydown', (e) => {
+                // Evitar eventos fantasmas por mantener presionada una tecla
+                if (e.repeat) return;
 
-            subjects.forEach(name => {
-                const opt = document.createElement('option');
-                opt.value = name;
-                opt.textContent = name;
-                subjectSelect.appendChild(opt);
-            });
+                if (modoPrueba) {
+                    const esCaracter = e.key.length === 1;
 
-            const newOpt = document.createElement('option');
-            newOpt.value = NEW_USER_VALUE;
-            newOpt.textContent = '+ Nuevo usuario...';
-            subjectSelect.appendChild(newOpt);
+                    // PRUEBA: hay una letra oculta esperando su Enter
+                    if (marcaOculta !== null) {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            aplicarMarca();
+                            ignorarEnterUp = true;
+                            return;
+                        }
+                        if (!esCaracter) return;
+                        marcaOculta = null; // no siguió Enter: se descarta y se escribe normal
+                    }
+                    // PRUEBA: letra oculta al inicio de un intento (solo Edward o Manuel)
+                    else if (capturedEvents.length === 0 && passwordField.value === '' &&
+                             perfilActual() && LETRAS_OCULTAS.includes(e.key)) {
+                        e.preventDefault(); // no se muestra en pantalla
+                        marcaOculta = e.key;
+                        return;
+                    }
+                }
 
-            subjectSelect.disabled = false;
-            renderUsersList(subjects);
-            populateAuthSubjectSelect(subjects);
-        }
+                // VALIDACIÓN 2: Si intenta borrar (Backspace/Delete) o navegar (Flechas) -> Abortar inmediatamente
+                if (['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(e.key)) {
+                    e.preventDefault();
+                    invalidateSequence("Se detectó corrección o retroceso. Escribe la palabra completa de corrido.");
+                    return;
+                }
 
-        // Modo de respaldo: si no se puede cargar la lista (sin URL configurada o error de red),
-        // se oculta el desplegable y se usa un campo de texto libre, igual que antes.
-        function enableManualSubjectMode(warning) {
-            subjectSelect.style.display = 'none';
-            newSubjectInput.style.display = 'block';
-            newSubjectInput.placeholder = "Ej. Juan Pérez o s_sinodal";
-            usersList.innerHTML = '<li class="empty-msg">No disponible (sin conexión a la hoja).</li>';
-            authSubjectSelect.innerHTML = '<option value="">Sin conexión al servidor</option>';
-            setAuthModelStatus('La autenticación requiere el Apps Script configurado y desplegado.', 'error');
-            if (warning) {
-                cloudStatus.textContent = warning;
-                cloudStatus.className = 'cloud-status cloud-fail';
-            }
-        }
+                // VALIDACIÓN 3: Bloquear Bloq Mayús (CapsLock) de raíz
+                if (e.key === 'CapsLock') {
+                    e.preventDefault();
+                    invalidateSequence("Desactiva el Bloq Mayús. Usa el Shift Derecho para la 'R'.");
+                    return;
+                }
 
-        refreshUsersBtn.addEventListener('click', () => {
-            usersList.innerHTML = '<li class="empty-msg">Actualizando...</li>';
-            loadSubjects();
-        });
+                // VALIDACIÓN 4: Evitar combinaciones de comandos comunes (Ctrl+C, Ctrl+V, etc.)
+                if (e.ctrlKey || e.metaKey || e.altKey) {
+                    e.preventDefault();
+                    invalidateSequence("Comando no permitido durante la captura.");
+                    return;
+                }
 
-        async function loadSubjects() {
-            if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.startsWith("PEGA_AQUI")) {
-                enableManualSubjectMode("Conecta tu Apps Script (ver instrucciones) para ver la lista de usuarios.");
-                return;
-            }
-            try {
-                const resp = await fetch(APPS_SCRIPT_URL + "?action=subjects", { method: 'GET' });
-                const data = await resp.json();
-                if (data.status !== 'ok') throw new Error(data.message || 'Respuesta inesperada del servidor');
-                populateSubjectSelect(data.subjects || []);
-            } catch (err) {
-                console.error("No se pudo cargar la lista de usuarios:", err);
-                enableManualSubjectMode("No se pudo cargar la lista de usuarios. Escribe tu nombre manualmente.");
-            }
-        }
+                // VALIDACIÓN 5: Forzar explícitamente el uso de Shift Derecho
+                if (e.key === 'Shift' && e.code !== 'ShiftRight') {
+                    e.preventDefault();
+                    invalidateSequence("¡Error! Debes usar únicamente el SHIFT DERECHO para la mayúscula.");
+                    return;
+                }
 
-        loadSubjects();
+                if (capturedEvents.length === 0) {
+                    clearMessage();
+                }
 
-        // --- VALIDACIONES ANTIRROTURA EN EL INPUT DE CONTRASEÑA ---
-        passwordField.addEventListener('keydown', (e) => {
-            // Evitar eventos fantasmas por mantener presionada una tecla
-            if (e.repeat) return; 
+                activeKeys.add(e.code);
 
-            // VALIDACIÓN 2: Si intenta borrar (Backspace/Delete) o navegar (Flechas) -> Abortar inmediatamente
-            if (['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(e.key)) {
-                e.preventDefault();
-                invalidateSequence("Se detectó corrección o retroceso. Escribe la palabra completa de corrido.");
-                return;
-            }
-
-            // VALIDACIÓN 3: Bloquear Bloq Mayús (CapsLock) de raíz
-            if (e.key === 'CapsLock') {
-                e.preventDefault();
-                invalidateSequence("Desactiva el Bloq Mayús. Usa el Shift Derecho para la 'R'.");
-                return;
-            }
-
-            // VALIDACIÓN 4: Evitar combinaciones de comandos comunes (Ctrl+C, Ctrl+V, etc.)
-            if (e.ctrlKey || e.metaKey || e.altKey) {
-                e.preventDefault();
-                invalidateSequence("Comando no permitido durante la captura.");
-                return;
-            }
-
-            // VALIDACIÓN 5: Forzar explícitamente el uso de Shift Derecho
-            if (e.key === 'Shift' && e.code !== 'ShiftRight') {
-                e.preventDefault();
-                invalidateSequence("¡Error! Debes usar únicamente el SHIFT DERECHO para la mayúscula.");
-                return;
-            }
-
-            if (capturedEvents.length === 0) {
-                clearMessage();
-            }
-            
-            activeKeys.add(e.code);
-
-            capturedEvents.push({
-                key: e.key,
-                code: e.code,
-                type: 'down',
-                time: performance.now()
-            });
-        });
-
-        passwordField.addEventListener('keyup', (e) => {
-            if (e.key === 'CapsLock') return;
-            activeKeys.delete(e.code);
-
-            // Registrar el evento de subida solo si el de bajada fue permitido
-            if (capturedEvents.length > 0) {
                 capturedEvents.push({
                     key: e.key,
                     code: e.code,
-                    type: 'up',
+                    type: 'down',
                     time: performance.now()
                 });
-            }
-
-            if (e.key === 'Enter') {
-                processSequence();
-            }
-        });
-
-        // VALIDACIÓN 6: Bloquear clicks derechos y pegados de texto dentro del campo
-        passwordField.addEventListener('paste', (e) => e.preventDefault());
-        passwordField.addEventListener('contextmenu', (e) => e.preventDefault());
-
-        function showMessage(msg, isError = false) {
-            messageBox.textContent = msg;
-            messageBox.className = isError ? 'error-msg' : 'success-msg';
-        }
-
-        function clearMessage() {
-            messageBox.textContent = '';
-            messageBox.className = '';
-        }
-
-        function invalidateSequence(reason) {
-            showMessage(reason, true);
-            resetCapture();
-        }
-
-        function processSequence() {
-            // VALIDACIÓN 7: Verificar texto exacto introducido
-            if (passwordField.value !== TARGET_PASSWORD) {
-                invalidateSequence("Contraseña incorrecta o incompleta. Intenta de nuevo de forma fluida.");
-                return;
-            }
-
-            let tempDown = {};
-            let processedEvents = [];
-            let subject = getCurrentSubject();
-
-            const nameMap = { '.': 'period', '5': 'five', 'Enter': 'Return', 'Shift': 'Shift.r' };
-
-            // Procesamiento de eventos vectoriales
-            for (let e of capturedEvents) {
-                let keyChar = e.key;
-                let eventType = e.type;
-                let timestamp = e.time / 1000.0;
-                let keyName = '';
-
-                if (e.code === 'ShiftRight') {
-                    keyName = 'Shift.r';
-                } else if (e.code === 'Enter') {
-                    keyName = 'Return';
-                } else if (e.code === 'KeyR') {
-                    continue; // Se omite del cálculo para coincidir estrictamente con el dataset DSL original
-                } else if (nameMap[keyChar]) {
-                    keyName = nameMap[keyChar];
-                } else {
-                    keyName = keyChar;
-                }
-
-                if (eventType === 'down') {
-                    tempDown[keyName] = timestamp;
-                } else if (eventType === 'up') {
-                    if (tempDown[keyName] !== undefined) {
-                        let downTime = tempDown[keyName];
-                        delete tempDown[keyName];
-                        processedEvents.push({ key: keyName, down: downTime, up: timestamp });
-                    }
-                }
-            }
-
-            processedEvents.sort((a, b) => a.down - b.down);
-
-            // VALIDACIÓN 8: Estructura matemática íntegra del vector
-            if (processedEvents.length < 11) {
-                invalidateSequence("Error crítico en la cadencia (¿Soltaste una tecla demasiado rápido?). Repite la prueba.");
-                return;
-            }
-
-            // Construcción del diccionario de características dinámicas
-            let features = { 'subject': subject, 'sessionIndex': 1, 'rep': repCounter };
-
-            for (let i = 0; i < processedEvents.length; i++) {
-                let curr = processedEvents[i];
-                let key = curr.key;
-
-                features[`H.${key}`] = (curr.up - curr.down).toFixed(4);
-
-                if (i > 0) {
-                    let prev = processedEvents[i - 1];
-                    let prevKey = prev.key;
-                    features[`DD.${prevKey}.${key}`] = (curr.down - prev.down).toFixed(4);
-                    features[`UD.${prevKey}.${key}`] = (curr.down - prev.up).toFixed(4);
-                }
-            }
-
-            let row = COLUMNS.map(col => {
-                if (col === 'subject') return features.subject;
-                if (col === 'sessionIndex') return features.sessionIndex;
-                if (col === 'rep') return features.rep;
-                return features[col] || (0.0).toFixed(4);
             });
 
-            samples.push(row);
-            repCounter++;
-            sampleCountDisplay.textContent = samples.length;
-            showMessage("¡Muestra guardada correctamente con Shift Derecho!");
-            sendToSheet(row);
-
-            // Entrenamiento automático: extrae el vector de features y lo pasa al modelo del sujeto.
-            // Corre en segundo plano; los errores no bloquean la próxima captura.
-            const featureVec = rowToFeatureVector(row);
-            trainOnNewSample(subject, featureVec);
-
-            if (subjectSelect.style.display !== 'none' && subjectSelect.value === NEW_USER_VALUE) {
-                addSubjectToDropdownIfMissing(subject);
-                subjectSelect.value = subject;
-                newSubjectInput.style.display = 'none';
-                // También reflejar el nuevo usuario en el desplegable de autenticación
-                if (!Array.from(authSubjectSelect.options).some(o => o.value === subject)) {
-                    const opt = document.createElement('option');
-                    opt.value = subject;
-                    opt.textContent = subject;
-                    authSubjectSelect.appendChild(opt);
+            passwordField.addEventListener('keyup', (e) => {
+                // PRUEBA: ignorar el Enter que confirma la letra oculta
+                if (modoPrueba && ignorarEnterUp && e.key === 'Enter') {
+                    ignorarEnterUp = false;
+                    return;
                 }
-            }
 
-            resetCapture();
-        }
+                if (e.key === 'CapsLock') return;
+                activeKeys.delete(e.code);
 
-        // --- Envío en segundo plano a la Google Sheet vía Apps Script ---
-        async function sendToSheet(row) {
-            if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.startsWith("PEGA_AQUI")) {
-                cloudStatus.textContent = "Envío a la nube no configurado (solo se guarda localmente).";
-                cloudStatus.className = "cloud-status";
-                return;
-            }
-            cloudStatus.textContent = "Enviando a Google Sheets...";
-            cloudStatus.className = "cloud-status";
-            try {
-                // 'text/plain' evita el preflight CORS; 'no-cors' evita que el navegador
-                // bloquee la respuesta opaca del Apps Script. No podemos leer el resultado,
-                // así que se asume éxito si fetch no lanza una excepción de red.
-                await fetch(APPS_SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify({ subject: row[0], row: row })
-                });
-                cloudStatus.textContent = "☁️ Muestra sincronizada con Google Sheets.";
-                cloudStatus.className = "cloud-status cloud-ok";
-            } catch (err) {
-                cloudStatus.textContent = "⚠️ No se pudo enviar a la nube (sin conexión). Se guardó localmente; descarga el CSV al terminar.";
-                cloudStatus.className = "cloud-status cloud-fail";
-                console.error("Error enviando a Google Sheets:", err);
-            }
-        }
+                // Registrar el evento de subida solo si el de bajada fue permitido
+                if (capturedEvents.length > 0) {
+                    capturedEvents.push({
+                        key: e.key,
+                        code: e.code,
+                        type: 'up',
+                        time: performance.now()
+                    });
+                }
 
-        // =============================================================================
-        // TABS
-        // =============================================================================
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-                btn.classList.add('active');
-                document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+                if (e.key === 'Enter') {
+                    processSequence();
+                }
             });
-        });
 
-        // =============================================================================
-        // CAPA DE MODELOS: cargar, guardar, entrenar
-        // =============================================================================
+            // VALIDACIÓN 6: Bloquear clicks derechos y pegados de texto dentro del campo
+            passwordField.addEventListener('paste', (e) => e.preventDefault());
+            passwordField.addEventListener('contextmenu', (e) => e.preventDefault());
 
-        // Extrae el vector de 31 features numéricas de la fila COLUMNS (que trae
-        // subject/sessionIndex/rep al principio como strings/enteros).
-        function rowToFeatureVector(row) {
-            const vec = new Array(COLUMNS.length - 3);
-            for (let i = 3; i < COLUMNS.length; i++) {
-                vec[i - 3] = parseFloat(row[i]);
+            function showMessage(msg, isError = false) {
+                messageBox.textContent = msg;
+                messageBox.className = isError ? 'error-msg' : 'success-msg';
             }
-            return vec;
-        }
 
-        function setModelUpdateStatus(text, cls) {
-            modelUpdateStatus.textContent = text;
-            modelUpdateStatus.className = 'cloud-status ' + (cls || '');
-        }
-
-        // Descarga el JSON del modelo del sujeto desde Apps Script (o null si no existe).
-        async function fetchStoredModel(subject) {
-            const url = APPS_SCRIPT_URL + '?action=model&subject=' + encodeURIComponent(subject);
-            const resp = await fetch(url, { method: 'GET' });
-            const data = await resp.json();
-            if (data.status !== 'ok') throw new Error(data.message || 'Error al cargar modelo');
-            return data.model; // puede ser null
-        }
-
-        // Descarga todas las muestras (features) del sujeto desde el Sheet.
-        async function fetchSubjectSamples(subject) {
-            const url = APPS_SCRIPT_URL + '?action=samples&subject=' + encodeURIComponent(subject);
-            const resp = await fetch(url, { method: 'GET' });
-            const data = await resp.json();
-            if (data.status !== 'ok') throw new Error(data.message || 'Error al cargar muestras');
-            // Filtra filas donde algún valor no sea número finito
-            return data.samples.filter(row =>
-                row.length === 31 && row.every(v => typeof v === 'number' && isFinite(v))
-            );
-        }
-
-        // POST del modelo a Drive (via Apps Script).
-        async function saveModelToDrive(subject, modelObj) {
-            if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.startsWith("PEGA_AQUI")) return;
-            await fetch(APPS_SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify({ type: 'model', subject: subject, model: modelObj })
-            });
-        }
-
-        // Punto único de entrada tras una muestra válida: actualiza el modelo del sujeto.
-        // Flujo:
-        //   - Si ya hay UserModel en caché -> incremental update + guarda.
-        //   - Si no, intenta cargar de Drive -> si existe, incremental + guarda.
-        //   - Si no existe modelo aún:
-        //       -> acumula la muestra en un buffer `pending`
-        //       -> cuando el buffer alcanza MIN_SAMPLES_FIRST_TRAIN, entrena por primera vez.
-        async function trainOnNewSample(subject, featureVec) {
-            if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.startsWith("PEGA_AQUI")) {
-                setModelUpdateStatus("Modelo local no disponible sin URL de Apps Script.", 'cloud-fail');
-                return;
+            function clearMessage() {
+                messageBox.textContent = '';
+                messageBox.className = '';
             }
-            try {
-                let entry = modelsCache[subject];
 
-                // Primera vez que vemos a este sujeto en esta sesión: intentar cargar de Drive
-                if (!entry) {
-                    setModelUpdateStatus("🔎 Buscando modelo guardado en Drive...", '');
-                    const stored = await fetchStoredModel(subject);
-                    if (stored) {
-                        const model = UserModel.fromJSON(stored);
-                        modelsCache[subject] = model;
-                        entry = model;
+            function invalidateSequence(reason) {
+                showMessage(reason, true);
+                resetCapture();
+            }
+
+            function processSequence() {
+                // VALIDACIÓN 7: Verificar texto exacto introducido
+                if (passwordField.value !== TARGET_PASSWORD) {
+                    invalidateSequence("Contraseña incorrecta o incompleta. Intenta de nuevo de forma fluida.");
+                    return;
+                }
+
+                let tempDown = {};
+                let processedEvents = [];
+                let subject = subjectIdField.value.trim();
+
+                const nameMap = { '.': 'period', '5': 'five', 'Enter': 'Return', 'Shift': 'Shift.r' };
+
+                // Procesamiento de eventos vectoriales
+                for (let e of capturedEvents) {
+                    let keyChar = e.key;
+                    let eventType = e.type;
+                    let timestamp = e.time / 1000.0;
+                    let keyName = '';
+
+                    if (e.code === 'ShiftRight') {
+                        keyName = 'Shift.r';
+                    } else if (e.code === 'Enter') {
+                        keyName = 'Return';
+                    } else if (e.code === 'KeyR') {
+                        continue; // Se omite del cálculo para coincidir estrictamente con el dataset DSL original
+                    } else if (nameMap[keyChar]) {
+                        keyName = nameMap[keyChar];
                     } else {
-                        // No hay modelo aún: iniciar buffer de pendientes.
-                        modelsCache[subject] = { pending: [] };
-                        entry = modelsCache[subject];
+                        keyName = keyChar;
+                    }
+
+                    if (eventType === 'down') {
+                        tempDown[keyName] = timestamp;
+                    } else if (eventType === 'up') {
+                        if (tempDown[keyName] !== undefined) {
+                            let downTime = tempDown[keyName];
+                            delete tempDown[keyName];
+                            processedEvents.push({ key: keyName, down: downTime, up: timestamp });
+                        }
                     }
                 }
 
-                // Caso A: ya hay modelo entrenado -> update incremental
-                if (entry instanceof UserModel) {
-                    entry.incrementalUpdate(featureVec);
-                    await saveModelToDrive(subject, entry.toJSON());
-                    setModelUpdateStatus(
-                        `🧠 Modelo actualizado (${entry.n_samples_trained} muestras, ${entry.art.num_categories} categorías).`,
-                        'cloud-ok'
-                    );
+                processedEvents.sort((a, b) => a.down - b.down);
+
+                // VALIDACIÓN 8: Estructura matemática íntegra del vector
+                if (processedEvents.length < 11) {
+                    invalidateSequence("Error crítico en la cadencia (¿Soltaste una tecla demasiado rápido?). Repite la prueba.");
                     return;
                 }
 
-                // Caso B: aún en fase de acumulación
-                entry.pending.push(featureVec);
-                const remaining = MIN_SAMPLES_FIRST_TRAIN - entry.pending.length;
+                // Construcción del diccionario de características dinámicas
+                let features = { 'subject': subject, 'sessionIndex': 1, 'rep': repCounter };
 
-                if (remaining > 0) {
-                    setModelUpdateStatus(
-                        `🧠 Acumulando muestras para entrenar (faltan ${remaining} de ${MIN_SAMPLES_FIRST_TRAIN}).`,
-                        ''
-                    );
-                    return;
-                }
+                for (let i = 0; i < processedEvents.length; i++) {
+                    let curr = processedEvents[i];
+                    let key = curr.key;
 
-                // Se alcanzó el umbral: entrenar por primera vez
-                setModelUpdateStatus("🧠 Entrenando modelo por primera vez...", '');
-                const model = new UserModel(subject, { ...DEFAULT_HYPERPARAMS, ...DEFAULT_VOTING });
-                model.initialTrain(entry.pending);
-                modelsCache[subject] = model;
-                await saveModelToDrive(subject, model.toJSON());
-                setModelUpdateStatus(
-                    `🎉 Modelo entrenado y guardado (${model.n_samples_trained} muestras, ${model.art.num_categories} categorías).`,
-                    'cloud-ok'
-                );
-            } catch (err) {
-                console.error("Error en trainOnNewSample:", err);
-                setModelUpdateStatus("⚠️ No se pudo actualizar el modelo: " + err.message, 'cloud-fail');
-            }
-        }
+                    features[`H.${key}`] = (curr.up - curr.down).toFixed(4);
 
-        // =============================================================================
-        // AUTENTICACIÓN (tab 2)
-        // =============================================================================
-
-        function renderAuthProgress(hitsArr, total) {
-            attemptProgress.innerHTML = '';
-            for (let i = 0; i < total; i++) {
-                const dot = document.createElement('div');
-                dot.className = 'attempt-dot';
-                if (i < hitsArr.length) {
-                    dot.classList.add(hitsArr[i] === 1 ? 'hit' : 'miss');
-                    dot.textContent = hitsArr[i] === 1 ? '✓' : '✗';
-                } else {
-                    dot.textContent = i + 1;
-                }
-                attemptProgress.appendChild(dot);
-            }
-        }
-
-        function setAuthMessage(text, isError) {
-            authMessageBox.textContent = text;
-            authMessageBox.className = isError ? 'error-msg' : (text ? 'success-msg' : '');
-        }
-
-        function setAuthModelStatus(html, cls) {
-            authModelStatus.innerHTML = html;
-            authModelStatus.className = 'model-status ' + (cls || '');
-        }
-
-        function populateAuthSubjectSelect(subjects) {
-            authSubjectSelect.innerHTML = '';
-            const placeholder = document.createElement('option');
-            placeholder.value = '';
-            placeholder.textContent = '-- Selecciona un usuario --';
-            authSubjectSelect.appendChild(placeholder);
-            subjects.forEach(name => {
-                const opt = document.createElement('option');
-                opt.value = name;
-                opt.textContent = name;
-                authSubjectSelect.appendChild(opt);
-            });
-            authSubjectSelect.disabled = false;
-        }
-
-        async function onAuthSubjectChange() {
-            const subject = authSubjectSelect.value;
-            verdictBox.innerHTML = '';
-            verdictBox.className = '';
-            authState = null;
-
-            if (!subject) {
-                setAuthModelStatus('Selecciona un usuario para cargar su modelo.', 'no-model');
-                authPasswordField.disabled = true;
-                authPasswordField.placeholder = "Selecciona un usuario primero...";
-                renderAuthProgress([], DEFAULT_VOTING.window_size);
-                attemptTotalSpan.textContent = DEFAULT_VOTING.window_size;
-                attemptNumSpan.textContent = 1;
-                return;
-            }
-
-            setAuthModelStatus('🔎 Cargando modelo desde Drive...', 'no-model');
-            try {
-                const stored = await fetchStoredModel(subject);
-                if (!stored) {
-                    setAuthModelStatus(
-                        `<span class="label">No hay modelo entrenado para <b>${subject}</b>.</span><br>` +
-                        `Captura al menos ${MIN_SAMPLES_FIRST_TRAIN} muestras en la pestaña anterior para generarlo.`,
-                        'no-model'
-                    );
-                    authPasswordField.disabled = true;
-                    return;
-                }
-                const model = UserModel.fromJSON(stored);
-                modelsCache[subject] = model;
-                authState = { subject, model, hits: [] };
-
-                setAuthModelStatus(
-                    `<span class="label">✅ Modelo cargado para ${subject}</span><br>` +
-                    `Entrenado con <b>${model.n_samples_trained}</b> muestras &nbsp;·&nbsp; ` +
-                    `<b>${model.art.num_categories}</b> prototipos &nbsp;·&nbsp; ` +
-                    `Política: <b>${model.voting.threshold} de ${model.voting.window_size}</b>`,
-                    ''
-                );
-                attemptTotalSpan.textContent = model.voting.window_size;
-                attemptNumSpan.textContent = 1;
-                renderAuthProgress([], model.voting.window_size);
-                authPasswordField.disabled = false;
-                authPasswordField.placeholder = "Escribe la contraseña + Enter...";
-                authPasswordField.focus();
-            } catch (err) {
-                setAuthModelStatus('❌ Error al cargar el modelo: ' + err.message, 'error');
-            }
-        }
-
-        function processAuthAttempt(featureVec) {
-            if (!authState) return;
-            const { model } = authState;
-            // predict devuelve [0/1] para un array de muestras — le pasamos una sola
-            const normalized = model.scaler.transform([featureVec]);
-            const pred = model.art.predict(normalized)[0];
-            authState.hits.push(pred);
-            renderAuthProgress(authState.hits, model.voting.window_size);
-            attemptNumSpan.textContent = Math.min(authState.hits.length + 1, model.voting.window_size);
-
-            if (authState.hits.length >= model.voting.window_size) {
-                const verdict = singleSessionVerdict(authState.hits, model.voting.threshold);
-                showVerdict(verdict);
-                authPasswordField.disabled = true;
-            }
-        }
-
-        function showVerdict({ hits, total, accepted }) {
-            if (accepted) {
-                verdictBox.className = 'verdict-box verdict-accept';
-                verdictBox.innerHTML = `✅ AUTÉNTICO<br><span style="font-size:14px;font-weight:normal;">Aciertos: ${hits} de ${total}</span>`;
-            } else {
-                verdictBox.className = 'verdict-box verdict-reject';
-                verdictBox.innerHTML = `❌ IMPOSTOR (o error de tecleo)<br><span style="font-size:14px;font-weight:normal;">Aciertos: ${hits} de ${total} — se requerían ${authState.model.voting.threshold}</span>`;
-            }
-        }
-
-        resetAuthBtn.addEventListener('click', () => {
-            if (authState) authState.hits = [];
-            verdictBox.innerHTML = '';
-            verdictBox.className = '';
-            authPasswordField.value = '';
-            authCapturedEvents = [];
-            if (authState) {
-                renderAuthProgress([], authState.model.voting.window_size);
-                attemptNumSpan.textContent = 1;
-                authPasswordField.disabled = false;
-                authPasswordField.focus();
-            }
-        });
-
-        authSubjectSelect.addEventListener('change', onAuthSubjectChange);
-
-        // =============================================================================
-        // CAPTURA DENTRO DEL TAB DE AUTENTICACIÓN
-        // Reutiliza toda la lógica de validación de tecleo, pero al final NO envía
-        // a Sheets ni entrena — sino que corre la predicción.
-        // =============================================================================
-        let authCapturedEvents = [];
-        const authActiveKeys = new Set();
-
-        authPasswordField.addEventListener('keydown', (e) => {
-            if (e.repeat) return;
-            if (['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(e.key)) {
-                e.preventDefault();
-                authCapturedEvents = []; authActiveKeys.clear(); authPasswordField.value = '';
-                setAuthMessage("Se detectó corrección o retroceso. Escribe la palabra completa de corrido.", true);
-                return;
-            }
-            if (e.key === 'CapsLock') {
-                e.preventDefault();
-                authCapturedEvents = []; authActiveKeys.clear(); authPasswordField.value = '';
-                setAuthMessage("Desactiva el Bloq Mayús. Usa el Shift Derecho para la 'R'.", true);
-                return;
-            }
-            if (e.ctrlKey || e.metaKey || e.altKey) {
-                e.preventDefault();
-                authCapturedEvents = []; authActiveKeys.clear(); authPasswordField.value = '';
-                setAuthMessage("Comando no permitido durante la captura.", true);
-                return;
-            }
-            if (e.key === 'Shift' && e.code !== 'ShiftRight') {
-                e.preventDefault();
-                authCapturedEvents = []; authActiveKeys.clear(); authPasswordField.value = '';
-                setAuthMessage("¡Error! Debes usar únicamente el SHIFT DERECHO para la 'R'.", true);
-                return;
-            }
-            if (authCapturedEvents.length === 0) setAuthMessage('', false);
-            authActiveKeys.add(e.code);
-            authCapturedEvents.push({ key: e.key, code: e.code, type: 'down', time: performance.now() });
-        });
-
-        authPasswordField.addEventListener('keyup', (e) => {
-            if (e.key === 'CapsLock') return;
-            authActiveKeys.delete(e.code);
-            if (authCapturedEvents.length > 0) {
-                authCapturedEvents.push({ key: e.key, code: e.code, type: 'up', time: performance.now() });
-            }
-            if (e.key === 'Enter') processAuthSequence();
-        });
-
-        authPasswordField.addEventListener('paste', (e) => e.preventDefault());
-        authPasswordField.addEventListener('contextmenu', (e) => e.preventDefault());
-
-        function processAuthSequence() {
-            if (authPasswordField.value !== TARGET_PASSWORD) {
-                setAuthMessage("Contraseña incorrecta o incompleta. Intenta de nuevo de forma fluida.", true);
-                authCapturedEvents = []; authActiveKeys.clear(); authPasswordField.value = '';
-                setTimeout(() => authPasswordField.focus(), 200);
-                return;
-            }
-            const featureVec = extractFeatureVectorFromEvents(authCapturedEvents);
-            if (!featureVec) {
-                setAuthMessage("Error crítico en la cadencia. Repite el intento.", true);
-                authCapturedEvents = []; authActiveKeys.clear(); authPasswordField.value = '';
-                setTimeout(() => authPasswordField.focus(), 200);
-                return;
-            }
-            setAuthMessage("Intento registrado.", false);
-            processAuthAttempt(featureVec);
-            authCapturedEvents = []; authActiveKeys.clear(); authPasswordField.value = '';
-            setTimeout(() => authPasswordField.focus(), 200);
-        }
-
-        // Extrae el vector de 31 features (misma lógica que processSequence pero devuelve el vector).
-        function extractFeatureVectorFromEvents(events) {
-            let tempDown = {};
-            let processedEvents = [];
-            const nameMap = { '.': 'period', '5': 'five', 'Enter': 'Return', 'Shift': 'Shift.r' };
-            for (let e of events) {
-                let keyChar = e.key;
-                let eventType = e.type;
-                let timestamp = e.time / 1000.0;
-                let keyName = '';
-                if (e.code === 'ShiftRight') keyName = 'Shift.r';
-                else if (e.code === 'Enter') keyName = 'Return';
-                else if (e.code === 'KeyR') continue;
-                else if (nameMap[keyChar]) keyName = nameMap[keyChar];
-                else keyName = keyChar;
-
-                if (eventType === 'down') {
-                    tempDown[keyName] = timestamp;
-                } else if (eventType === 'up') {
-                    if (tempDown[keyName] !== undefined) {
-                        let downTime = tempDown[keyName];
-                        delete tempDown[keyName];
-                        processedEvents.push({ key: keyName, down: downTime, up: timestamp });
+                    if (i > 0) {
+                        let prev = processedEvents[i - 1];
+                        let prevKey = prev.key;
+                        features[`DD.${prevKey}.${key}`] = (curr.down - prev.down).toFixed(4);
+                        features[`UD.${prevKey}.${key}`] = (curr.down - prev.up).toFixed(4);
                     }
                 }
-            }
-            processedEvents.sort((a, b) => a.down - b.down);
-            if (processedEvents.length < 11) return null;
 
-            let features = {};
-            for (let i = 0; i < processedEvents.length; i++) {
-                const curr = processedEvents[i];
-                features[`H.${curr.key}`] = curr.up - curr.down;
-                if (i > 0) {
-                    const prev = processedEvents[i - 1];
-                    features[`DD.${prev.key}.${curr.key}`] = curr.down - prev.down;
-                    features[`UD.${prev.key}.${curr.key}`] = curr.down - prev.up;
-                }
-            }
-            const vec = new Array(COLUMNS.length - 3);
-            for (let i = 3; i < COLUMNS.length; i++) {
-                const val = features[COLUMNS[i]];
-                vec[i - 3] = (typeof val === 'number' && isFinite(val)) ? val : 0;
-            }
-            return vec;
-        }
-
-        // =============================================================================
-        // REENTRENAMIENTO MANUAL DESDE CERO
-        // =============================================================================
-        retrainBtn.addEventListener('click', async () => {
-            const subject = authSubjectSelect.value;
-            if (!subject) {
-                retrainStatus.textContent = "Selecciona primero un usuario en el desplegable de arriba.";
-                retrainStatus.className = 'cloud-status cloud-fail';
-                return;
-            }
-            const nSamples = parseInt(retrainNSamples.value, 10) || 0;
-            const rho      = parseFloat(retrainRho.value);
-            const threshold = parseInt(retrainThreshold.value, 10);
-            const windowSize = parseInt(retrainWindow.value, 10);
-
-            if (isNaN(rho) || rho <= 0 || rho > 1) {
-                retrainStatus.textContent = "Rho debe estar entre 0 y 1.";
-                retrainStatus.className = 'cloud-status cloud-fail';
-                return;
-            }
-            if (threshold > windowSize) {
-                retrainStatus.textContent = "Los aciertos requeridos no pueden ser mayores que el total de intentos.";
-                retrainStatus.className = 'cloud-status cloud-fail';
-                return;
-            }
-
-            retrainBtn.disabled = true;
-            retrainStatus.textContent = "🔎 Descargando muestras...";
-            retrainStatus.className = 'cloud-status';
-
-            try {
-                const allSamples = await fetchSubjectSamples(subject);
-                if (allSamples.length < MIN_SAMPLES_FIRST_TRAIN) {
-                    throw new Error(`Solo hay ${allSamples.length} muestras; se necesitan al menos ${MIN_SAMPLES_FIRST_TRAIN}.`);
-                }
-                const chosen = nSamples > 0
-                    ? allSamples.slice(-nSamples) // últimas N
-                    : allSamples;
-
-                retrainStatus.textContent = `🧠 Entrenando con ${chosen.length} muestras...`;
-                const model = new UserModel(subject, {
-                    rho, alpha: DEFAULT_HYPERPARAMS.alpha, beta: DEFAULT_HYPERPARAMS.beta,
-                    window_size: windowSize, threshold: threshold,
+                let row = COLUMNS.map(col => {
+                    if (col === 'subject') return features.subject;
+                    if (col === 'sessionIndex') return features.sessionIndex;
+                    if (col === 'rep') return features.rep;
+                    return features[col] || (0.0).toFixed(4);
                 });
-                model.initialTrain(chosen);
-                await saveModelToDrive(subject, model.toJSON());
-                modelsCache[subject] = model;
 
-                retrainStatus.textContent = `✅ Modelo reentrenado con ${chosen.length} muestras (${model.art.num_categories} categorías) y guardado en Drive.`;
-                retrainStatus.className = 'cloud-status cloud-ok';
+                samples.push(row);
+                repCounter++;
+                sampleCountDisplay.textContent = samples.length;
 
-                // Refrescar la vista de estado del modelo
-                await onAuthSubjectChange();
-            } catch (err) {
-                retrainStatus.textContent = "❌ " + err.message;
-                retrainStatus.className = 'cloud-status cloud-fail';
-            } finally {
-                retrainBtn.disabled = false;
+                if (modoPrueba) {
+                    registrarIntento(); // PRUEBA: muestra Aprobado/Rechazado
+                } else {
+                    showMessage("¡Muestra guardada correctamente con Shift Derecho!");
+                }
+                resetCapture();
             }
-        });
 
-        function resetCapture() {
-            capturedEvents = [];
-            activeKeys.clear();
-            passwordField.value = '';
-            // Forzar retraso para mitigar rebotes físicos de teclado
-            setTimeout(() => {
-                passwordField.focus();
-            }, 200);
+            function resetCapture() {
+                capturedEvents = [];
+                activeKeys.clear();
+                passwordField.value = '';
+                // Forzar retraso para mitigar rebotes físicos de teclado
+                setTimeout(() => {
+                    passwordField.focus();
+                }, 200);
+            }
+
+            downloadBtn.addEventListener('click', () => {
+                if (samples.length === 0) {
+                    alert("Aún no hay muestras capturadas para descargar.");
+                    return;
+                }
+
+                let csvContent = "data:text/csv;charset=utf-8,";
+                csvContent += COLUMNS.join(",") + "\n";
+                samples.forEach(rowArray => {
+                    csvContent += rowArray.join(",") + "\n";
+                });
+
+                var encodedUri = encodeURI(csvContent);
+                var link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                link.setAttribute("download", `Dinamica_Tecleo_${subjectIdField.value.trim().replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.csv`);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
         }
 
-        downloadBtn.addEventListener('click', () => {
-            if (samples.length === 0) {
-                alert("Aún no hay muestras capturadas para descargar.");
-                return;
-            }
-
-            let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += COLUMNS.join(",") + "\n";
-            samples.forEach(rowArray => {
-                csvContent += rowArray.join(",") + "\n";
-            });
-
-            var encodedUri = encodeURI(csvContent);
-            var link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `Dinamica_Tecleo_${getCurrentSubject().replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        });
+        configurarPanel('', false);  // Pestaña 1: recolección original
+        configurarPanel('2', true);  // Pestaña 2: probar modelo
     </script>
 </body>
 </html>
