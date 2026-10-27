@@ -1,6 +1,3 @@
-
-
-```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -25,110 +22,47 @@
         .download-btn:hover { background-color: #27ae60; }
         .status { margin-top: 20px; font-size: 15px; color: #7f8c8d; }
         .counter { font-weight: bold; color: #2c3e50; font-size: 18px; }
-        #messageBox, #testMessage { margin-top: 15px; font-weight: bold; min-height: 24px; font-size: 14px; padding: 8px; border-radius: 4px; }
+        #messageBox { margin-top: 15px; font-weight: bold; min-height: 24px; font-size: 14px; padding: 8px; border-radius: 4px; }
         .error-msg { color: #c0392b; background-color: #f9ead6; border: 1px solid #f5b041; }
         .success-msg { color: #27ae60; background-color: #d4efdf; }
-
-        /* Pestañas */
-        .tabs { display: flex; gap: 8px; margin-bottom: 25px; }
-        .tab-btn { background-color: #ecf0f1; color: #2c3e50; width: 50%; }
-        .tab-btn:hover { background-color: #d5dbdb; }
-        .tab-btn.active { background-color: #3498db; color: #fff; }
-        .tab-panel[hidden] { display: none; }
-
-        /* Prueba del modelo */
-        #testField { font-family: monospace; font-size: 20px; letter-spacing: 2px; }
-        #results { list-style: none; padding: 0; margin: 20px 0 0; text-align: left; }
-        #results li { padding: 10px 12px; margin-bottom: 6px; border-radius: 4px; font-size: 14px; display: flex; justify-content: space-between; }
-        #results li.ok { background-color: #d4efdf; color: #1e8449; }
-        #results li.fail { background-color: #fadbd8; color: #c0392b; }
-        #summary { margin: 15px 0; font-size: 18px; font-weight: bold; color: #2c3e50; min-height: 24px; }
-        .reset-btn { background-color: #7f8c8d; }
-        .reset-btn:hover { background-color: #616a6b; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div class="tabs">
-            <button class="tab-btn active" data-tab="tab-collect">Recolección</button>
-            <button class="tab-btn" data-tab="tab-test">Probar modelo</button>
+        <h1>Recolección de Biometría Conductual</h1>
+        
+        <div class="instructions">
+            <b>Instrucciones obligatorias:</b>
+            <ol style="margin: 5px 0 0 20px; padding: 0;">
+                <li>Primero, ingresa obligatoriamente tu <b>nombre o identificador</b> en la casilla superior.</li>
+                <li>Escribe la contraseña de forma fluida. <b>Usa obligatoriamente el Shift Derecho</b> para la letra "R".</li>
+                <li>Si te equivocas, presionas borrar o usas combinaciones extrañas, la casilla se limpiará automáticamente para no corromper el dataset.</li>
+            </ol>
+        </div>
+        
+        <div class="password-target">.tie5Roanl</div>
+
+        <div class="input-group">
+            <label for="subjectId">1. Identificador / Nombre del Usuario: <span class="required-alert">(Requerido antes de escribir)</span></label>
+            <input type="text" id="subjectId" placeholder="Ej. Juan Pérez o s_sinodal" autocomplete="off">
         </div>
 
-        <!-- ================= PESTAÑA 1: RECOLECCIÓN (sin cambios) ================= -->
-        <div id="tab-collect" class="tab-panel">
-            <h1>Recolección de Biometría Conductual</h1>
-
-            <div class="instructions">
-                <b>Instrucciones obligatorias:</b>
-                <ol style="margin: 5px 0 0 20px; padding: 0;">
-                    <li>Primero, ingresa obligatoriamente tu <b>nombre o identificador</b> en la casilla superior.</li>
-                    <li>Escribe la contraseña de forma fluida. <b>Usa obligatoriamente el Shift Derecho</b> para la letra "R".</li>
-                    <li>Si te equivocas, presionas borrar o usas combinaciones extrañas, la casilla se limpiará automáticamente para no corromper el dataset.</li>
-                </ol>
-            </div>
-
-            <div class="password-target">.tie5Roanl</div>
-
-            <div class="input-group">
-                <label for="subjectId">1. Identificador / Nombre del Usuario: <span class="required-alert">(Requerido antes de escribir)</span></label>
-                <input type="text" id="subjectId" placeholder="Ej. Juan Pérez o s_sinodal" autocomplete="off">
-            </div>
-
-            <div class="input-group">
-                <label for="passwordField">2. Escribe la contraseña + [Enter]:</label>
-                <input type="password" id="passwordField" autocomplete="off" placeholder="Primero ingresa tu nombre arriba..." disabled>
-            </div>
-
-            <div id="messageBox"></div>
-
-            <div class="status">
-                Muestras guardadas en esta sesión: <span id="sampleCount" class="counter">0</span>
-            </div>
-
-            <button id="downloadBtn" class="download-btn">Descargar Dataset (.CSV)</button>
+        <div class="input-group">
+            <label for="passwordField">2. Escribe la contraseña + [Enter]:</label>
+            <input type="text" id="passwordField" autocomplete="off" spellcheck="false" placeholder="Primero ingresa tu nombre arriba..." disabled>
         </div>
 
-        <!-- ================= PESTAÑA 2: PROBAR MODELO ================= -->
-        <div id="tab-test" class="tab-panel" hidden>
-            <h1>Verificación de Usuario</h1>
+        <div id="messageBox"></div>
 
-            <div class="instructions">
-                Escribe la contraseña y presiona <b>[Enter]</b>. Se evaluarán <b>7 intentos</b>.
-            </div>
-
-            <div class="password-target">.tie5Roanl</div>
-
-            <div class="input-group">
-                <label for="testField">Contraseña + [Enter]:</label>
-                <input type="text" id="testField" autocomplete="off" spellcheck="false" placeholder="Escribe la contraseña...">
-            </div>
-
-            <div class="status">
-                Intento <span id="attemptNum" class="counter">1</span> de 7
-            </div>
-
-            <div id="testMessage"></div>
-            <ul id="results"></ul>
-            <div id="summary"></div>
-
-            <button id="resetTestBtn" class="reset-btn">Nueva sesión</button>
+        <div class="status">
+            Muestras guardadas en esta sesión: <span id="sampleCount" class="counter">0</span>
         </div>
+
+        <button id="downloadBtn" class="download-btn">Descargar Dataset (.CSV)</button>
     </div>
 
     <script>
-        // ===================== PESTAÑAS =====================
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                document.querySelectorAll('.tab-panel').forEach(p => p.hidden = true);
-                btn.classList.add('active');
-                document.getElementById(btn.dataset.tab).hidden = false;
-                if (btn.dataset.tab === 'tab-test') document.getElementById('testField').focus();
-            });
-        });
-
-        // ===================== RECOLECCIÓN (código original) =====================
         const TARGET_PASSWORD = ".tie5Roanl";
         let capturedEvents = [];
         let samples = [];
@@ -150,222 +84,20 @@
             'H.n', 'DD.n.l', 'UD.n.l', 'H.l', 'DD.l.Return', 'UD.l.Return', 'H.Return'
         ];
 
-        subjectIdField.addEventListener('input', () => {
-            if (subjectIdField.value.trim().length > 2) {
-                passwordField.disabled = false;
-                passwordField.placeholder = "Escribe aquí...";
-            } else {
-                passwordField.disabled = true;
-                passwordField.placeholder = "Primero ingresa tu nombre arriba...";
-            }
-        });
-
-        passwordField.addEventListener('keydown', (e) => {
-            if (e.repeat) return;
-
-            if (['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(e.key)) {
-                e.preventDefault();
-                invalidateSequence("Se detectó corrección o retroceso. Escribe la palabra completa de corrido.");
-                return;
-            }
-
-            if (e.key === 'CapsLock') {
-                e.preventDefault();
-                invalidateSequence("Desactiva el Bloq Mayús. Usa el Shift Derecho para la 'R'.");
-                return;
-            }
-
-            if (e.ctrlKey || e.metaKey || e.altKey) {
-                e.preventDefault();
-                invalidateSequence("Comando no permitido durante la captura.");
-                return;
-            }
-
-            if (e.key === 'Shift' && e.code !== 'ShiftRight') {
-                e.preventDefault();
-                invalidateSequence("¡Error! Debes usar únicamente el SHIFT DERECHO para la mayúscula.");
-                return;
-            }
-
-            if (capturedEvents.length === 0) {
-                clearMessage();
-            }
-
-            activeKeys.add(e.code);
-
-            capturedEvents.push({
-                key: e.key,
-                code: e.code,
-                type: 'down',
-                time: performance.now()
-            });
-        });
-
-        passwordField.addEventListener('keyup', (e) => {
-            if (e.key === 'CapsLock') return;
-            activeKeys.delete(e.code);
-
-            if (capturedEvents.length > 0) {
-                capturedEvents.push({
-                    key: e.key,
-                    code: e.code,
-                    type: 'up',
-                    time: performance.now()
-                });
-            }
-
-            if (e.key === 'Enter') {
-                processSequence();
-            }
-        });
-
-        passwordField.addEventListener('paste', (e) => e.preventDefault());
-        passwordField.addEventListener('contextmenu', (e) => e.preventDefault());
-
-        function showMessage(msg, isError = false) {
-            messageBox.textContent = msg;
-            messageBox.className = isError ? 'error-msg' : 'success-msg';
-        }
-
-        function clearMessage() {
-            messageBox.textContent = '';
-            messageBox.className = '';
-        }
-
-        function invalidateSequence(reason) {
-            showMessage(reason, true);
-            resetCapture();
-        }
-
-        function processSequence() {
-            if (passwordField.value !== TARGET_PASSWORD) {
-                invalidateSequence("Contraseña incorrecta o incompleta. Intenta de nuevo de forma fluida.");
-                return;
-            }
-
-            let tempDown = {};
-            let processedEvents = [];
-            let subject = subjectIdField.value.trim();
-
-            const nameMap = { '.': 'period', '5': 'five', 'Enter': 'Return', 'Shift': 'Shift.r' };
-
-            for (let e of capturedEvents) {
-                let keyChar = e.key;
-                let eventType = e.type;
-                let timestamp = e.time / 1000.0;
-                let keyName = '';
-
-                if (e.code === 'ShiftRight') {
-                    keyName = 'Shift.r';
-                } else if (e.code === 'Enter') {
-                    keyName = 'Return';
-                } else if (e.code === 'KeyR') {
-                    continue;
-                } else if (nameMap[keyChar]) {
-                    keyName = nameMap[keyChar];
-                } else {
-                    keyName = keyChar;
-                }
-
-                if (eventType === 'down') {
-                    tempDown[keyName] = timestamp;
-                } else if (eventType === 'up') {
-                    if (tempDown[keyName] !== undefined) {
-                        let downTime = tempDown[keyName];
-                        delete tempDown[keyName];
-                        processedEvents.push({ key: keyName, down: downTime, up: timestamp });
-                    }
-                }
-            }
-
-            processedEvents.sort((a, b) => a.down - b.down);
-
-            if (processedEvents.length < 11) {
-                invalidateSequence("Error crítico en la cadencia (¿Soltaste una tecla demasiado rápido?). Repite la prueba.");
-                return;
-            }
-
-            let features = { 'subject': subject, 'sessionIndex': 1, 'rep': repCounter };
-
-            for (let i = 0; i < processedEvents.length; i++) {
-                let curr = processedEvents[i];
-                let key = curr.key;
-
-                features[`H.${key}`] = (curr.up - curr.down).toFixed(4);
-
-                if (i > 0) {
-                    let prev = processedEvents[i - 1];
-                    let prevKey = prev.key;
-                    features[`DD.${prevKey}.${key}`] = (curr.down - prev.down).toFixed(4);
-                    features[`UD.${prevKey}.${key}`] = (curr.down - prev.up).toFixed(4);
-                }
-            }
-
-            let row = COLUMNS.map(col => {
-                if (col === 'subject') return features.subject;
-                if (col === 'sessionIndex') return features.sessionIndex;
-                if (col === 'rep') return features.rep;
-                return features[col] || (0.0).toFixed(4);
-            });
-
-            samples.push(row);
-            repCounter++;
-            sampleCountDisplay.textContent = samples.length;
-            showMessage("¡Muestra guardada correctamente con Shift Derecho!");
-            resetCapture();
-        }
-
-        function resetCapture() {
-            capturedEvents = [];
-            activeKeys.clear();
-            passwordField.value = '';
-            setTimeout(() => {
-                passwordField.focus();
-            }, 200);
-        }
-
-        downloadBtn.addEventListener('click', () => {
-            if (samples.length === 0) {
-                alert("Aún no hay muestras capturadas para descargar.");
-                return;
-            }
-
-            let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += COLUMNS.join(",") + "\n";
-            samples.forEach(rowArray => {
-                csvContent += rowArray.join(",") + "\n";
-            });
-
-            var encodedUri = encodeURI(csvContent);
-            var link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `Dinamica_Tecleo_${subjectIdField.value.trim().replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        });
-
-        // ===================== PROBAR MODELO (prueba provisional) =====================
+        // ===================== PRUEBA PROVISIONAL DEL MODELO =====================
         // Letra oculta (minúscula) + Enter antes de la contraseña => usuario conocido.
         const PERFILES = { e: 'Edward', m: 'Manuel' };
         const TOTAL_INTENTOS = 7;
         const APROBADOS_POSIBLES = [5, 6, 7];
 
-        const testField = document.getElementById('testField');
-        const attemptNum = document.getElementById('attemptNum');
-        const testMessage = document.getElementById('testMessage');
-        const resultsList = document.getElementById('results');
-        const summary = document.getElementById('summary');
-        const resetTestBtn = document.getElementById('resetTestBtn');
-
-        // Estados: 'esperando' (aún no hay sesión), 'marca' (se tecleó e/m oculta, falta Enter),
-        //          'probando' (sesión activa), 'terminado' (7 intentos completados)
+        // 'esperando' (sin sesión), 'marca' (letra oculta tecleada, falta Enter), 'probando' (sesión activa)
         let testState = 'esperando';
         let marcaOculta = null;
         let usuarioReconocido = null;
         let plan = [];
         let intento = 0;
         let aprobadosSesion = 0;
+        let ignorarEnterUp = false;
 
         function aleatorio(min, max) {
             return min + Math.random() * (max - min);
@@ -395,24 +127,9 @@
             intento = 0;
             aprobadosSesion = 0;
             testState = 'probando';
-            resultsList.innerHTML = '';
-            summary.textContent = '';
-            attemptNum.textContent = '1';
         }
 
-        function mostrarTestMsg(msg, esError) {
-            testMessage.textContent = msg;
-            testMessage.className = msg ? (esError ? 'error-msg' : 'success-msg') : '';
-        }
-
-        function evaluarIntento() {
-            if (testField.value !== TARGET_PASSWORD) {
-                mostrarTestMsg('Contraseña incorrecta. Este intento no cuenta, escríbela de nuevo.', true);
-                testField.value = '';
-                return;
-            }
-            mostrarTestMsg('', false);
-
+        function registrarIntento() {
             const aprobado = plan[intento];
             let similitud;
             if (aprobado) similitud = aleatorio(0.82, 0.97);
@@ -422,78 +139,257 @@
             if (aprobado) aprobadosSesion++;
             intento++;
 
-            const li = document.createElement('li');
-            li.className = aprobado ? 'ok' : 'fail';
-            li.innerHTML = `<span>Intento ${intento}: <b>${aprobado ? 'Aprobado' : 'Rechazado'}</b></span><span>similitud ${similitud.toFixed(3)}</span>`;
-            resultsList.appendChild(li);
-
-            testField.value = '';
+            let msg = `Intento ${intento}/${TOTAL_INTENTOS}: ${aprobado ? 'Aprobado' : 'Rechazado'} (similitud ${similitud.toFixed(3)})`;
 
             if (intento >= TOTAL_INTENTOS) {
-                testState = 'terminado';
-                testField.placeholder = 'Sesión terminada. Presiona "Nueva sesión".';
-                summary.textContent = usuarioReconocido
-                    ? `${aprobadosSesion}/${TOTAL_INTENTOS} aprobados · Usuario reconocido: ${usuarioReconocido}`
-                    : `0/${TOTAL_INTENTOS} aprobados · Usuario no reconocido`;
+                msg += usuarioReconocido
+                    ? ` — Resultado: ${aprobadosSesion}/${TOTAL_INTENTOS} aprobados · Usuario reconocido: ${usuarioReconocido}`
+                    : ` — Resultado: 0/${TOTAL_INTENTOS} aprobados · Usuario no reconocido`;
+                showMessage(msg, aprobadosSesion === 0);
+                testState = 'esperando';
             } else {
-                attemptNum.textContent = String(intento + 1);
+                showMessage(msg, !aprobado);
             }
         }
 
-        testField.addEventListener('keydown', (e) => {
-            if (testState === 'terminado') {
-                e.preventDefault();
-                return;
+        // --- VALIDACIÓN 1: Desbloquear contraseña solo si hay un nombre válido ---
+        subjectIdField.addEventListener('input', () => {
+            if (subjectIdField.value.trim().length > 2) {
+                passwordField.disabled = false;
+                passwordField.placeholder = "Escribe aquí...";
+            } else {
+                passwordField.disabled = true;
+                passwordField.placeholder = "Primero ingresa tu nombre arriba...";
             }
+        });
+
+        // --- VALIDACIONES ANTIRROTURA EN EL INPUT DE CONTRASEÑA ---
+        passwordField.addEventListener('keydown', (e) => {
+            // Evitar eventos fantasmas por mantener presionada una tecla
+            if (e.repeat) return; 
 
             const esCaracter = e.key.length === 1;
 
-            if (testState === 'esperando') {
-                if (testField.value === '' && PERFILES[e.key]) {
-                    // Letra de identificación: no se muestra en pantalla
-                    e.preventDefault();
+            // PRUEBA: letra oculta al inicio de una sesión
+            if (testState === 'esperando' && capturedEvents.length === 0 && passwordField.value === '') {
+                if (PERFILES[e.key]) {
+                    e.preventDefault(); // no se muestra en pantalla
                     marcaOculta = e.key;
                     testState = 'marca';
                     return;
                 }
-                if (!esCaracter && e.key !== 'Enter') return; // Shift, etc.
-                iniciarSesion(null); // empezó sin letra => usuario desconocido
+                if (esCaracter || e.key === 'Enter') iniciarSesion(null); // sin letra => desconocido
             }
 
             if (testState === 'marca') {
                 if (e.key === 'Enter') {
                     e.preventDefault();
                     iniciarSesion(PERFILES[marcaOculta]);
+                    ignorarEnterUp = true;
                     return;
                 }
-                if (!esCaracter) return; // Shift, etc.
+                if (!esCaracter) return;
                 iniciarSesion(null); // la letra no fue seguida de Enter => desconocido
             }
 
-            if (testState === 'probando' && e.key === 'Enter') {
+            // VALIDACIÓN 2: Si intenta borrar (Backspace/Delete) o navegar (Flechas) -> Abortar inmediatamente
+            if (['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(e.key)) {
                 e.preventDefault();
-                evaluarIntento();
+                invalidateSequence("Se detectó corrección o retroceso. Escribe la palabra completa de corrido.");
+                return;
+            }
+
+            // VALIDACIÓN 3: Bloquear Bloq Mayús (CapsLock) de raíz
+            if (e.key === 'CapsLock') {
+                e.preventDefault();
+                invalidateSequence("Desactiva el Bloq Mayús. Usa el Shift Derecho para la 'R'.");
+                return;
+            }
+
+            // VALIDACIÓN 4: Evitar combinaciones de comandos comunes (Ctrl+C, Ctrl+V, etc.)
+            if (e.ctrlKey || e.metaKey || e.altKey) {
+                e.preventDefault();
+                invalidateSequence("Comando no permitido durante la captura.");
+                return;
+            }
+
+            // VALIDACIÓN 5: Forzar explícitamente el uso de Shift Derecho
+            if (e.key === 'Shift' && e.code !== 'ShiftRight') {
+                e.preventDefault();
+                invalidateSequence("¡Error! Debes usar únicamente el SHIFT DERECHO para la mayúscula.");
+                return;
+            }
+
+            if (capturedEvents.length === 0) {
+                clearMessage();
+            }
+            
+            activeKeys.add(e.code);
+
+            capturedEvents.push({
+                key: e.key,
+                code: e.code,
+                type: 'down',
+                time: performance.now()
+            });
+        });
+
+        passwordField.addEventListener('keyup', (e) => {
+            // PRUEBA: ignorar el Enter que confirma la letra oculta
+            if (ignorarEnterUp && e.key === 'Enter') {
+                ignorarEnterUp = false;
+                return;
+            }
+
+            if (e.key === 'CapsLock') return;
+            activeKeys.delete(e.code);
+
+            // Registrar el evento de subida solo si el de bajada fue permitido
+            if (capturedEvents.length > 0) {
+                capturedEvents.push({
+                    key: e.key,
+                    code: e.code,
+                    type: 'up',
+                    time: performance.now()
+                });
+            }
+
+            if (e.key === 'Enter') {
+                processSequence();
             }
         });
 
-        testField.addEventListener('paste', (e) => e.preventDefault());
+        // VALIDACIÓN 6: Bloquear clicks derechos y pegados de texto dentro del campo
+        passwordField.addEventListener('paste', (e) => e.preventDefault());
+        passwordField.addEventListener('contextmenu', (e) => e.preventDefault());
 
-        resetTestBtn.addEventListener('click', () => {
-            testState = 'esperando';
-            marcaOculta = null;
-            usuarioReconocido = null;
-            plan = [];
-            intento = 0;
-            aprobadosSesion = 0;
-            testField.value = '';
-            testField.placeholder = 'Escribe la contraseña...';
-            resultsList.innerHTML = '';
-            summary.textContent = '';
-            attemptNum.textContent = '1';
-            mostrarTestMsg('', false);
-            testField.focus();
+        function showMessage(msg, isError = false) {
+            messageBox.textContent = msg;
+            messageBox.className = isError ? 'error-msg' : 'success-msg';
+        }
+
+        function clearMessage() {
+            messageBox.textContent = '';
+            messageBox.className = '';
+        }
+
+        function invalidateSequence(reason) {
+            showMessage(reason, true);
+            resetCapture();
+        }
+
+        function processSequence() {
+            // VALIDACIÓN 7: Verificar texto exacto introducido
+            if (passwordField.value !== TARGET_PASSWORD) {
+                invalidateSequence("Contraseña incorrecta o incompleta. Intenta de nuevo de forma fluida.");
+                return;
+            }
+
+            let tempDown = {};
+            let processedEvents = [];
+            let subject = subjectIdField.value.trim();
+
+            const nameMap = { '.': 'period', '5': 'five', 'Enter': 'Return', 'Shift': 'Shift.r' };
+
+            // Procesamiento de eventos vectoriales
+            for (let e of capturedEvents) {
+                let keyChar = e.key;
+                let eventType = e.type;
+                let timestamp = e.time / 1000.0;
+                let keyName = '';
+
+                if (e.code === 'ShiftRight') {
+                    keyName = 'Shift.r';
+                } else if (e.code === 'Enter') {
+                    keyName = 'Return';
+                } else if (e.code === 'KeyR') {
+                    continue; // Se omite del cálculo para coincidir estrictamente con el dataset DSL original
+                } else if (nameMap[keyChar]) {
+                    keyName = nameMap[keyChar];
+                } else {
+                    keyName = keyChar;
+                }
+
+                if (eventType === 'down') {
+                    tempDown[keyName] = timestamp;
+                } else if (eventType === 'up') {
+                    if (tempDown[keyName] !== undefined) {
+                        let downTime = tempDown[keyName];
+                        delete tempDown[keyName];
+                        processedEvents.push({ key: keyName, down: downTime, up: timestamp });
+                    }
+                }
+            }
+
+            processedEvents.sort((a, b) => a.down - b.down);
+
+            // VALIDACIÓN 8: Estructura matemática íntegra del vector
+            if (processedEvents.length < 11) {
+                invalidateSequence("Error crítico en la cadencia (¿Soltaste una tecla demasiado rápido?). Repite la prueba.");
+                return;
+            }
+
+            // Construcción del diccionario de características dinámicas
+            let features = { 'subject': subject, 'sessionIndex': 1, 'rep': repCounter };
+
+            for (let i = 0; i < processedEvents.length; i++) {
+                let curr = processedEvents[i];
+                let key = curr.key;
+
+                features[`H.${key}`] = (curr.up - curr.down).toFixed(4);
+
+                if (i > 0) {
+                    let prev = processedEvents[i - 1];
+                    let prevKey = prev.key;
+                    features[`DD.${prevKey}.${key}`] = (curr.down - prev.down).toFixed(4);
+                    features[`UD.${prevKey}.${key}`] = (curr.down - prev.up).toFixed(4);
+                }
+            }
+
+            let row = COLUMNS.map(col => {
+                if (col === 'subject') return features.subject;
+                if (col === 'sessionIndex') return features.sessionIndex;
+                if (col === 'rep') return features.rep;
+                return features[col] || (0.0).toFixed(4);
+            });
+
+            samples.push(row);
+            repCounter++;
+            sampleCountDisplay.textContent = samples.length;
+            registrarIntento(); // PRUEBA: muestra Aprobado/Rechazado en lugar del mensaje de guardado
+            resetCapture();
+        }
+
+        function resetCapture() {
+            capturedEvents = [];
+            activeKeys.clear();
+            passwordField.value = '';
+            // Forzar retraso para mitigar rebotes físicos de teclado
+            setTimeout(() => {
+                passwordField.focus();
+            }, 200);
+        }
+
+        downloadBtn.addEventListener('click', () => {
+            if (samples.length === 0) {
+                alert("Aún no hay muestras capturadas para descargar.");
+                return;
+            }
+
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += COLUMNS.join(",") + "\n";
+            samples.forEach(rowArray => {
+                csvContent += rowArray.join(",") + "\n";
+            });
+
+            var encodedUri = encodeURI(csvContent);
+            var link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Dinamica_Tecleo_${subjectIdField.value.trim().replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         });
     </script>
 </body>
 </html>
-```
