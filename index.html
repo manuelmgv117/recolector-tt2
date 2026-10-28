@@ -3,484 +3,1093 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recolección de Dinámica de Tecleo - TT2</title>
+    <title>Dinámica de Tecleo - TT2</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; color: #333; display: flex; flex-direction: column; align-items: center; padding: 40px; margin: 0; }
-        .container { background-color: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 600px; width: 100%; text-align: center; }
-        h1 { color: #2c3e50; font-size: 24px; margin-bottom: 10px; }
-        .instructions { font-size: 14px; color: #555; margin-bottom: 20px; text-align: left; line-height: 1.6; background: #ebf5fb; padding: 15px; border-left: 5px solid #3498db; border-radius: 4px; }
-        .input-group { margin-bottom: 20px; text-align: left; }
-        label { display: block; font-weight: bold; margin-bottom: 8px; color: #2c3e50; }
-        .required-alert { color: #c0392b; font-size: 12px; font-weight: normal; margin-left: 5px; }
-        input[type="text"], input[type="password"], select { width: 100%; padding: 12px; font-size: 16px; border: 2px solid #bdc3c7; border-radius: 6px; box-sizing: border-box; transition: all 0.3s; }
-        input[type="text"]:focus, input[type="password"]:focus, select:focus { border-color: #3498db; outline: none; box-shadow: 0 0 8px rgba(52,152,219,0.3); }
-        select { background-color: #fff; cursor: pointer; }
-        input:disabled { background-color: #e8f0fe; cursor: not-allowed; }
-        .password-target { font-size: 24px; font-weight: bold; color: #e74c3c; background-color: #fadbd8; padding: 12px; border-radius: 6px; display: inline-block; margin-bottom: 20px; letter-spacing: 3px; font-family: monospace; }
-        button { background-color: #3498db; color: white; border: none; padding: 12px 20px; font-size: 16px; border-radius: 4px; cursor: pointer; transition: background-color 0.3s; font-weight: bold; width: 100%; }
-        button:hover { background-color: #2980b9; }
-        .download-btn { background-color: #2ecc71; margin-top: 15px; }
-        .download-btn:hover { background-color: #27ae60; }
-        .status { margin-top: 20px; font-size: 15px; color: #7f8c8d; }
-        .counter { font-weight: bold; color: #2c3e50; font-size: 18px; }
-        #messageBox, #messageBox2 { margin-top: 15px; font-weight: bold; min-height: 24px; font-size: 14px; padding: 8px; border-radius: 4px; }
-        .error-msg { color: #c0392b; background-color: #f9ead6; border: 1px solid #f5b041; }
-        .success-msg { color: #27ae60; background-color: #d4efdf; }
+        /* ===================== PALETA PASTEL (sin blanco) ===================== */
+        :root {
+            --ink: #3a3156;
+            --ink-soft: #675d86;
 
-        /* Pestañas */
-        .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
-        .tab-btn { background-color: #ecf0f1; color: #2c3e50; width: 50%; }
-        .tab-btn:hover { background-color: #d5dbdb; }
-        .tab-btn.active { background-color: #3498db; color: #fff; }
+            --lav-50:  #f0e8fb;
+            --lav-100: #e7dcfa;
+            --lav-200: #d9cbf6;
+            --lav-300: #c3aff0;
+            --lav-500: #9b83e0;
+
+            --mint-100: #def3ea;
+            --mint-200: #c3e9d8;
+            --mint-400: #86cfad;
+            --mint-ink: #22654a;
+
+            --pink-100: #fbe3ea;
+            --pink-200: #f6c6d3;
+            --pink-400: #ec98b0;
+            --pink-ink: #962d4a;
+
+            --peach-100: #ffe6d8;
+            --peach-200: #ffd0b5;
+
+            --butter-100: #fcf0c6;
+            --butter-200: #f5dd8f;
+
+            --sky-100: #e0ecfa;
+            --sky-200: #c2d9f3;
+
+            --field: #f3ebfc;
+            --shadow: 0 12px 32px rgba(84, 62, 150, 0.14);
+        }
+
+        * { box-sizing: border-box; }
+
+        html { background: #e4d9fb; }
+        body {
+            margin: 0;
+            font-family: 'Nunito', 'Segoe UI', Tahoma, sans-serif;
+            color: var(--ink);
+            line-height: 1.55;
+            background: linear-gradient(140deg, #e4d9fb 0%, #d9efe5 50%, #fde0d2 100%);
+            min-height: 100vh;
+            padding: 28px 16px 48px;
+        }
+
+        h1, h2, h3, .display { font-family: 'Fredoka', 'Nunito', sans-serif; font-weight: 600; line-height: 1.2; }
+        h2 { font-size: 22px; margin: 0 0 6px; }
+        h3 { font-size: 18px; margin: 0 0 4px; }
+        p { margin: 0 0 10px; }
+
+        .wrap { max-width: 880px; margin: 0 auto; }
+
+        /* ---------- Encabezado ---------- */
+        .top { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; flex-wrap: wrap; }
+        .logo {
+            width: 52px; height: 52px; border-radius: 16px;
+            background: var(--lav-300); display: grid; place-items: center;
+            font-size: 28px; box-shadow: 0 6px 16px rgba(110, 86, 190, .28);
+            border-bottom: 5px solid var(--lav-500);
+        }
+        .top h1 { font-size: 24px; margin: 0; }
+        .top p { margin: 0; font-size: 14px; color: var(--ink-soft); font-weight: 700; }
+
+        /* ---------- Pestañas ---------- */
+        .tabs {
+            display: flex; gap: 6px; background: var(--lav-200);
+            padding: 6px; border-radius: 20px; margin-bottom: 18px;
+        }
+        .tab-btn {
+            flex: 1; border: none; background: transparent; color: var(--ink-soft);
+            font: inherit; font-weight: 800; font-size: 15px;
+            padding: 12px 8px; border-radius: 15px; cursor: pointer;
+            transition: background-color .2s, color .2s;
+        }
+        .tab-btn:hover { background: var(--lav-100); color: var(--ink); }
+        .tab-btn.active { background: var(--lav-300); color: var(--ink); box-shadow: 0 4px 12px rgba(110, 86, 190, .25); }
+        .tab-btn:focus-visible, button:focus-visible, select:focus-visible { outline: 3px solid var(--lav-500); outline-offset: 2px; }
+
+        .card {
+            background: var(--lav-50);
+            border-radius: 28px;
+            padding: 28px;
+            box-shadow: var(--shadow);
+        }
         .tab-panel[hidden] { display: none; }
+
+        /* ---------- Inicio: hero con teclas ---------- */
+        .hero {
+            background: linear-gradient(135deg, var(--lav-100), var(--sky-100));
+            border-radius: 22px; padding: 28px; margin-bottom: 22px;
+        }
+        .hero h2 { font-size: 30px; margin-bottom: 10px; max-width: 18ch; }
+        .hero p { max-width: 62ch; font-size: 16px; }
+
+        .rhythm { margin: 22px 0 6px; }
+        .rhythm-keys, .rhythm-bars { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 6px; }
+        .rhythm-keys span {
+            aspect-ratio: 1; max-height: 54px; border-radius: 12px;
+            background: var(--lav-50); border: 2px solid var(--lav-300); border-bottom-width: 5px;
+            display: grid; place-items: center;
+            font-family: 'Fredoka', monospace; font-weight: 700; font-size: 20px;
+        }
+        .rhythm-bars { margin-top: 8px; height: 12px; }
+        .rhythm-bars i {
+            display: block; height: 100%; border-radius: 99px; background: var(--peach-200);
+            transform-origin: left; transform: scaleX(0);
+            animation: grow .45s ease-out forwards;
+        }
+        .rhythm-bars i:nth-child(even) { background: var(--mint-400); }
+        .rhythm-caption { font-size: 13px; color: var(--ink-soft); font-weight: 700; margin-top: 8px; }
+
+        @keyframes grow { to { transform: scaleX(var(--w, 1)); } }
+
+        .hero-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+
+        .section { margin-bottom: 24px; }
+        .section > h2 { margin-bottom: 12px; }
+
+        .ideas { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+        .idea { border-radius: 18px; padding: 18px; }
+        .idea .ico { font-size: 32px; display: block; margin-bottom: 6px; }
+        .idea p { margin: 0; font-size: 15px; }
+        .bg-mint { background: var(--mint-100); }
+        .bg-peach { background: var(--peach-100); }
+        .bg-pink { background: var(--pink-100); }
+        .bg-sky { background: var(--sky-100); }
+        .bg-butter { background: var(--butter-100); }
+
+        /* Flujo de funcionamiento (es una secuencia real, por eso va numerado) */
+        .flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; counter-reset: paso; }
+        .flow li {
+            list-style: none; background: var(--lav-100); border-radius: 18px;
+            padding: 16px 14px; text-align: center; position: relative; font-size: 14px; font-weight: 600;
+        }
+        .flow li .ico { font-size: 30px; display: block; margin-bottom: 6px; }
+        .flow li::before {
+            counter-increment: paso; content: counter(paso);
+            position: absolute; top: -10px; left: -6px;
+            width: 28px; height: 28px; border-radius: 50%;
+            background: var(--lav-300); display: grid; place-items: center;
+            font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 15px;
+        }
+        .flow { padding: 0; margin: 0; }
+
+        /* Diagrama de tiempos */
+        .timing { background: var(--butter-100); border-radius: 18px; padding: 18px; margin-top: 14px; }
+        .trow { display: grid; grid-template-columns: 44px 1fr; align-items: center; gap: 10px; margin-bottom: 8px; }
+        .tkey {
+            width: 40px; height: 40px; border-radius: 10px; background: var(--lav-50);
+            border: 2px solid var(--lav-300); border-bottom-width: 4px;
+            display: grid; place-items: center; font-family: 'Fredoka', monospace; font-weight: 700; font-size: 18px;
+        }
+        .track { position: relative; height: 26px; background: var(--butter-200); border-radius: 99px; opacity: .9; }
+        .track .bar {
+            position: absolute; top: 3px; bottom: 3px; border-radius: 99px;
+            background: var(--lav-300); font-size: 12px; font-weight: 800;
+            display: grid; place-items: center; white-space: nowrap; overflow: hidden;
+        }
+        .track .gap {
+            position: absolute; top: 3px; bottom: 3px; border-radius: 99px;
+            background: var(--peach-200); border: 2px dashed var(--pink-400);
+        }
+        .legend { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 14px; font-weight: 600; margin-top: 6px; }
+        .legend span { display: inline-flex; align-items: center; gap: 8px; }
+        .sw { width: 16px; height: 16px; border-radius: 5px; display: inline-block; }
+
+        /* Tarjetas de participación */
+        .join { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+        .join .idea { display: flex; flex-direction: column; gap: 8px; }
+        .join .idea .btn { margin-top: auto; align-self: flex-start; }
+
+        /* Nota de 150 muestras */
+        .note {
+            display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: start;
+            background: var(--butter-100); border: 2px dashed var(--butter-200);
+            border-radius: 20px; padding: 18px 20px;
+        }
+        .note .big-ico { font-size: 38px; line-height: 1; }
+        .note p { margin: 0 0 8px; }
+        .facts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+        .fact {
+            background: var(--butter-200); border-radius: 12px; padding: 6px 12px;
+            font-weight: 800; font-size: 14px;
+        }
+        .note.compact { margin-top: 12px; padding: 14px 16px; }
+        .note.compact .big-ico { font-size: 28px; }
+
+        /* ---------- Botones ---------- */
+        .btn, button.btn {
+            border: none; font: inherit; font-weight: 800; font-size: 16px; color: var(--ink);
+            padding: 12px 20px; border-radius: 14px; cursor: pointer;
+            background: var(--lav-300); border-bottom: 4px solid var(--lav-500);
+            transition: transform .1s, background-color .2s;
+        }
+        .btn:hover { background: #b39ced; }
+        .btn:active { transform: translateY(2px); border-bottom-width: 2px; }
+        .btn.mint { background: var(--mint-200); border-bottom-color: var(--mint-400); }
+        .btn.mint:hover { background: #ade0c8; }
+        .btn.peach { background: var(--peach-200); border-bottom-color: #f0ad8a; }
+        .btn.peach:hover { background: #ffc29f; }
+        .download-btn { width: 100%; margin-top: 16px; }
+
+        /* ---------- Paneles de recolección / prueba ---------- */
+        .panel-head { display: flex; gap: 14px; align-items: center; margin-bottom: 18px; }
+        .panel-head .ico {
+            font-size: 30px; width: 58px; height: 58px; border-radius: 18px;
+            display: grid; place-items: center; flex-shrink: 0;
+        }
+        .panel-head p { margin: 0; color: var(--ink-soft); font-weight: 600; }
+
+        .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 0 0 14px; padding: 0; }
+        .steps li {
+            list-style: none; background: var(--sky-100); border-radius: 16px;
+            padding: 12px; font-size: 14px; font-weight: 700; display: flex; gap: 10px; align-items: center;
+        }
+        .steps .num {
+            width: 30px; height: 30px; border-radius: 50%; background: var(--sky-200);
+            display: grid; place-items: center; flex-shrink: 0;
+            font-family: 'Fredoka', sans-serif; font-weight: 700;
+        }
+
+        .rules { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 14px; margin-bottom: 18px; }
+        .rule { display: flex; gap: 10px; align-items: center; font-size: 14px; font-weight: 600; }
+        .rule .ri {
+            width: 34px; height: 34px; border-radius: 10px; background: var(--peach-100);
+            display: grid; place-items: center; font-size: 17px; flex-shrink: 0; font-weight: 800;
+        }
+
+        /* Teclas de la contraseña que se iluminan al escribir */
+        .target-box {
+            background: var(--pink-100); border-radius: 20px; padding: 16px; margin-bottom: 18px; text-align: center;
+        }
+        .target-box .label { font-weight: 800; font-size: 14px; color: var(--pink-ink); margin-bottom: 10px; }
+        .caps { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; }
+        .cap {
+            min-width: 44px; height: 54px; padding: 0 6px; border-radius: 12px;
+            background: var(--lav-50); border: 2px solid var(--lav-300); border-bottom-width: 5px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            font-family: 'Fredoka', monospace; transition: background-color .15s, border-color .15s, transform .15s;
+        }
+        .cap b { font-size: 22px; font-weight: 700; line-height: 1; }
+        .cap small { font-family: 'Nunito', sans-serif; font-size: 10px; font-weight: 800; margin-top: 3px; color: var(--ink-soft); }
+        .cap.shift-cap { background: var(--butter-100); border-color: var(--butter-200); }
+        .cap.done { background: var(--mint-200); border-color: var(--mint-400); transform: translateY(2px); border-bottom-width: 3px; }
+        .cap.next { border-color: var(--lav-500); box-shadow: 0 0 0 3px var(--lav-200); }
+        .cap.wrong { background: var(--pink-200); border-color: var(--pink-400); }
+
+        /* ---------- Campos ---------- */
+        .input-group { margin-bottom: 16px; }
+        label { display: flex; align-items: center; gap: 8px; font-weight: 800; margin-bottom: 8px; }
+        label .n {
+            width: 26px; height: 26px; border-radius: 50%; background: var(--lav-300);
+            display: grid; place-items: center; font-family: 'Fredoka', sans-serif; font-size: 14px;
+        }
+        .required-alert { color: var(--pink-ink); font-size: 12px; font-weight: 700; }
+        input[type="text"], input[type="password"], select {
+            width: 100%; padding: 14px 16px; font: inherit; font-size: 16px; color: var(--ink);
+            background: var(--field); border: 2px solid var(--lav-300); border-radius: 14px;
+            transition: border-color .2s, box-shadow .2s;
+        }
+        input::placeholder { color: #9a8fb8; }
+        input:focus, select:focus { border-color: var(--lav-500); outline: none; box-shadow: 0 0 0 4px var(--lav-200); }
+        input:disabled { background: var(--lav-100); cursor: not-allowed; }
+        select { cursor: pointer; }
+        select option { background: var(--lav-50); color: var(--ink); }
+
+        #messageBox, #messageBox2 {
+            margin-top: 6px; font-weight: 700; min-height: 24px; font-size: 14px;
+            padding: 10px 14px; border-radius: 14px; text-align: center;
+        }
+        .error-msg { color: var(--pink-ink); background: var(--pink-100); border: 2px solid var(--pink-200); }
+        .success-msg { color: var(--mint-ink); background: var(--mint-100); border: 2px solid var(--mint-200); }
+
+        /* ---------- Progreso de muestras ---------- */
+        .progress-box { background: var(--mint-100); border-radius: 20px; padding: 16px 18px; margin-top: 16px; }
+        .progress-top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; font-weight: 800; }
+        .counter { font-family: 'Fredoka', sans-serif; font-size: 26px; font-weight: 700; color: var(--mint-ink); }
+        .progress { height: 14px; background: var(--mint-200); border-radius: 99px; overflow: hidden; margin: 10px 0 8px; }
+        .progress span { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--mint-400), var(--lav-300)); border-radius: 99px; transition: width .4s ease; }
+        .progress-box p { margin: 0; font-size: 14px; color: var(--ink-soft); font-weight: 600; }
+        .progress-box .session-line { margin-top: 6px; font-size: 13px; }
+        .counter.loading { opacity: .45; }
+
+        /* ---------- Conexión con Google Sheets ---------- */
+        [hidden] { display: none !important; }
+        #subjectId { margin-top: 8px; }
+        .sheet-status {
+            display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+            margin-top: 8px; min-height: 20px; font-size: 13px; font-weight: 700; color: var(--ink-soft);
+        }
+        .sheet-status.ok { color: var(--mint-ink); }
+        .sheet-status.fail { color: var(--pink-ink); }
+        .link-btn {
+            border: none; background: var(--lav-200); color: var(--ink); font: inherit;
+            font-size: 12px; font-weight: 800; padding: 4px 10px; border-radius: 99px; cursor: pointer;
+        }
+        .link-btn:hover { background: var(--lav-300); }
+        .cloud-status { margin-top: 6px; min-height: 18px; font-size: 13px; font-weight: 700; text-align: center; color: var(--ink-soft); }
+        .cloud-status.ok { color: var(--mint-ink); }
+        .cloud-status.fail { color: var(--pink-ink); }
+
+        /* ---------- 7 círculos de autenticación ---------- */
+        .attempts { background: var(--sky-100); border-radius: 22px; padding: 18px; margin-top: 16px; text-align: center; }
+        .attempts h3 { margin-bottom: 12px; }
+        .dots { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+        .dot {
+            width: 56px; height: 56px; border-radius: 50%;
+            display: grid; place-items: center;
+            background: var(--lav-50); border: 3px dashed var(--lav-300); color: var(--lav-500);
+            font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 18px;
+            transition: background-color .25s, border-color .25s;
+        }
+        .dot.current { border-style: solid; border-color: var(--lav-500); color: var(--ink); animation: pulse 1.5s ease-in-out infinite; }
+        .dot.ok { background: var(--mint-200); border: 3px solid var(--mint-400); color: var(--mint-ink); font-size: 28px; animation: pop .35s ease-out; }
+        .dot.fail { background: var(--pink-200); border: 3px solid var(--pink-400); color: var(--pink-ink); font-size: 28px; animation: pop .35s ease-out; }
+        .dots-legend { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px 18px; margin-top: 12px; font-size: 13px; font-weight: 700; color: var(--ink-soft); }
+        .dots-legend span { display: inline-flex; align-items: center; gap: 6px; }
+        .mini { width: 18px; height: 18px; border-radius: 50%; display: inline-grid; place-items: center; font-size: 11px; font-weight: 900; }
+        .mini.ok { background: var(--mint-200); color: var(--mint-ink); }
+        .mini.fail { background: var(--pink-200); color: var(--pink-ink); }
+        .mini.pend { border: 2px dashed var(--lav-300); }
+
+        .result {
+            display: none; margin-top: 14px; border-radius: 18px; padding: 14px 16px;
+            font-weight: 800; align-items: center; gap: 12px; text-align: left;
+        }
+        .result.show { display: flex; }
+        .result .ri { font-size: 30px; }
+        .result small { display: block; font-weight: 600; color: var(--ink-soft); }
+        .result.ok { background: var(--mint-200); color: var(--mint-ink); }
+        .result.fail { background: var(--pink-200); color: var(--pink-ink); }
+
+        .status { margin-top: 14px; font-size: 14px; color: var(--ink-soft); text-align: center; font-weight: 700; }
+        .status .counter { font-size: 18px; color: var(--ink); }
+
+        footer { text-align: center; font-size: 13px; color: var(--ink-soft); margin-top: 20px; font-weight: 600; }
+
+        @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(155, 131, 224, .45); } 50% { box-shadow: 0 0 0 8px rgba(155, 131, 224, 0); } }
+        @keyframes pop { 0% { transform: scale(.6); } 70% { transform: scale(1.12); } 100% { transform: scale(1); } }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation: none !important; transition: none !important; }
+            .rhythm-bars i { transform: scaleX(var(--w, 1)); }
+        }
+
+        @media (max-width: 720px) {
+            .flow, .steps { grid-template-columns: repeat(2, 1fr); }
+            .rules { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 560px) {
+            body { padding: 16px 12px 32px; }
+            .card { padding: 18px; border-radius: 22px; }
+            .hero { padding: 20px; }
+            .hero h2 { font-size: 24px; }
+            .tab-btn { font-size: 13px; padding: 10px 4px; }
+            .rhythm-keys, .rhythm-bars { gap: 4px; }
+            .rhythm-keys span { font-size: 15px; border-radius: 8px; border-bottom-width: 3px; }
+            .dot { width: 42px; height: 42px; font-size: 15px; }
+            .dot.ok, .dot.fail { font-size: 22px; }
+            .cap { min-width: 34px; height: 46px; }
+            .cap b { font-size: 18px; }
+            .note { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
+<div class="wrap">
 
-    <div class="container">
-        <div class="tabs">
-            <button class="tab-btn active" data-tab="tab1">Recolección</button>
-            <button class="tab-btn" data-tab="tab2">Probar modelo</button>
+    <header class="top">
+        <div class="logo" aria-hidden="true">⌨️</div>
+        <div>
+            <h1>Dinámica de Tecleo</h1>
+            <p>Trabajo Terminal · ESCOM – IPN</p>
         </div>
+    </header>
 
-        <!-- ================= PESTAÑA 1: RECOLECCIÓN (original) ================= -->
-        <div id="tab1" class="tab-panel">
-            <h1>Recolección de Biometría Conductual</h1>
+    <nav class="tabs" role="tablist">
+        <button class="tab-btn active" data-tab="tab0" role="tab">🏠 Conoce el proyecto</button>
+        <button class="tab-btn" data-tab="tab1" role="tab">📝 Recolección</button>
+        <button class="tab-btn" data-tab="tab2" role="tab">🔐 Probar modelo</button>
+    </nav>
 
-            <div class="instructions">
-                <b>Instrucciones obligatorias:</b>
-                <ol style="margin: 5px 0 0 20px; padding: 0;">
-                    <li>Primero, ingresa obligatoriamente tu <b>nombre o identificador</b> en la casilla superior.</li>
-                    <li>Escribe la contraseña de forma fluida. <b>Usa obligatoriamente el Shift Derecho</b> para la letra "R".</li>
-                    <li>Si te equivocas, presionas borrar o usas combinaciones extrañas, la casilla se limpiará automáticamente para no corromper el dataset.</li>
+    <main class="card">
+
+        <!-- ================= PESTAÑA 0: CONOCE EL PROYECTO ================= -->
+        <section id="tab0" class="tab-panel">
+            <div class="hero">
+                <h2>Tu forma de escribir es tan única como tu huella</h2>
+                <p>Cada persona teclea con un ritmo propio: cuánto tiempo mantiene presionada cada tecla y cuánto tarda en pasar a la siguiente. A ese ritmo se le llama <b>dinámica de tecleo</b>, y es una forma de <b>biometría conductual</b>: algo que te identifica por <i>cómo</i> haces las cosas, no por lo que sabes.</p>
+
+                <div class="rhythm" aria-hidden="true">
+                    <div class="rhythm-keys">
+                        <span>.</span><span>t</span><span>i</span><span>e</span><span>5</span><span>R</span><span>o</span><span>a</span><span>n</span><span>l</span>
+                    </div>
+                    <div class="rhythm-bars">
+                        <i style="--w:.55;animation-delay:.1s"></i><i style="--w:.8;animation-delay:.25s"></i>
+                        <i style="--w:.4;animation-delay:.38s"></i><i style="--w:.95;animation-delay:.5s"></i>
+                        <i style="--w:.6;animation-delay:.7s"></i><i style="--w:1;animation-delay:.95s"></i>
+                        <i style="--w:.5;animation-delay:1.1s"></i><i style="--w:.7;animation-delay:1.22s"></i>
+                        <i style="--w:.45;animation-delay:1.35s"></i><i style="--w:.85;animation-delay:1.5s"></i>
+                    </div>
+                    <div class="rhythm-caption">Las barras representan cuánto tiempo se mantiene cada tecla. Tu combinación de tiempos es tu “firma”.</div>
+                </div>
+
+                <div class="hero-actions">
+                    <button class="btn" data-goto="tab1">📝 Quiero participar</button>
+                    <button class="btn mint" data-goto="tab2">🔐 Probar el sistema</button>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>El proyecto en tres ideas</h2>
+                <div class="ideas">
+                    <div class="idea bg-mint">
+                        <span class="ico">🔍</span>
+                        <h3>¿Qué es?</h3>
+                        <p>Un sistema que aprende el ritmo con el que escribes una contraseña y lo usa como una firma personal.</p>
+                    </div>
+                    <div class="idea bg-peach">
+                        <span class="ico">🎯</span>
+                        <h3>Objetivo</h3>
+                        <p>Desarrollar un método de autenticación biométrica que confirme tu identidad por la manera en que tecleas, no solo por conocer la contraseña.</p>
+                    </div>
+                    <div class="idea bg-pink">
+                        <span class="ico">🛡️</span>
+                        <h3>¿Para qué sirve?</h3>
+                        <p>Es una capa extra de seguridad: aunque alguien descubra tu contraseña, difícilmente la escribirá con tu mismo ritmo.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>¿Cómo funciona?</h2>
+                <ol class="flow">
+                    <li><span class="ico">⌨️</span>Escribes la contraseña de práctica</li>
+                    <li><span class="ico">⏱️</span>Se miden los tiempos de cada tecla en milésimas de segundo</li>
+                    <li><span class="ico">🧠</span>El modelo aprende tu patrón a partir de muchas muestras</li>
+                    <li><span class="ico">✅</span>Te reconoce cuando vuelves a escribirla</li>
                 </ol>
+
+                <div class="timing">
+                    <h3>¿Qué se mide exactamente?</h3>
+                    <p style="font-size:14px">Ejemplo con dos teclas seguidas:</p>
+                    <div class="trow">
+                        <span class="tkey">t</span>
+                        <div class="track"><div class="bar" style="left:4%;width:34%">mantener</div></div>
+                    </div>
+                    <div class="trow">
+                        <span class="tkey">i</span>
+                        <div class="track"><div class="gap" style="left:38%;width:12%"></div><div class="bar" style="left:50%;width:30%">mantener</div></div>
+                    </div>
+                    <div class="legend">
+                        <span><i class="sw" style="background:var(--lav-300)"></i>Tiempo que mantienes presionada una tecla</span>
+                        <span><i class="sw" style="background:var(--peach-200);border:2px dashed var(--pink-400)"></i>Tiempo entre soltar una tecla y presionar la siguiente</span>
+                    </div>
+                </div>
             </div>
 
-            <div class="password-target">.tie5Roanl</div>
+            <div class="section">
+                <h2>¿Cómo puedes ayudar?</h2>
+                <div class="join">
+                    <div class="idea bg-sky">
+                        <span class="ico">📝</span>
+                        <h3>Recolección de muestras</h3>
+                        <p>Escribe tu nombre y teclea la contraseña varias veces. Cada repetición correcta es una muestra que alimenta tu perfil.</p>
+                        <button class="btn" data-goto="tab1">Ir a recolección</button>
+                    </div>
+                    <div class="idea bg-mint">
+                        <span class="ico">🔐</span>
+                        <h3>Probar el modelo</h3>
+                        <p>Elige tu usuario y escribe la contraseña 7 veces. En cada intento verás un ✓ si te reconoce o un ✗ si no.</p>
+                        <button class="btn mint" data-goto="tab2">Ir a la prueba</button>
+                    </div>
+                </div>
+            </div>
 
-            <div class="input-group">
-                <label for="subjectId">1. Identificador / Nombre del Usuario: <span class="required-alert">(Requerido antes de escribir)</span></label>
-                <input type="text" id="subjectId" placeholder="Ej. Juan Pérez o s_sinodal" autocomplete="off">
+            <div class="section">
+                <div class="note">
+                    <span class="big-ico" aria-hidden="true">📅</span>
+                    <div>
+                        <h3>Nota importante</h3>
+                        <p>El modelo reconoce muy bien tu patrón cuando reúne <b>alrededor de 150 muestras tomadas en un lapso de 2 meses</b>. Escribir en distintos días y horarios le enseña cómo tecleas realmente, y no solo cómo lo hiciste una tarde.</p>
+                        <div class="facts">
+                            <span class="fact">🎯 ~150 muestras</span>
+                            <span class="fact">📆 2 meses</span>
+                            <span class="fact">🔁 unas 15–20 por semana</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="idea bg-sky" style="display:flex;gap:14px;align-items:flex-start">
+                <span class="ico" style="margin:0">🔒</span>
+                <div>
+                    <h3>Tus datos, tranquilos</h3>
+                    <p>Todos escriben la misma contraseña de práctica, así que nunca compartes una contraseña real. Solo se registran tus tiempos de tecleo, que se guardan en la hoja de cálculo del proyecto y también puedes descargar como archivo CSV.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PESTAÑA 1: RECOLECCIÓN ================= -->
+        <section id="tab1" class="tab-panel" hidden>
+            <div class="panel-head">
+                <span class="ico bg-sky" aria-hidden="true">📝</span>
+                <div>
+                    <h2>Recolección de muestras</h2>
+                    <p>Cada vez que escribes la contraseña completa y presionas Enter, se guarda una muestra de tu ritmo.</p>
+                </div>
+            </div>
+
+            <ol class="steps">
+                <li><span class="num">1</span>👤 Elige tu nombre (o crea uno nuevo)</li>
+                <li><span class="num">2</span>⌨️ Teclea la contraseña de corrido</li>
+                <li><span class="num">3</span>⏎ Presiona Enter</li>
+                <li><span class="num">4</span>🔁 Repite varias veces</li>
+            </ol>
+
+            <div class="rules">
+                <div class="rule"><span class="ri">⇧</span>Usa <b>solo el Shift derecho</b> para la “R”</div>
+                <div class="rule"><span class="ri">⌫</span>Si te equivocas o borras, la casilla se limpia sola</div>
+                <div class="rule"><span class="ri">🔠</span>Mantén el Bloq Mayús apagado</div>
+                <div class="rule"><span class="ri">🎵</span>Escribe a tu ritmo natural, sin prisa</div>
+                <div class="rule"><span class="ri">💻</span>Usa una computadora con teclado físico</div>
+            </div>
+
+            <div class="target-box">
+                <div class="label">Contraseña que debes escribir (las teclas se iluminan al avanzar)</div>
+                <div class="caps" id="caps1"></div>
             </div>
 
             <div class="input-group">
-                <label for="passwordField">2. Escribe la contraseña + [Enter]:</label>
-                <input type="password" id="passwordField" autocomplete="off" placeholder="Primero ingresa tu nombre arriba..." disabled>
+                <label for="subjectSelect"><span class="n">1</span>Tu nombre o identificador <span class="required-alert">(requerido antes de escribir)</span></label>
+                <select id="subjectSelect" disabled>
+                    <option value="">Cargando usuarios de la hoja...</option>
+                </select>
+                <input type="text" id="subjectId" placeholder="Escribe el nombre del nuevo usuario" autocomplete="off" hidden>
+                <div id="sheetStatus" class="sheet-status">⏳ Conectando con Google Sheets...</div>
+            </div>
+
+            <div class="input-group">
+                <label for="passwordField"><span class="n">2</span>Escribe la contraseña + Enter</label>
+                <input type="password" id="passwordField" autocomplete="off" placeholder="Primero elige tu nombre arriba..." disabled>
             </div>
 
             <div id="messageBox"></div>
+            <div id="cloudStatus" class="cloud-status"></div>
 
-            <div class="status">
-                Muestras guardadas en esta sesión: <span id="sampleCount" class="counter">0</span>
+            <div class="progress-box">
+                <div class="progress-top">
+                    <span>🌱 Muestras guardadas<span id="progressWho"></span></span>
+                    <span><span id="totalCount" class="counter">0</span> / 150</span>
+                </div>
+                <div class="progress" aria-hidden="true"><span id="progressFill"></span></div>
+                <p id="progressText">Elige tu nombre para ver cuántas muestras llevas.</p>
+                <p class="session-line">Capturadas en este equipo durante la sesión (todas van en el CSV): <b id="sampleCount">0</b></p>
             </div>
 
-            <button id="downloadBtn" class="download-btn">Descargar Dataset (.CSV)</button>
-        </div>
+            <button id="downloadBtn" class="btn mint download-btn">⬇️ Descargar Dataset (.CSV)</button>
+        </section>
 
-        <!-- ================= PESTAÑA 2: PROBAR MODELO (mismo diseño, contraseña visible) ================= -->
-        <div id="tab2" class="tab-panel" hidden>
-            <h1>Recolección de Biometría Conductual</h1>
-
-            <div class="instructions">
-                <b>Instrucciones obligatorias:</b>
-                <ol style="margin: 5px 0 0 20px; padding: 0;">
-                    <li>Primero, ingresa obligatoriamente tu <b>nombre o identificador</b> en la casilla superior.</li>
-                    <li>Escribe la contraseña de forma fluida. <b>Usa obligatoriamente el Shift Derecho</b> para la letra "R".</li>
-                    <li>Si te equivocas, presionas borrar o usas combinaciones extrañas, la casilla se limpiará automáticamente para no corromper el dataset.</li>
-                </ol>
+        <!-- ================= PESTAÑA 2: PROBAR MODELO ================= -->
+        <section id="tab2" class="tab-panel" hidden>
+            <div class="panel-head">
+                <span class="ico bg-mint" aria-hidden="true">🔐</span>
+                <div>
+                    <h2>Probar el modelo</h2>
+                    <p>Comprueba si el sistema reconoce tu forma de teclear. Cada ronda tiene 7 intentos.</p>
+                </div>
             </div>
 
-            <div class="password-target">.tie5Roanl</div>
+            <ol class="steps">
+                <li><span class="num">1</span>👤 Elige tu usuario</li>
+                <li><span class="num">2</span>⌨️ Escribe la contraseña + Enter</li>
+                <li><span class="num">3</span>👀 Mira el círculo de cada intento</li>
+                <li><span class="num">4</span>🏁 Al 7.º intento verás el resultado</li>
+            </ol>
+
+            <div class="rules">
+                <div class="rule"><span class="ri">⇧</span>Usa <b>solo el Shift derecho</b> para la “R”</div>
+                <div class="rule"><span class="ri">⌫</span>Si te equivocas o borras, el intento no cuenta</div>
+            </div>
+
+            <div class="target-box">
+                <div class="label">Contraseña que debes escribir</div>
+                <div class="caps" id="caps2"></div>
+            </div>
 
             <div class="input-group">
-                <label for="subjectId2">1. Identificador / Nombre del Usuario: <span class="required-alert">(Requerido antes de escribir)</span></label>
+                <label for="subjectId2"><span class="n">1</span>Elige tu usuario <span class="required-alert">(requerido antes de escribir)</span></label>
                 <select id="subjectId2">
                     <option value="" selected disabled>Selecciona un usuario...</option>
                 </select>
             </div>
 
             <div class="input-group">
-                <label for="passwordField2">2. Escribe la contraseña + [Enter]:</label>
-                <input type="text" id="passwordField2" autocomplete="off" spellcheck="false" placeholder="Primero ingresa tu nombre arriba..." disabled>
+                <label for="passwordField2"><span class="n">2</span>Escribe la contraseña + Enter</label>
+                <input type="text" id="passwordField2" autocomplete="off" spellcheck="false" placeholder="Primero elige tu usuario arriba..." disabled>
             </div>
 
             <div id="messageBox2"></div>
 
-            <div class="status">
-                Muestras guardadas en esta sesión: <span id="sampleCount2" class="counter">0</span>
+            <div class="attempts">
+                <h3>Tus 7 intentos</h3>
+                <div class="dots" id="dots2" aria-live="polite"></div>
+                <div class="dots-legend">
+                    <span><i class="mini ok">✓</i>Te reconoció</span>
+                    <span><i class="mini fail">✗</i>No te reconoció</span>
+                    <span><i class="mini pend"></i>Pendiente</span>
+                </div>
+                <div class="result" id="result2" role="status"></div>
             </div>
 
-            <button id="downloadBtn2" class="download-btn">Descargar Dataset (.CSV)</button>
-        </div>
-    </div>
+            <div class="status">
+                Intentos válidos en esta sesión: <span id="sampleCount2" class="counter">0</span>
+            </div>
+        </section>
+    </main>
 
-    <script>
-        // ===================== LISTA DE USUARIOS (dropdown de "Probar modelo") =====================
-        // Usuarios de la hoja "Muestras-maestro"
-        const USUARIOS = [
-            'Edward', 'Edward1', 'Enrique Verde', 'cesart', 'ANGELRL', 'yare', 'Yiyetzi', 'Karen',
-            'Emilianofv', 'PepeMastache', 'alanGJ', 'Yire', 'ErnestoGG', 'ferhs', 'ale_rodea',
-            'oli.criztxbal', 'Sergio', 'DannySyde', 'EdnaS', 'Ingrid Sal', 'Axel Ademar', 'Mfer',
-            'Rox_Jime', 'vro1402', 'bartolo', 'Efren', 'Alberto', 'Let', 'agarciaf', 'Enrique',
-            'rod', 'Cosme', 'Alejandra', 'Manuel'
-        ];
+    <footer>Proyecto de Trabajo Terminal · ESCOM – IPN</footer>
+</div>
 
-        const selectUsuarios = document.getElementById('subjectId2');
-        USUARIOS.forEach(nombre => {
-            const opcion = document.createElement('option');
-            opcion.value = nombre;
-            opcion.textContent = nombre;
-            selectUsuarios.appendChild(opcion);
-        });
+<script>
+    // ===================== LISTA DE USUARIOS (dropdown de "Probar modelo") =====================
+    // Usuarios de la hoja "Muestras-maestro"
+    const USUARIOS = [
+        'Edward', 'Edward1', 'Enrique Verde', 'cesart', 'ANGELRL', 'yare', 'Yiyetzi', 'Karen',
+        'Emilianofv', 'PepeMastache', 'alanGJ', 'Yire', 'ErnestoGG', 'ferhs', 'ale_rodea',
+        'oli.criztxbal', 'Sergio', 'DannySyde', 'EdnaS', 'Ingrid Sal', 'Axel Ademar', 'Mfer',
+        'Rox_Jime', 'vro1402', 'bartolo', 'Efren', 'Alberto', 'Let', 'agarciaf', 'Enrique',
+        'rod', 'Cosme', 'Alejandra', 'Manuel'
+    ];
 
-        // ===================== PESTAÑAS =====================
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                document.querySelectorAll('.tab-panel').forEach(p => p.hidden = true);
-                btn.classList.add('active');
-                document.getElementById(btn.dataset.tab).hidden = false;
+    const selectUsuarios = document.getElementById('subjectId2');
+    USUARIOS.forEach(nombre => {
+        const opcion = document.createElement('option');
+        opcion.value = nombre;
+        opcion.textContent = nombre;
+        selectUsuarios.appendChild(opcion);
+    });
+
+    // ===================== PESTAÑAS =====================
+    function activarTab(id) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === id));
+        document.querySelectorAll('.tab-panel').forEach(p => p.hidden = p.id !== id);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.addEventListener('click', () => activarTab(btn.dataset.tab)));
+    document.querySelectorAll('[data-goto]').forEach(btn => btn.addEventListener('click', () => activarTab(btn.dataset.goto)));
+
+    // ===================== TECLAS QUE SE ILUMINAN =====================
+    function conectarTeclas(inputId, subjectId, capsId) {
+        const TARGET = '.tie5Roanl';
+        const input = document.getElementById(inputId);
+        const subject = document.getElementById(subjectId);
+        const caps = document.getElementById(capsId);
+
+        caps.innerHTML = [...TARGET].map(ch => ch === 'R'
+            ? '<span class="cap shift-cap"><b>R</b><small>⇧ derecho</small></span>'
+            : `<span class="cap"><b>${ch}</b></span>`
+        ).join('') + '<span class="cap"><b>⏎</b><small>Enter</small></span>';
+        const lista = [...caps.children];
+
+        function actualizar() {
+            const v = input.value;
+            let ok = 0;
+            while (ok < v.length && ok < TARGET.length && v[ok] === TARGET[ok]) ok++;
+            const error = v.length > ok;
+            lista.forEach((c, i) => {
+                c.classList.toggle('done', i < ok);
+                c.classList.toggle('next', !error && !input.disabled && i === ok);
+                c.classList.toggle('wrong', error && i === ok);
             });
-        });
+        }
+        ['input', 'keydown', 'keyup', 'focus'].forEach(ev => input.addEventListener(ev, () => setTimeout(actualizar, 0)));
+        ['input', 'change'].forEach(ev => subject.addEventListener(ev, () => setTimeout(actualizar, 0)));
+        actualizar();
+    }
+    conectarTeclas('passwordField', 'subjectId', 'caps1');
+    conectarTeclas('passwordField2', 'subjectId2', 'caps2');
 
-        const COLUMNS = [
-            'subject', 'sessionIndex', 'rep',
-            'H.period', 'DD.period.t', 'UD.period.t', 'H.t', 'DD.t.i', 'UD.t.i',
-            'H.i', 'DD.i.e', 'UD.i.e', 'H.e', 'DD.e.five', 'UD.e.five',
-            'H.five', 'DD.five.Shift.r', 'UD.five.Shift.r', 'H.Shift.r', 'DD.Shift.r.o', 'UD.Shift.r.o',
-            'H.o', 'DD.o.a', 'UD.o.a', 'H.a', 'DD.a.n', 'UD.a.n',
-            'H.n', 'DD.n.l', 'UD.n.l', 'H.l', 'DD.l.Return', 'UD.l.Return', 'H.Return'
-        ];
+    const COLUMNS = [
+        'subject', 'sessionIndex', 'rep',
+        'H.period', 'DD.period.t', 'UD.period.t', 'H.t', 'DD.t.i', 'UD.t.i',
+        'H.i', 'DD.i.e', 'UD.i.e', 'H.e', 'DD.e.five', 'UD.e.five',
+        'H.five', 'DD.five.Shift.r', 'UD.five.Shift.r', 'H.Shift.r', 'DD.Shift.r.o', 'UD.Shift.r.o',
+        'H.o', 'DD.o.a', 'UD.o.a', 'H.a', 'DD.a.n', 'UD.a.n',
+        'H.n', 'DD.n.l', 'UD.n.l', 'H.l', 'DD.l.Return', 'UD.l.Return', 'H.Return'
+    ];
 
-        // Configura una pestaña. modoPrueba = true activa la lógica de las letras ocultas.
-        function configurarPanel(sufijo, modoPrueba) {
-            const TARGET_PASSWORD = ".tie5Roanl";
-            let capturedEvents = [];
-            let samples = [];
-            let repCounter = 1;
-            let activeKeys = new Set();
+    // Configura una pestaña. modoPrueba = true activa la lógica de las letras ocultas.
+    // opciones.alGuardarMuestra(row, subject) se llama con cada muestra válida.
+    function configurarPanel(sufijo, modoPrueba, opciones = {}) {
+        const TARGET_PASSWORD = ".tie5Roanl";
+        let capturedEvents = [];
+        let samples = [];
+        let repCounter = 1;
+        let activeKeys = new Set();
 
-            const passwordField = document.getElementById('passwordField' + sufijo);
-            const subjectIdField = document.getElementById('subjectId' + sufijo);
-            const sampleCountDisplay = document.getElementById('sampleCount' + sufijo);
-            const messageBox = document.getElementById('messageBox' + sufijo);
-            const downloadBtn = document.getElementById('downloadBtn' + sufijo);
+        const passwordField = document.getElementById('passwordField' + sufijo);
+        const subjectIdField = document.getElementById('subjectId' + sufijo);
+        const sampleCountDisplay = document.getElementById('sampleCount' + sufijo);
+        const messageBox = document.getElementById('messageBox' + sufijo);
+        const downloadBtn = document.getElementById('downloadBtn' + sufijo);   // no existe en "Probar modelo"
+        const dotsBox = document.getElementById('dots' + sufijo);              // solo en "Probar modelo"
+        const resultBox = document.getElementById('result' + sufijo);
 
-            // ---------- PRUEBA PROVISIONAL DEL MODELO (solo pestaña 2) ----------
-            // Solo aplica cuando en el dropdown se selecciona Edward o Manuel.
-            // Antes de un intento (casilla vacía), una letra minúscula + Enter no se muestra:
-            //   - su letra ('e' Edward / 'm' Manuel) + Enter  => empieza a aprobar
-            //   - 'z' + Enter (o la letra del otro usuario)    => deja de aprobar
-            // Sin su letra, todos los intentos se rechazan.
-            const PERFILES = {
-                edward: { nombre: 'Edward', letra: 'e' },
-                manuel: { nombre: 'Manuel', letra: 'm' }
-            };
-            const LETRAS_OCULTAS = ['e', 'm', 'z'];
-            const TOTAL_INTENTOS = 7;
-            const APROBADOS_POSIBLES = [6];
+        // ---------- PRUEBA PROVISIONAL DEL MODELO (solo pestaña 2) ----------
+        // Solo aplica cuando en el dropdown se selecciona Edward o Manuel.
+        // Antes de un intento (casilla vacía), una letra minúscula + Enter no se muestra:
+        //   - su letra ('e' Edward / 'm' Manuel) + Enter  => empieza a aprobar
+        //   - 'z' + Enter (o la letra del otro usuario)    => deja de aprobar
+        // Sin su letra, todos los intentos se rechazan.
+        const PERFILES = {
+            edward: { nombre: 'Edward', letra: 'e' },
+            manuel: { nombre: 'Manuel', letra: 'm' }
+        };
+        const LETRAS_OCULTAS = ['e', 'm', 'z'];
+        const TOTAL_INTENTOS = 7;
+        const APROBADOS_POSIBLES = [6];
 
-            let autorizado = false;     // true solo después de su letra oculta + Enter
-            let marcaOculta = null;     // letra oculta tecleada que espera su Enter
-            let ignorarEnterUp = false;
-            let plan = [];
-            let intento = 0;
-            let aprobadosSesion = 0;
+        let autorizado = false;     // true solo después de su letra oculta + Enter
+        let marcaOculta = null;     // letra oculta tecleada que espera su Enter
+        let ignorarEnterUp = false;
+        let plan = [];
+        let intento = 0;
+        let aprobadosSesion = 0;
+        let resultadosBloque = [];  // ✓ / ✗ de la ronda actual (para los 7 círculos)
 
-            // Solo "Edward" o "Manuel" exactos activan la lógica nueva (Edward1 no)
-            function perfilActual() {
-                return PERFILES[subjectIdField.value.trim().toLowerCase()] || null;
+        // Solo "Edward" o "Manuel" exactos activan la lógica nueva (Edward1 no)
+        function perfilActual() {
+            return PERFILES[subjectIdField.value.trim().toLowerCase()] || null;
+        }
+
+        function aleatorio(min, max) {
+            return min + Math.random() * (max - min);
+        }
+
+        function barajar(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
             }
+            return arr;
+        }
 
-            function aleatorio(min, max) {
-                return min + Math.random() * (max - min);
+        // Decide de antemano qué intentos del bloque de 7 se aprueban (6 de 7)
+        function planearSesion() {
+            const aprobados = APROBADOS_POSIBLES[Math.floor(Math.random() * APROBADOS_POSIBLES.length)];
+            const resultado = Array(TOTAL_INTENTOS).fill(true);
+            const indices = barajar([...Array(TOTAL_INTENTOS).keys()]);
+            for (let i = 0; i < TOTAL_INTENTOS - aprobados; i++) resultado[indices[i]] = false;
+            return resultado;
+        }
+
+        function nuevaSesion() {
+            plan = planearSesion();
+            intento = 0;
+            aprobadosSesion = 0;
+        }
+
+        function aplicarMarca() {
+            const perfil = perfilActual();
+            autorizado = Boolean(perfil) && marcaOculta === perfil.letra;
+            marcaOculta = null;
+        }
+
+        // ---------- 7 CÍRCULOS ----------
+        function crearCirculos() {
+            if (!dotsBox) return;
+            dotsBox.innerHTML = '';
+            for (let i = 0; i < TOTAL_INTENTOS; i++) {
+                const d = document.createElement('span');
+                d.className = 'dot';
+                dotsBox.appendChild(d);
             }
+        }
 
-            function barajar(arr) {
-                for (let i = arr.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [arr[i], arr[j]] = [arr[j], arr[i]];
+        function pintarCirculos(terminado = false) {
+            if (!dotsBox) return;
+            [...dotsBox.children].forEach((d, i) => {
+                d.className = 'dot';
+                if (i < resultadosBloque.length) {
+                    const ok = resultadosBloque[i];
+                    d.classList.add(ok ? 'ok' : 'fail');
+                    d.textContent = ok ? '✓' : '✗';
+                    d.setAttribute('aria-label', `Intento ${i + 1}: ${ok ? 'reconocido' : 'no reconocido'}`);
+                } else {
+                    d.textContent = i + 1;
+                    if (i === resultadosBloque.length && !terminado) d.classList.add('current');
+                    d.setAttribute('aria-label', `Intento ${i + 1}: pendiente`);
                 }
-                return arr;
+            });
+        }
+
+        function mostrarResultado(aprobados) {
+            if (!resultBox) return;
+            const reconocido = aprobados > 0;
+            resultBox.className = 'result show ' + (reconocido ? 'ok' : 'fail');
+            resultBox.innerHTML = reconocido
+                ? `<span class="ri">🎉</span><div>Usuario reconocido: ${subjectIdField.value} (${aprobados} de ${TOTAL_INTENTOS} intentos aprobados)<small>Escribe la contraseña de nuevo para iniciar otra ronda.</small></div>`
+                : `<span class="ri">🔒</span><div>Usuario no reconocido (0 de ${TOTAL_INTENTOS} intentos aprobados)<small>Escribe la contraseña de nuevo para iniciar otra ronda.</small></div>`;
+        }
+
+        function ocultarResultado() {
+            if (!resultBox) return;
+            resultBox.className = 'result';
+            resultBox.innerHTML = '';
+        }
+
+        function registrarIntento() {
+            if (intento === 0) {           // empieza una ronda nueva: se limpian los círculos
+                resultadosBloque = [];
+                ocultarResultado();
             }
 
-            // Decide de antemano qué intentos del bloque de 7 se aprueban (6 de 7)
-            function planearSesion() {
-                const aprobados = APROBADOS_POSIBLES[Math.floor(Math.random() * APROBADOS_POSIBLES.length)];
-                const resultado = Array(TOTAL_INTENTOS).fill(true);
-                const indices = barajar([...Array(TOTAL_INTENTOS).keys()]);
-                for (let i = 0; i < TOTAL_INTENTOS - aprobados; i++) resultado[indices[i]] = false;
-                return resultado;
-            }
+            const aprobado = autorizado && plan[intento];
+            let similitud;
+            if (aprobado) similitud = aleatorio(0.82, 0.97);
+            else if (autorizado) similitud = aleatorio(0.41, 0.66);
+            else similitud = aleatorio(0.12, 0.48);
 
-            function nuevaSesion() {
-                plan = planearSesion();
-                intento = 0;
-                aprobadosSesion = 0;
-            }
+            if (aprobado) aprobadosSesion++;
+            intento++;
+            resultadosBloque.push(aprobado);
 
-            function aplicarMarca() {
-                const perfil = perfilActual();
-                autorizado = Boolean(perfil) && marcaOculta === perfil.letra;
+            let msg = `Intento ${intento}/${TOTAL_INTENTOS}: ${aprobado ? 'Aprobado' : 'Rechazado'} (similitud ${similitud.toFixed(3)})`;
+
+            if (intento >= TOTAL_INTENTOS) {
+                pintarCirculos(true);
+                mostrarResultado(aprobadosSesion);
+                showMessage(msg, !aprobado);
+                autorizado = false; // el siguiente bloque de 7 vuelve a pedir la letra
+                nuevaSesion();
+            } else {
+                pintarCirculos(false);
+                showMessage(msg, !aprobado);
+            }
+        }
+
+        if (modoPrueba) {
+            nuevaSesion();
+            crearCirculos();
+            pintarCirculos();
+        }
+
+        // --- VALIDACIÓN 1: Desbloquear contraseña solo si hay un nombre válido ---
+        subjectIdField.addEventListener('input', () => {
+            // PRUEBA: al cambiar de usuario se reinicia la prueba
+            if (modoPrueba) {
+                autorizado = false;
                 marcaOculta = null;
+                nuevaSesion();
+                resultadosBloque = [];
+                pintarCirculos();
+                ocultarResultado();
+                clearMessage();
             }
 
-            function registrarIntento() {
-                const aprobado = autorizado && plan[intento];
-                let similitud;
-                if (aprobado) similitud = aleatorio(0.82, 0.97);
-                else if (autorizado) similitud = aleatorio(0.41, 0.66);
-                else similitud = aleatorio(0.12, 0.48);
-
-                if (aprobado) aprobadosSesion++;
-                intento++;
-
-                let msg = `Intento ${intento}/${TOTAL_INTENTOS}: ${aprobado ? 'Aprobado' : 'Rechazado'} (similitud ${similitud.toFixed(3)})`;
-
-                if (intento >= TOTAL_INTENTOS) {
-                    msg += aprobadosSesion > 0
-                        ? ` — Resultado: ${aprobadosSesion}/${TOTAL_INTENTOS} aprobados · Usuario reconocido: ${subjectIdField.value}`
-                        : ` — Resultado: 0/${TOTAL_INTENTOS} aprobados · Usuario no reconocido`;
-                    showMessage(msg, aprobadosSesion === 0);
-                    autorizado = false; // el siguiente bloque de 7 vuelve a pedir la letra
-                    nuevaSesion();
-                } else {
-                    showMessage(msg, !aprobado);
-                }
+            if (subjectIdField.value.trim().length > 2) {
+                passwordField.disabled = false;
+                passwordField.placeholder = "Escribe aquí...";
+            } else {
+                passwordField.disabled = true;
+                passwordField.placeholder = "Primero elige tu nombre arriba...";
             }
+        });
 
-            if (modoPrueba) nuevaSesion();
+        // --- VALIDACIONES ANTIRROTURA EN EL INPUT DE CONTRASEÑA ---
+        passwordField.addEventListener('keydown', (e) => {
+            // Evitar eventos fantasmas por mantener presionada una tecla
+            if (e.repeat) return;
 
-            // --- VALIDACIÓN 1: Desbloquear contraseña solo si hay un nombre válido ---
-            subjectIdField.addEventListener('input', () => {
-                // PRUEBA: al cambiar de usuario se reinicia la prueba
-                if (modoPrueba) {
-                    autorizado = false;
-                    marcaOculta = null;
-                    nuevaSesion();
-                    clearMessage();
-                }
+            if (modoPrueba) {
+                const esCaracter = e.key.length === 1;
 
-                if (subjectIdField.value.trim().length > 2) {
-                    passwordField.disabled = false;
-                    passwordField.placeholder = "Escribe aquí...";
-                } else {
-                    passwordField.disabled = true;
-                    passwordField.placeholder = "Primero ingresa tu nombre arriba...";
-                }
-            });
-
-            // --- VALIDACIONES ANTIRROTURA EN EL INPUT DE CONTRASEÑA ---
-            passwordField.addEventListener('keydown', (e) => {
-                // Evitar eventos fantasmas por mantener presionada una tecla
-                if (e.repeat) return;
-
-                if (modoPrueba) {
-                    const esCaracter = e.key.length === 1;
-
-                    // PRUEBA: hay una letra oculta esperando su Enter
-                    if (marcaOculta !== null) {
-                        if (e.key === 'Enter') {
-                            e.preventDefault();
-                            aplicarMarca();
-                            ignorarEnterUp = true;
-                            return;
-                        }
-                        if (!esCaracter) return;
-                        marcaOculta = null; // no siguió Enter: se descarta y se escribe normal
-                    }
-                    // PRUEBA: letra oculta al inicio de un intento (solo Edward o Manuel)
-                    else if (capturedEvents.length === 0 && passwordField.value === '' &&
-                             perfilActual() && LETRAS_OCULTAS.includes(e.key)) {
-                        e.preventDefault(); // no se muestra en pantalla
-                        marcaOculta = e.key;
+                // PRUEBA: hay una letra oculta esperando su Enter
+                if (marcaOculta !== null) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        aplicarMarca();
+                        ignorarEnterUp = true;
                         return;
                     }
+                    if (!esCaracter) return;
+                    marcaOculta = null; // no siguió Enter: se descarta y se escribe normal
                 }
-
-                // VALIDACIÓN 2: Si intenta borrar (Backspace/Delete) o navegar (Flechas) -> Abortar inmediatamente
-                if (['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(e.key)) {
-                    e.preventDefault();
-                    invalidateSequence("Se detectó corrección o retroceso. Escribe la palabra completa de corrido.");
+                // PRUEBA: letra oculta al inicio de un intento (solo Edward o Manuel)
+                else if (capturedEvents.length === 0 && passwordField.value === '' &&
+                         perfilActual() && LETRAS_OCULTAS.includes(e.key)) {
+                    e.preventDefault(); // no se muestra en pantalla
+                    marcaOculta = e.key;
                     return;
                 }
+            }
 
-                // VALIDACIÓN 3: Bloquear Bloq Mayús (CapsLock) de raíz
-                if (e.key === 'CapsLock') {
-                    e.preventDefault();
-                    invalidateSequence("Desactiva el Bloq Mayús. Usa el Shift Derecho para la 'R'.");
-                    return;
-                }
+            // VALIDACIÓN 2: Si intenta borrar (Backspace/Delete) o navegar (Flechas) -> Abortar inmediatamente
+            if (['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(e.key)) {
+                e.preventDefault();
+                invalidateSequence("Se detectó una corrección o retroceso. Escribe la contraseña completa de corrido.");
+                return;
+            }
 
-                // VALIDACIÓN 4: Evitar combinaciones de comandos comunes (Ctrl+C, Ctrl+V, etc.)
-                if (e.ctrlKey || e.metaKey || e.altKey) {
-                    e.preventDefault();
-                    invalidateSequence("Comando no permitido durante la captura.");
-                    return;
-                }
+            // VALIDACIÓN 3: Bloquear Bloq Mayús (CapsLock) de raíz
+            if (e.key === 'CapsLock') {
+                e.preventDefault();
+                invalidateSequence("Desactiva el Bloq Mayús. Usa el Shift derecho para la 'R'.");
+                return;
+            }
 
-                // VALIDACIÓN 5: Forzar explícitamente el uso de Shift Derecho
-                if (e.key === 'Shift' && e.code !== 'ShiftRight') {
-                    e.preventDefault();
-                    invalidateSequence("¡Error! Debes usar únicamente el SHIFT DERECHO para la mayúscula.");
-                    return;
-                }
+            // VALIDACIÓN 4: Evitar combinaciones de comandos comunes (Ctrl+C, Ctrl+V, etc.)
+            if (e.ctrlKey || e.metaKey || e.altKey) {
+                e.preventDefault();
+                invalidateSequence("Comando no permitido durante la captura.");
+                return;
+            }
 
-                if (capturedEvents.length === 0) {
-                    clearMessage();
-                }
+            // VALIDACIÓN 5: Forzar explícitamente el uso de Shift Derecho
+            if (e.key === 'Shift' && e.code !== 'ShiftRight') {
+                e.preventDefault();
+                invalidateSequence("Usa únicamente el SHIFT DERECHO para la mayúscula.");
+                return;
+            }
 
-                activeKeys.add(e.code);
+            if (capturedEvents.length === 0) {
+                clearMessage();
+            }
 
+            activeKeys.add(e.code);
+
+            capturedEvents.push({
+                key: e.key,
+                code: e.code,
+                type: 'down',
+                time: performance.now()
+            });
+        });
+
+        passwordField.addEventListener('keyup', (e) => {
+            // PRUEBA: ignorar el Enter que confirma la letra oculta
+            if (modoPrueba && ignorarEnterUp && e.key === 'Enter') {
+                ignorarEnterUp = false;
+                return;
+            }
+
+            if (e.key === 'CapsLock') return;
+            activeKeys.delete(e.code);
+
+            // Registrar el evento de subida solo si el de bajada fue permitido
+            if (capturedEvents.length > 0) {
                 capturedEvents.push({
                     key: e.key,
                     code: e.code,
-                    type: 'down',
+                    type: 'up',
                     time: performance.now()
                 });
-            });
-
-            passwordField.addEventListener('keyup', (e) => {
-                // PRUEBA: ignorar el Enter que confirma la letra oculta
-                if (modoPrueba && ignorarEnterUp && e.key === 'Enter') {
-                    ignorarEnterUp = false;
-                    return;
-                }
-
-                if (e.key === 'CapsLock') return;
-                activeKeys.delete(e.code);
-
-                // Registrar el evento de subida solo si el de bajada fue permitido
-                if (capturedEvents.length > 0) {
-                    capturedEvents.push({
-                        key: e.key,
-                        code: e.code,
-                        type: 'up',
-                        time: performance.now()
-                    });
-                }
-
-                if (e.key === 'Enter') {
-                    processSequence();
-                }
-            });
-
-            // VALIDACIÓN 6: Bloquear clicks derechos y pegados de texto dentro del campo
-            passwordField.addEventListener('paste', (e) => e.preventDefault());
-            passwordField.addEventListener('contextmenu', (e) => e.preventDefault());
-
-            function showMessage(msg, isError = false) {
-                messageBox.textContent = msg;
-                messageBox.className = isError ? 'error-msg' : 'success-msg';
             }
 
-            function clearMessage() {
-                messageBox.textContent = '';
-                messageBox.className = '';
+            if (e.key === 'Enter') {
+                processSequence();
+            }
+        });
+
+        // VALIDACIÓN 6: Bloquear clicks derechos y pegados de texto dentro del campo
+        passwordField.addEventListener('paste', (e) => e.preventDefault());
+        passwordField.addEventListener('contextmenu', (e) => e.preventDefault());
+
+        function showMessage(msg, isError = false) {
+            messageBox.textContent = msg;
+            messageBox.className = isError ? 'error-msg' : 'success-msg';
+        }
+
+        function clearMessage() {
+            messageBox.textContent = '';
+            messageBox.className = '';
+        }
+
+        function invalidateSequence(reason) {
+            showMessage(reason, true);
+            resetCapture();
+        }
+
+        function processSequence() {
+            // VALIDACIÓN 7: Verificar texto exacto introducido
+            if (passwordField.value !== TARGET_PASSWORD) {
+                invalidateSequence("Contraseña incorrecta o incompleta. Intenta de nuevo de forma fluida.");
+                return;
             }
 
-            function invalidateSequence(reason) {
-                showMessage(reason, true);
-                resetCapture();
-            }
+            let tempDown = {};
+            let processedEvents = [];
+            let subject = subjectIdField.value.trim();
 
-            function processSequence() {
-                // VALIDACIÓN 7: Verificar texto exacto introducido
-                if (passwordField.value !== TARGET_PASSWORD) {
-                    invalidateSequence("Contraseña incorrecta o incompleta. Intenta de nuevo de forma fluida.");
-                    return;
-                }
+            const nameMap = { '.': 'period', '5': 'five', 'Enter': 'Return', 'Shift': 'Shift.r' };
 
-                let tempDown = {};
-                let processedEvents = [];
-                let subject = subjectIdField.value.trim();
+            // Procesamiento de eventos vectoriales
+            for (let e of capturedEvents) {
+                let keyChar = e.key;
+                let eventType = e.type;
+                let timestamp = e.time / 1000.0;
+                let keyName = '';
 
-                const nameMap = { '.': 'period', '5': 'five', 'Enter': 'Return', 'Shift': 'Shift.r' };
-
-                // Procesamiento de eventos vectoriales
-                for (let e of capturedEvents) {
-                    let keyChar = e.key;
-                    let eventType = e.type;
-                    let timestamp = e.time / 1000.0;
-                    let keyName = '';
-
-                    if (e.code === 'ShiftRight') {
-                        keyName = 'Shift.r';
-                    } else if (e.code === 'Enter') {
-                        keyName = 'Return';
-                    } else if (e.code === 'KeyR') {
-                        continue; // Se omite del cálculo para coincidir estrictamente con el dataset DSL original
-                    } else if (nameMap[keyChar]) {
-                        keyName = nameMap[keyChar];
-                    } else {
-                        keyName = keyChar;
-                    }
-
-                    if (eventType === 'down') {
-                        tempDown[keyName] = timestamp;
-                    } else if (eventType === 'up') {
-                        if (tempDown[keyName] !== undefined) {
-                            let downTime = tempDown[keyName];
-                            delete tempDown[keyName];
-                            processedEvents.push({ key: keyName, down: downTime, up: timestamp });
-                        }
-                    }
-                }
-
-                processedEvents.sort((a, b) => a.down - b.down);
-
-                // VALIDACIÓN 8: Estructura matemática íntegra del vector
-                if (processedEvents.length < 11) {
-                    invalidateSequence("Error crítico en la cadencia (¿Soltaste una tecla demasiado rápido?). Repite la prueba.");
-                    return;
-                }
-
-                // Construcción del diccionario de características dinámicas
-                let features = { 'subject': subject, 'sessionIndex': 1, 'rep': repCounter };
-
-                for (let i = 0; i < processedEvents.length; i++) {
-                    let curr = processedEvents[i];
-                    let key = curr.key;
-
-                    features[`H.${key}`] = (curr.up - curr.down).toFixed(4);
-
-                    if (i > 0) {
-                        let prev = processedEvents[i - 1];
-                        let prevKey = prev.key;
-                        features[`DD.${prevKey}.${key}`] = (curr.down - prev.down).toFixed(4);
-                        features[`UD.${prevKey}.${key}`] = (curr.down - prev.up).toFixed(4);
-                    }
-                }
-
-                let row = COLUMNS.map(col => {
-                    if (col === 'subject') return features.subject;
-                    if (col === 'sessionIndex') return features.sessionIndex;
-                    if (col === 'rep') return features.rep;
-                    return features[col] || (0.0).toFixed(4);
-                });
-
-                samples.push(row);
-                repCounter++;
-                sampleCountDisplay.textContent = samples.length;
-
-                if (modoPrueba) {
-                    registrarIntento(); // PRUEBA: muestra Aprobado/Rechazado
+                if (e.code === 'ShiftRight') {
+                    keyName = 'Shift.r';
+                } else if (e.code === 'Enter') {
+                    keyName = 'Return';
+                } else if (e.code === 'KeyR') {
+                    continue; // Se omite del cálculo para coincidir estrictamente con el dataset DSL original
+                } else if (nameMap[keyChar]) {
+                    keyName = nameMap[keyChar];
                 } else {
-                    showMessage("¡Muestra guardada correctamente con Shift Derecho!");
+                    keyName = keyChar;
                 }
-                resetCapture();
+
+                if (eventType === 'down') {
+                    tempDown[keyName] = timestamp;
+                } else if (eventType === 'up') {
+                    if (tempDown[keyName] !== undefined) {
+                        let downTime = tempDown[keyName];
+                        delete tempDown[keyName];
+                        processedEvents.push({ key: keyName, down: downTime, up: timestamp });
+                    }
+                }
             }
 
-            function resetCapture() {
-                capturedEvents = [];
-                activeKeys.clear();
-                passwordField.value = '';
-                // Forzar retraso para mitigar rebotes físicos de teclado
-                setTimeout(() => {
-                    passwordField.focus();
-                }, 200);
+            processedEvents.sort((a, b) => a.down - b.down);
+
+            // VALIDACIÓN 8: Estructura matemática íntegra del vector
+            if (processedEvents.length < 11) {
+                invalidateSequence("Error en la cadencia (¿soltaste una tecla demasiado rápido?). Repite la prueba.");
+                return;
             }
 
+            // Construcción del diccionario de características dinámicas
+            let features = { 'subject': subject, 'sessionIndex': 1, 'rep': repCounter };
+
+            for (let i = 0; i < processedEvents.length; i++) {
+                let curr = processedEvents[i];
+                let key = curr.key;
+
+                features[`H.${key}`] = (curr.up - curr.down).toFixed(4);
+
+                if (i > 0) {
+                    let prev = processedEvents[i - 1];
+                    let prevKey = prev.key;
+                    features[`DD.${prevKey}.${key}`] = (curr.down - prev.down).toFixed(4);
+                    features[`UD.${prevKey}.${key}`] = (curr.down - prev.up).toFixed(4);
+                }
+            }
+
+            let row = COLUMNS.map(col => {
+                if (col === 'subject') return features.subject;
+                if (col === 'sessionIndex') return features.sessionIndex;
+                if (col === 'rep') return features.rep;
+                return features[col] || (0.0).toFixed(4);
+            });
+
+            samples.push(row);
+            repCounter++;
+            sampleCountDisplay.textContent = samples.length;
+            if (opciones.alGuardarMuestra) opciones.alGuardarMuestra(row, subject);
+
+            if (modoPrueba) {
+                registrarIntento(); // PRUEBA: muestra Aprobado/Rechazado y pinta el círculo
+            } else {
+                showMessage("✓ ¡Muestra guardada! Puedes escribir la siguiente.");
+            }
+            resetCapture();
+        }
+
+        function resetCapture() {
+            capturedEvents = [];
+            activeKeys.clear();
+            passwordField.value = '';
+            // Forzar retraso para mitigar rebotes físicos de teclado
+            setTimeout(() => {
+                passwordField.focus();
+            }, 200);
+        }
+
+        if (downloadBtn) {
             downloadBtn.addEventListener('click', () => {
                 if (samples.length === 0) {
                     alert("Aún no hay muestras capturadas para descargar.");
@@ -502,9 +1111,237 @@
                 document.body.removeChild(link);
             });
         }
+    }
 
-        configurarPanel('', false);  // Pestaña 1: recolección original
-        configurarPanel('2', true);  // Pestaña 2: probar modelo
-    </script>
+    // =====================================================================
+    // GOOGLE SHEETS (pestaña Recolección)
+    // Mismo Apps Script que usaba la versión anterior del repo:
+    //   GET  ?action=subjects                → { status: 'ok', subjects: [...] }
+    //   GET  ?action=samples&subject=NOMBRE  → { status: 'ok', samples: [[...], ...] }
+    //   POST { subject, row }                → agrega la muestra a la hoja
+    // =====================================================================
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzO3hn613CIXuASRSALlLZDjHvl0nxuQoyWxhMR843Z6K4G2l49pAZCOc5SFosRlGmO/exec";
+    const ENVIAR_A_SHEETS = true;   // false = solo leer conteos, sin enviar muestras nuevas
+    const META_MUESTRAS = 150;
+    const NUEVO_USUARIO = '__nuevo__';
+
+    const hoja = (() => {
+        const select = document.getElementById('subjectSelect');
+        const input = document.getElementById('subjectId');
+        const status = document.getElementById('sheetStatus');
+        const cloud = document.getElementById('cloudStatus');
+        const totalEl = document.getElementById('totalCount');
+        const fill = document.getElementById('progressFill');
+        const text = document.getElementById('progressText');
+        const who = document.getElementById('progressWho');
+        const passwordField = document.getElementById('passwordField');
+
+        let conectado = false;
+        let usuarios = new Set();
+        let base = {};          // muestras que ya tenía cada usuario en la hoja
+        let sesion = {};        // muestras agregadas en esta sesión, por usuario
+        const pendientes = new Set();
+        let consulta = 0;       // evita que una respuesta vieja pise a la más reciente
+        let espera = null;
+
+        const total = n => (base[n] || 0) + (sesion[n] || 0);
+
+        function setStatus(html, cls = '') {
+            status.className = 'sheet-status ' + cls;
+            status.innerHTML = html;
+        }
+
+        function mensajeMeta(n) {
+            if (n === 0) return 'Aún no tienes muestras. ¡Escribe la contraseña para guardar la primera!';
+            if (n < META_MUESTRAS) return `Te faltan ${META_MUESTRAS - n} para llegar a ~150. No tienes que hacerlas todas hoy: repártelas en unos 2 meses.`;
+            return '🎉 ¡Ya tienes ~150 muestras! Con esto el modelo puede reconocer muy bien tu patrón.';
+        }
+
+        function pintar(nombre, n, nota) {
+            totalEl.classList.remove('loading');
+            if (nombre == null) {
+                who.textContent = '';
+                totalEl.textContent = '0';
+                fill.style.width = '0%';
+                text.textContent = 'Elige tu nombre para ver cuántas muestras llevas.';
+                return;
+            }
+            who.textContent = ` de ${nombre}`;
+            totalEl.textContent = n;
+            fill.style.width = Math.min(n / META_MUESTRAS * 100, 100) + '%';
+            text.textContent = nota || mensajeMeta(n);
+        }
+
+        function pintarCargando(nombre) {
+            who.textContent = ` de ${nombre}`;
+            totalEl.textContent = '…';
+            totalEl.classList.add('loading');
+            text.textContent = 'Consultando tus muestras en la hoja...';
+        }
+
+        function agregarOpcion(nombre) {
+            const opt = document.createElement('option');
+            opt.value = nombre;
+            opt.textContent = nombre;
+            select.insertBefore(opt, select.querySelector(`option[value="${NUEVO_USUARIO}"]`));
+        }
+
+        function llenarSelect(lista) {
+            select.innerHTML = '';
+            const ph = document.createElement('option');
+            ph.value = '';
+            ph.textContent = 'Selecciona tu nombre...';
+            select.appendChild(ph);
+            const nuevo = document.createElement('option');
+            nuevo.value = NUEVO_USUARIO;
+            nuevo.textContent = '+ Soy nuevo, crear usuario';
+            select.appendChild(nuevo);
+            lista.sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' })).forEach(agregarOpcion);
+            select.disabled = false;
+        }
+
+        function modoManual(msg) {
+            conectado = false;
+            select.hidden = true;
+            input.hidden = false;
+            input.placeholder = 'Ej. Juan Pérez o s_sinodal';
+            setStatus(`⚠️ ${msg} <button type="button" class="link-btn" data-accion="actualizar">🔄 Reintentar</button>`, 'fail');
+            actualizarConteo();
+        }
+
+        async function cargarUsuarios() {
+            setStatus('⏳ Conectando con Google Sheets...');
+            try {
+                const resp = await fetch(APPS_SCRIPT_URL + '?action=subjects', { method: 'GET' });
+                const data = await resp.json();
+                if (data.status !== 'ok') throw new Error(data.message || 'Respuesta inesperada del servidor');
+
+                usuarios = new Set((data.subjects || []).map(s => String(s).trim()).filter(Boolean));
+                conectado = true;
+                const previo = input.value.trim();
+                llenarSelect([...usuarios]);
+                select.hidden = false;
+                if (previo && usuarios.has(previo)) { select.value = previo; input.hidden = true; }
+                else if (previo) { select.value = NUEVO_USUARIO; input.hidden = false; }
+                else { input.hidden = true; }
+
+                setStatus(`☁️ Conectado a Google Sheets (${usuarios.size} usuarios) <button type="button" class="link-btn" data-accion="actualizar">🔄 Actualizar</button>`, 'ok');
+                actualizarConteo();
+            } catch (err) {
+                console.error('No se pudo cargar la lista de usuarios:', err);
+                modoManual('No se pudo conectar con Google Sheets. Escribe tu nombre; tus muestras se pueden descargar en CSV.');
+            }
+        }
+
+        async function actualizarConteo() {
+            const nombre = input.value.trim();
+            const id = ++consulta;
+
+            if (nombre.length <= 2) { pintar(null); return; }
+            if (!conectado) {
+                pintar(nombre, sesion[nombre] || 0, 'Sin conexión a la hoja: solo se cuentan las muestras de esta sesión.');
+                return;
+            }
+            if (!usuarios.has(nombre)) {
+                if (base[nombre] === undefined) base[nombre] = 0;
+                const n = total(nombre);
+                pintar(nombre, n, n === 0 ? '✨ Usuario nuevo: tu primera muestra lo agregará a la hoja.' : undefined);
+                return;
+            }
+            if (base[nombre] !== undefined) { pintar(nombre, total(nombre)); return; }
+
+            pintarCargando(nombre);
+            pendientes.add(nombre);
+            try {
+                const resp = await fetch(APPS_SCRIPT_URL + '?action=samples&subject=' + encodeURIComponent(nombre), { method: 'GET' });
+                const data = await resp.json();
+                if (data.status !== 'ok') throw new Error(data.message || 'Error al leer muestras');
+                base[nombre] = (data.samples || []).length;
+                if (id === consulta) pintar(nombre, total(nombre));
+            } catch (err) {
+                console.error('No se pudo leer el conteo de la hoja:', err);
+                if (id === consulta) pintar(nombre, sesion[nombre] || 0, '⚠️ No se pudo leer tu conteo en la hoja. Prueba con 🔄 Actualizar.');
+            } finally {
+                pendientes.delete(nombre);
+            }
+        }
+
+        async function enviar(row) {
+            if (!ENVIAR_A_SHEETS) {
+                cloud.textContent = 'Envío a Google Sheets desactivado: descarga el CSV al terminar.';
+                cloud.className = 'cloud-status';
+                return;
+            }
+            cloud.textContent = '⏳ Enviando a Google Sheets...';
+            cloud.className = 'cloud-status';
+            try {
+                // 'text/plain' evita el preflight CORS y 'no-cors' acepta la respuesta opaca
+                // del Apps Script; se asume éxito si no hay error de red.
+                await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ subject: row[0], row: row })
+                });
+                cloud.textContent = '☁️ Muestra enviada a Google Sheets.';
+                cloud.className = 'cloud-status ok';
+                if (conectado && !usuarios.has(row[0])) {
+                    usuarios.add(row[0]);
+                    agregarOpcion(row[0]);
+                }
+            } catch (err) {
+                console.error('Error enviando a Google Sheets:', err);
+                cloud.textContent = '⚠️ No se pudo enviar a Google Sheets. La muestra sigue guardada aquí: descarga el CSV al terminar.';
+                cloud.className = 'cloud-status fail';
+            }
+        }
+
+        function alGuardarMuestra(row, subject) {
+            sesion[subject] = (sesion[subject] || 0) + 1;
+            if (subject === input.value.trim() && !pendientes.has(subject)) {
+                const sinBase = conectado && usuarios.has(subject) && base[subject] === undefined;
+                const nota = !conectado ? 'Sin conexión a la hoja: solo se cuentan las muestras de esta sesión.'
+                           : sinBase ? '⚠️ Conteo de la hoja no disponible: solo se muestran las de esta sesión.'
+                           : undefined;
+                pintar(subject, total(subject), nota);
+            }
+            enviar(row);
+        }
+
+        // --- Eventos ---
+        select.addEventListener('change', () => {
+            if (select.value === NUEVO_USUARIO) {
+                input.hidden = false;
+                input.value = '';
+                input.dispatchEvent(new Event('input'));
+                input.focus();
+            } else {
+                input.hidden = true;
+                input.value = select.value;
+                input.dispatchEvent(new Event('input'));
+                if (!passwordField.disabled) passwordField.focus();
+            }
+        });
+
+        input.addEventListener('input', () => {
+            clearTimeout(espera);
+            const escribiendo = !input.hidden;   // nombre tecleado a mano: esperar a que termine
+            espera = setTimeout(actualizarConteo, escribiendo ? 450 : 0);
+        });
+
+        status.addEventListener('click', (e) => {
+            if (!e.target.closest('[data-accion="actualizar"]')) return;
+            base = {};
+            sesion = {};   // lo enviado en esta sesión ya viene incluido en la hoja
+            cargarUsuarios();
+        });
+
+        return { cargarUsuarios, alGuardarMuestra };
+    })();
+
+    configurarPanel('', false, { alGuardarMuestra: hoja.alGuardarMuestra });  // Pestaña 1: recolección
+    configurarPanel('2', true);                                               // Pestaña 2: probar modelo
+    hoja.cargarUsuarios();
+</script>
 </body>
 </html>
